@@ -1696,13 +1696,36 @@ function openCampForm(id){
   $('campFormOv').classList.add('open');
 }
 async function saveCampaign(){
-  const title=$('cfTitle').value.trim(); if(!title){toast('Titre requis','error');return;}
+  const title=$('cfTitle')?.value.trim();
+  if(!title){toast('Titre requis','error');return;}
   const id=editCampId||'camp_'+uid();
   const existing=editCampId?campaigns.find(x=>x.id===editCampId)||{}:{};
-  const data={id,title,desc:$('cfDesc').value.trim(),image:$('cfImage').value.trim(),goal:parseFloat($('cfGoal').value)||0,raised:parseFloat($('cfRaised').value)||0,minAmount:parseInt($('cfMin').value)||1,maxAmount:parseInt($('cfMax').value)||500,paypalLink:$('cfPaypal').value.trim(),stripeLink:$('cfStripe').value.trim(),active:$('cfActive').classList.contains('on'),featured:$('cfFeatured').classList.contains('on'),createdAt:existing.createdAt||new Date().toISOString()};
+  const data={
+    id, title,
+    desc:$('cfDesc')?.value.trim()||'',
+    image:$('cfImage')?.value.trim()||'',
+    goal:parseFloat($('cfGoal')?.value)||0,
+    raised:parseFloat($('cfRaised')?.value)||0,
+    minAmount:parseInt($('cfMin')?.value)||1,
+    maxAmount:parseInt($('cfMax')?.value)||500,
+    paypalLink:$('cfPaypal')?.value.trim()||'',
+    stripeLink:$('cfStripe')?.value.trim()||'',
+    active:document.getElementById('cfActive')?.classList.contains('on')??false,
+    featured:document.getElementById('cfFeatured')?.classList.contains('on')??false,
+    createdAt:existing.createdAt||new Date().toISOString()
+  };
   await autoSave(()=>apiPut('/api/admin/campaigns',data));
-  if(editCampId){const idx=campaigns.findIndex(x=>x.id===editCampId);if(idx>-1)campaigns[idx]=data;else campaigns.push(data);}else campaigns.push(data);
-  closeOv('campFormOv'); renderAdmCampaigns(); renderCampaigns(); toast(editCampId?'Campagne mise à jour !':'Campagne créée !'); editCampId=null;
+  if(editCampId){
+    const idx=campaigns.findIndex(x=>x.id===editCampId);
+    if(idx>-1)campaigns[idx]=data; else campaigns.push(data);
+  } else {
+    campaigns.push(data);
+  }
+  closeOv('campFormOv');
+  renderAdmCampaigns();
+  renderCampaigns();
+  toast(editCampId?'Campagne mise à jour !':'Campagne créée !');
+  editCampId=null;
 }
 async function delCampaign(id){ if(!confirm('Supprimer cette campagne ?'))return; campaigns=campaigns.filter(x=>x.id!==id); await autoSave(()=>apiDelete('/api/admin/campaigns',{id})); renderAdmCampaigns(); renderCampaigns(); toast('Campagne supprimée'); }
 async function toggleCampFeatured(id,btn){ const c=campaigns.find(x=>x.id===id); if(!c)return; c.featured=!c.featured; btn.classList.toggle('on',c.featured); await autoSave(()=>apiPut('/api/admin/campaigns',c)); renderCampaigns(); }
