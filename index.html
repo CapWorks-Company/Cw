@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CapWorks Studio</title>
-<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Capky/CapWorks-Studio/main/CWS_Logo.png">
+<link rel="icon" type="image/png" href="CWS_Logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ══════════════════════════════════════════
@@ -148,6 +148,7 @@ select.inp option { background:var(--surf2); }
    LAYOUT
 ══════════════════════════════════════════ */
 .section { position:relative; z-index:1; padding:72px 40px; max-width:1200px; margin:0 auto; }
+#services { padding-top: 200px; }
 .sec-head { text-align:center; margin-bottom:52px; }
 .sec-tag {
   display:inline-block; font-size:.6rem; color:var(--accent);
@@ -588,7 +589,8 @@ footer a:hover { text-decoration:underline; }
 /* ══════════════════════════════════════════
    PROJ FORM
 ══════════════════════════════════════════ */
-#projFormOv { z-index:400; }
+#projFormOv { z-index: 500; }
+#campFormOv { z-index: 500; }
 .media-zone { background:rgba(108,92,231,.04); border:1px solid rgba(108,92,231,.2); border-radius:var(--r); padding:14px; margin-bottom:13px; }
 .media-zone-title { font-size:.66rem; font-weight:700; color:var(--accent); letter-spacing:1px; text-transform:uppercase; margin-bottom:10px; }
 .cat-pill-select { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
@@ -620,86 +622,6 @@ footer a:hover { text-decoration:underline; }
   .adm-sidebar { display:none; }
   .sec-div { margin:0 16px; }
 }
-
-/* ── LANG SWITCHER ── */
-.lang-switcher{display:flex;gap:2px;background:var(--surf2);border:1px solid var(--bdr2);border-radius:8px;padding:2px;margin-right:4px}
-.lang-btn{background:none;border:none;color:var(--txt3);font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:6px;cursor:pointer;transition:all .2s}
-.lang-btn.active{background:var(--accent);color:#fff}
-
-/* ── NEWSLETTER ── */
-.newsletter-wrap{background:linear-gradient(135deg,rgba(108,92,231,.08),rgba(0,206,201,.06));border:1px solid rgba(108,92,231,.2);border-radius:var(--r2);padding:40px;text-align:center;max-width:600px;margin:0 auto}
-.newsletter-wrap h3{font-family:var(--display,'DM Sans',sans-serif);font-size:1.5rem;font-weight:700;margin-bottom:8px}
-.newsletter-wrap p{color:var(--txt2);font-size:.85rem;margin-bottom:24px}
-.newsletter-form{display:flex;gap:8px;max-width:420px;margin:0 auto}
-.newsletter-form input{flex:1;background:var(--surf2);border:1.5px solid var(--bdr2);color:var(--txt);padding:10px 14px;border-radius:var(--r);font-family:var(--font);font-size:.83rem;outline:none;transition:border-color .2s}
-.newsletter-form input:focus{border-color:var(--accent)}
-.newsletter-form input::placeholder{color:var(--txt3)}
-.nl-msg{font-size:.74rem;margin-top:10px}
-.nl-msg.ok{color:var(--grn)}.nl-msg.err{color:var(--red)}
-
-/* ── TESTIMONIALS ── */
-.testi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
-.testi-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r2);padding:22px;transition:border-color .3s,transform .3s}
-.testi-card:hover{border-color:var(--accent);transform:translateY(-4px)}
-.testi-stars{display:flex;gap:3px;margin-bottom:12px;font-size:1rem}
-.testi-text{font-size:.84rem;color:var(--txt2);line-height:1.75;margin-bottom:14px;font-style:italic}
-.testi-author{display:flex;align-items:center;gap:10px}
-.testi-ava{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
-.testi-name{font-weight:700;font-size:.84rem}
-.testi-role{font-size:.7rem;color:var(--txt3)}
-
-/* ── AUDIO PLAYER ── */
-.audio-section{padding:11px 15px;border-top:1px solid var(--bdr);background:linear-gradient(135deg,rgba(232,67,147,.04),rgba(108,92,231,.04))}
-.audio-section-lbl{font-size:.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--red);margin-bottom:8px}
-.audio-player{display:flex;align-items:center;gap:9px;padding:8px 10px;background:rgba(232,67,147,.07);border:1px solid rgba(232,67,147,.2);border-radius:9px;margin-bottom:6px}
-.audio-player:last-child{margin-bottom:0}
-.audio-play-btn{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#db2777,var(--red));border:none;color:#fff;font-size:.82rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
-.audio-play-btn:hover{transform:scale(1.1)}
-.audio-info{flex:1;min-width:0}
-.audio-name{font-size:.72rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:4px}
-.audio-progress-wrap{width:100%;height:3px;background:rgba(232,67,147,.2);border-radius:99px;cursor:pointer;margin-bottom:2px}
-.audio-progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#db2777,var(--red));border-radius:99px;transition:width .1s linear}
-.audio-time{font-size:.56rem;color:var(--txt3)}
-
-/* ── VERSION / CHANGELOG ── */
-.card-version{display:inline-flex;align-items:center;gap:5px;font-size:.6rem;font-weight:700;background:rgba(108,92,231,.12);border:1px solid rgba(108,92,231,.25);color:var(--accent);padding:2px 8px;border-radius:99px;margin-bottom:8px}
-.version-block{background:rgba(108,92,231,.06);border:1px solid rgba(108,92,231,.2);border-radius:var(--r);padding:14px 16px;margin-bottom:14px}
-.version-block-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.version-num{font-size:1.1rem;font-weight:700;color:var(--accent)}
-.version-label{font-size:.6rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--txt3)}
-.changelog-title{font-size:.72rem;font-weight:700;color:var(--txt2);margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
-.changelog-list{list-style:none;display:flex;flex-direction:column;gap:5px}
-.changelog-list li{font-size:.8rem;color:var(--txt2);padding-left:16px;position:relative;line-height:1.5}
-.changelog-list li::before{content:'•';position:absolute;left:4px;color:var(--accent)}
-
-/* ── HIGHLIGHT BUBBLE ── */
-@keyframes hlFloat{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-4px) rotate(1.5deg)}}
-.proj-highlight{position:relative;margin:0 14px 14px;padding:9px 13px 9px 36px;background:linear-gradient(135deg,#fde68a,var(--gold));color:#3a2a06;font-size:.78rem;font-weight:600;line-height:1.45;border-radius:14px;box-shadow:0 6px 18px rgba(253,203,110,.25),inset 0 1px 0 rgba(255,255,255,.4);border:1px solid rgba(180,120,0,.35);animation:hlFloat 4s ease-in-out infinite;font-style:italic}
-.proj-highlight::before{content:'💬';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:1.05rem;font-style:normal}
-
-/* ── MEDIA GALLERY ── */
-.media-gallery{position:relative;width:100%;overflow:hidden;background:var(--surf2)}
-.media-gallery.ratio-16-9{padding-top:56.25%}
-.media-gallery-inner{position:absolute;inset:0;display:flex;transition:transform .35s cubic-bezier(.4,0,.2,1)}
-.media-slide{min-width:100%;height:100%;position:relative;flex-shrink:0}
-.media-slide img,.media-slide video{width:100%;height:100%;object-fit:cover}
-.gallery-nav{position:absolute;bottom:9px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:5}
-.gallery-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.35);cursor:pointer;transition:all .22s}
-.gallery-dot.active{background:#fff;width:18px;border-radius:99px}
-.gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.12);color:#fff;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.7rem;transition:all .2s}
-.gallery-arrow:hover{background:rgba(0,0,0,.8)}
-.gallery-arrow.gl{left:8px}.gallery-arrow.gr{right:8px}
-.media-dl-btn{position:absolute;bottom:8px;left:8px;z-index:4;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:.62rem;padding:3px 9px;border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:all .2s}
-.media-dl-btn:hover{background:var(--accent);border-color:var(--accent)}
-
-/* ── CHANGELOG EDITOR ── */
-.cl-row{display:flex;gap:6px;align-items:center;margin-bottom:6px}
-
-@media(max-width:700px){
-  .newsletter-form{flex-direction:column}
-  .testi-grid{grid-template-columns:1fr}
-}
-
 </style>
 </head>
 <body>
@@ -708,7 +630,7 @@ footer a:hover { text-decoration:underline; }
 <header>
   <a href="#" class="logo">
     <div class="logo-img">
-      <img src="https://raw.githubusercontent.com/Capky/CapWorks-Studio/main/CWS_Logo.png" alt="CWS" onerror="this.parentElement.textContent='⚡'">
+      <img src="CWS_Logo.png" alt="CWS" onerror="this.parentElement.textContent='⚡'">
     </div>
     CapWorks <em>Studio</em>
   </a>
@@ -730,11 +652,12 @@ footer a:hover { text-decoration:underline; }
 <!-- ══════════════ HERO ══════════════ -->
 <section class="hero">
   <div class="hero-glow"></div>
-  <div class="hero-badge"><div class="dot"></div> Développement sur demande · v4.0</div>
+  <div class="hero-badge"><div class="dot"></div> Développement sur demande · v5.2</div>
   <h1>Avec CapWorks Studio,<br><em>vos projets commencent maintenant</em></h1>
   <p>Jeux, logiciels, sites, musiques, bots — nous développons ce que vous imaginez avec soin et expertise.</p>
   <div class="hero-btns">
     <a href="#services" class="btn btn-primary">Voir les services →</a>
+    <a href="#projects" class="btn btn-primary">Voir les projets →</a>
     <a href="https://discord.gg/RSnKYzXsgm" target="_blank" class="btn btn-ghost">💬 Discord</a>
   </div>
 </section>
@@ -801,35 +724,6 @@ footer a:hover { text-decoration:underline; }
 <div class="sec-div"></div>
 
 <!-- ══════════════ TEAM ══════════════ -->
-
-<div class="sec-div"></div>
-
-<!-- TESTIMONIALS -->
-<section class="section" id="testimonials">
-  <div class="sec-head">
-    <span class="sec-tag">// ils nous font confiance</span>
-    <h2>Ce que disent nos clients</h2>
-  </div>
-  <div class="testi-grid" id="testiGrid">
-    <div style="color:var(--txt3);font-size:.78rem;text-align:center;padding:40px;grid-column:1/-1">Chargement...</div>
-  </div>
-</section>
-
-<div class="sec-div"></div>
-
-<!-- NEWSLETTER -->
-<section class="section" id="newsletter">
-  <div class="newsletter-wrap">
-    <h3>📬 Restez informé</h3>
-    <p>Recevez nos dernières nouveautés, projets et mises à jour directement dans votre boîte mail.</p>
-    <div class="newsletter-form">
-      <input type="email" id="nlEmail" placeholder="votre@email.com">
-      <button class="btn btn-primary" onclick="subscribeNewsletter()">S'abonner →</button>
-    </div>
-    <div class="nl-msg" id="nlMsg"></div>
-  </div>
-</section>
-
 <section class="section" id="team">
   <div class="sec-head">
     <span class="sec-tag">// notre équipe</span>
@@ -864,13 +758,21 @@ footer a:hover { text-decoration:underline; }
   <div class="about-grid">
     <div class="about-text">
       <h3>Une équipe passionnée de développeurs</h3>
-      <p>CapWorks Studio est un studio de développement indépendant fondé par des passionnés de code. Nous créons des solutions sur mesure — jeux, applications, bots, sites, musiques — pour des clients du monde entier.</p>
-      <p>Notre philosophie : qualité, transparence et réactivité. Chaque projet est traité avec soin, du brief initial jusqu'à la livraison finale.</p>
-      <p>Nous proposons trois niveaux de qualité pour s'adapter à tous les budgets, sans jamais sacrifier le sérieux de notre travail.</p>
+      <p>Depuis presque 1 an, la CapWorks Studio est alimentée par plusieurs personnes à l'aise en programmation.</p>
+      <p>Nous vous aiderons de notre mieux pour que vous puissiez avoir de grands projets informatiques, tels que : 
+- La modélisation 3D 
+- Le développement de jeux vidéos 
+- Les animations 
+- Et des dizaines d'autres domaines</p>
+      <p>Cependant, l'entreprise reste qu'une image. 
+Nous ne sommes pas encore en mesure de la créer.
+
+Mais nous ferons tout notre possible pour vous plaire !</p>
       <div class="about-vals">
-        <div class="about-val"><div class="av-ico">⚡</div><div><div class="av-title">Réactivité</div><div class="av-desc">Réponse sous 24h garantie. Suivi régulier tout au long du projet.</div></div></div>
-        <div class="about-val"><div class="av-ico">🔒</div><div><div class="av-title">Sécurité & confiance</div><div class="av-desc">Paiement sécurisé via PayPal. Remboursement si non satisfait.</div></div></div>
+        <div class="about-val"><div class="av-ico">⚡</div><div><div class="av-title">Réactivité</div><div class="av-desc">Réponse rapide. Suivi régulier tout au long du projet.</div></div></div>
+        <div class="about-val"><div class="av-ico">🔒</div><div><div class="av-title">Sécurité & confiance</div><div class="av-desc">Nos offres sont gratuites. Pour vous satisfaires un maximum !</div></div></div>
         <div class="about-val"><div class="av-ico">🎯</div><div><div class="av-title">Sur mesure</div><div class="av-desc">Chaque projet est unique. Nous adaptons notre travail à vos besoins précis.</div></div></div>
+        <div class="about-val"><div class="av-ico">✨</div><div><div class="av-title">Qualité</div><div class="av-desc">Nos projets sont de très bonnes qualités, de quoi faire des sourires !</div></div></div>
       </div>
     </div>
     <div class="about-stats" id="aboutStatsGrid">
@@ -899,14 +801,19 @@ footer a:hover { text-decoration:underline; }
       </a>
       <a href="mailto:contact@capworks.studio" class="c-link cl-mail">
         <div class="c-ico">📧</div>
-        <div><div class="c-lbl">Email</div><div class="c-val">contact@capworks.studio</div></div>
+        <div><div class="c-lbl">Email</div><div class="c-val">capkychannel@gmail.com</div></div>
         <span style="margin-left:auto;color:var(--txt3)">→</span>
       </a>
       <div style="background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r2);padding:16px 18px">
         <div style="font-size:.67rem;color:var(--txt3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:7px">Disponibilité</div>
         <div style="font-size:.84rem;color:var(--txt2);line-height:1.95">
-          🕐 Lun–Ven : <span style="color:var(--txt);font-weight:600">9h – 21h</span><br>
-          🕑 Sam–Dim : <span style="color:var(--txt);font-weight:600">10h – 18h</span><br>
+          🕐 Lundi : <span style="color:var(--txt);font-weight:600">17h – 19h</span><br>
+          🕑 Mardi : <span style="color:var(--txt);font-weight:500">fermé</span><br>
+          🕑 Mercredi : <span style="color:var(--txt);font-weight:600">13h – 19h</span><br>
+          🕑 Jeudi : <span style="color:var(--txt);font-weight:500">fermé</span><br>
+          🕑 Vendredi : <span style="color:var(--txt);font-weight:600">17h – 19h</span><br>
+          🕑 Samedi : <span style="color:var(--txt);font-weight:600">13h – 19h</span><br>
+          🕑 Dimanche : <span style="color:var(--txt);font-weight:600">13h – 19h</span><br>
           <span style="color:var(--txt3);font-size:.75rem">Europe/Paris</span>
         </div>
       </div>
@@ -928,7 +835,7 @@ footer a:hover { text-decoration:underline; }
     <img src="https://raw.githubusercontent.com/Capky/CapWorks-Studio/main/CWS_Logo.png" alt="CWS" style="width:28px;height:28px;border-radius:7px" onerror="this.style.display='none'">
     <div class="footer-logo">CapWorks <em>Studio</em></div>
   </div>
-  <p>Développement sur mesure &nbsp;·&nbsp; Tous droits réservés 2025<br>Paiement sécurisé via PayPal &nbsp;·&nbsp; <a href="https://discord.gg/RSnKYzXsgm" target="_blank">Discord CapWorks Studio</a></p>
+  <p>Développement sur mesure &nbsp;·&nbsp; Tous droits réservés<br>Paiement sécurisé via PayPal & Stripe &nbsp;·&nbsp; <a href="https://discord.gg/RSnKYzXsgm" target="_blank">Discord CapWorks Studio</a></p>
 </footer>
 
 <!-- ══════════════ PAY MODAL ══════════════ -->
@@ -1090,25 +997,6 @@ footer a:hover { text-decoration:underline; }
             <div id="admCampList"></div>
           </div>
 
-          
-          <!-- TESTIMONIALS ADMIN -->
-          <div class="adm-tab" id="atab-testimonials">
-            <div class="a-card" style="margin-bottom:16px">
-              <h4>+ Ajouter un avis</h4>
-              <div class="grid2">
-                <div class="fg"><label>Nom</label><input type="text" class="inp" id="tnName" placeholder="Jean D."></div>
-                <div class="fg"><label>Rôle / Contexte</label><input type="text" class="inp" id="tnRole" placeholder="Client · App mobile"></div>
-              </div>
-              <div class="fg"><label>Avis</label><textarea class="inp" id="tnText" placeholder="Excellent travail..."></textarea></div>
-              <div class="grid2">
-                <div class="fg"><label>Note (1–5)</label><input type="number" class="inp" id="tnStars" min="1" max="5" value="5"></div>
-                <div class="fg"><label>Avatar (emoji)</label><input type="text" class="inp" id="tnEmoji" maxlength="4" placeholder="😊"></div>
-              </div>
-              <button class="btn btn-green btn-sm" onclick="addTesti()">✦ Ajouter</button>
-            </div>
-            <div id="admTestiList"></div>
-          </div>
-
           <!-- MESSAGES -->
           <div class="adm-tab" id="atab-messages">
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
@@ -1254,99 +1142,11 @@ function setSave(s){ const el=$('saveSt'); if(!el)return; const m={saving:'⟳ S
 async function autoSave(fn){ setSave('saving'); try{ await fn(); setSave('saved'); }catch(e){ setSave('ok'); toast('Erreur sauvegarde','error'); } }
 
 /* ══ INIT ══ */
-/* ════ LANG (FR/EN) ════ */
-const T={fr:{'hero.sub':'Jeux, logiciels, sites, musiques, bots — nous développons ce que vous imaginez.'},en:{'hero.sub':'Games, software, sites, music, bots — we build what you imagine, with care.'}};
-let curLang=localStorage.getItem('cw_lang')||'fr';
-function setLang(l){curLang=l;localStorage.setItem('cw_lang',l);document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.id==='lang'+l.toUpperCase()));}
-
-/* ════ PWA ════ */
-function installPWA(){
-  const m={name:'CapWorks Studio',short_name:'CWS',start_url:'/',display:'standalone',background_color:'#06060e',theme_color:'#06060e',icons:[{src:'https://raw.githubusercontent.com/Capky/CapWorks-Studio/main/CWS_Logo.png',sizes:'192x192',type:'image/png'}]};
-  const link=document.createElement('link');link.rel='manifest';link.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/json'}));document.head.appendChild(link);
-  if('serviceWorker' in navigator){const sw=`const C='cw-v4';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['/']))));self.addEventListener('fetch',e=>{if(e.request.url.includes('workers.dev'))return;e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});`;navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).catch(()=>{});}
-}
-
-/* ════ NEWSLETTER ════ */
-async function subscribeNewsletter(){
-  const email=document.getElementById('nlEmail')?.value.trim();
-  const msg=document.getElementById('nlMsg'); if(!msg)return;
-  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){msg.className='nl-msg err';msg.textContent='✕ Email invalide';return;}
-  msg.className='nl-msg';msg.textContent='⟳ Envoi...';
-  try{
-    const res=await fetch('https://api.emailjs.com/api/v1.0/email/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({service_id:'YOUR_SERVICE_ID',template_id:'YOUR_TEMPLATE_ID',user_id:'YOUR_PUBLIC_KEY',template_params:{to_email:'contact@capworks.studio',subscriber_email:email,message:'Nouvel abonné : '+email}})});
-    if(res.ok){msg.className='nl-msg ok';msg.textContent='✓ Abonné ! Merci 🎉';const el=document.getElementById('nlEmail');if(el)el.value='';}
-    else throw new Error();
-  }catch{
-    await apiPost('/api/contact',{name:'Newsletter',email,subject:'newsletter',message:'Abonnement newsletter : '+email});
-    msg.className='nl-msg ok';msg.textContent='✓ Abonné ! Merci 🎉';const el=document.getElementById('nlEmail');if(el)el.value='';
-  }
-}
-
-/* ════ TESTIMONIALS ════ */
-let testimonials=[];
-async function loadTestimonials(){const d=await apiGet('/api/testimonials');testimonials=Array.isArray(d)?d:[];renderTestimonials();}
-function renderTestimonials(){
-  const g=document.getElementById('testiGrid');if(!g)return;
-  if(!testimonials.length){g.innerHTML='<div style="color:var(--txt3);font-size:.78rem;text-align:center;padding:40px;grid-column:1/-1">Aucun avis pour le moment.</div>';return;}
-  g.innerHTML=testimonials.map((t,i)=>`<div class="testi-card" style="animation-delay:${i*.07}s"><div class="testi-stars">${'⭐'.repeat(Math.min(5,parseInt(t.stars)||5))}</div><div class="testi-text">"${esc(t.text||'')}"</div><div class="testi-author"><div class="testi-ava">${t.emoji||'😊'}</div><div><div class="testi-name">${esc(t.name||'—')}</div><div class="testi-role">${esc(t.role||'')}</div></div></div></div>`).join('');
-}
-function renderAdmTestis(){
-  const list=document.getElementById('admTestiList');if(!list)return;
-  if(!testimonials.length){list.innerHTML='<div style="color:var(--txt3);font-size:.75rem;text-align:center;padding:24px">Aucun avis.</div>';return;}
-  list.innerHTML=testimonials.map(t=>`<div class="adm-proj-item"><div class="adm-proj-thumb">${t.emoji||'😊'}</div><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:.82rem">${esc(t.name||'—')} <span style="color:var(--gold)">${'⭐'.repeat(parseInt(t.stars)||5)}</span></div><div style="font-size:.67rem;color:var(--txt3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(t.role||'')} · ${esc((t.text||'').slice(0,50))}</div></div><button class="btn btn-danger btn-sm" onclick="delTesti('${esc(t.id)}')">🗑</button></div>`).join('');
-}
-async function addTesti(){
-  const name=document.getElementById('tnName')?.value.trim(),text=document.getElementById('tnText')?.value.trim();
-  if(!name||!text){toast('Nom et avis requis','error');return;}
-  const t={id:'ti_'+uid(),name,role:document.getElementById('tnRole')?.value.trim()||'',text,stars:parseInt(document.getElementById('tnStars')?.value)||5,emoji:document.getElementById('tnEmoji')?.value.trim()||'😊',createdAt:new Date().toISOString()};
-  await autoSave(()=>apiPut('/api/admin/testimonials',t));
-  testimonials.push(t);['tnName','tnRole','tnText','tnEmoji'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
-  const s=document.getElementById('tnStars');if(s)s.value='5';
-  renderAdmTestis();renderTestimonials();toast('Avis ajouté !');
-}
-async function delTesti(id){
-  if(!confirm('Supprimer ?'))return;testimonials=testimonials.filter(x=>x.id!==id);
-  await autoSave(()=>apiDelete('/api/admin/testimonials',{id}));renderAdmTestis();renderTestimonials();
-}
-
-/* ════ AUDIO PLAYER ════ */
-let galleryState={};
-function parseUrls(str){return(str||'').split('\n').map(s=>s.trim()).filter(Boolean);}
-function fmtT(s){if(!isFinite(s))return'0:00';const m=Math.floor(s/60),ss=Math.floor(s%60);return m+':'+(ss<10?'0':'')+ss;}
-function toggleAudio(aid,e){if(e)e.stopPropagation();const el=document.getElementById(aid+'-el'),btn=document.getElementById(aid+'-btn');if(!el)return;if(el.paused){el.play();btn.textContent='⏸';}else{el.pause();btn.textContent='▶';}}
-function onAudioEnd(aid){const btn=document.getElementById(aid+'-btn');if(btn)btn.textContent='▶';}
-function onAudioTick(aid){const el=document.getElementById(aid+'-el'),bar=document.getElementById(aid+'-bar'),time=document.getElementById(aid+'-time');if(!el||!bar||!time)return;const pct=el.duration?(el.currentTime/el.duration)*100:0;bar.style.width=pct+'%';time.textContent=fmtT(el.currentTime)+' / '+fmtT(el.duration||0);}
-function seekAudio(aid,e){e.stopPropagation();const el=document.getElementById(aid+'-el'),wrap=e.currentTarget;if(!el||!el.duration)return;el.currentTime=((e.clientX-wrap.getBoundingClientRect().left)/wrap.offsetWidth)*el.duration;}
-function buildAudioSection(audios,gId){
-  if(!audios.length)return'';
-  const tracks=audios.map((url,i)=>{const aid=`${gId}-a${i}`;const name=url.split('/').pop().replace(/[?#].*$/,'')||`Piste ${i+1}`;return`<div class="audio-player"><audio id="${aid}-el" src="${esc(url)}" preload="metadata" onended="onAudioEnd('${aid}')" ontimeupdate="onAudioTick('${aid}')" onloadedmetadata="onAudioTick('${aid}')"></audio><button class="audio-play-btn" id="${aid}-btn" onclick="toggleAudio('${aid}',event)">▶</button><div class="audio-info"><div class="audio-name">${esc(name)}</div><div class="audio-progress-wrap" onclick="seekAudio('${aid}',event)"><div class="audio-progress-bar" id="${aid}-bar"></div></div><div class="audio-time" id="${aid}-time">0:00 / 0:00</div></div></div>`;}).join('');
-  return`<div class="audio-section"><div class="audio-section-lbl">🎵 Écouter</div>${tracks}</div>`;
-}
-
-/* ════ MEDIA GALLERY ════ */
-function galShift(gId,dir,e){if(e)e.stopPropagation();const inner=document.getElementById(gId+'-inner');if(!inner)return;const tot=inner.children.length;galleryState[gId]=((galleryState[gId]||0)+dir+tot)%tot;galApply(gId);}
-function galSet(gId,idx,e){if(e)e.stopPropagation();galleryState[gId]=idx;galApply(gId);}
-function galApply(gId){const inner=document.getElementById(gId+'-inner');if(!inner)return;const idx=galleryState[gId]||0;inner.style.transform=`translateX(-${idx*100}%)`;const root=document.getElementById(gId);if(root)root.querySelectorAll('.gallery-dot').forEach((d,i)=>d.classList.toggle('active',i===idx));}
-function buildGallery(slides,gId,stats,csH){
-  if(!slides.length)return'';
-  if(slides.length===1){const s=slides[0];const dlBtn=s.url&&s.type!=='yt'?`<a class="media-dl-btn" href="${esc(s.url)}" download target="_blank" onclick="event.stopPropagation()">⬇ Télécharger</a>`:'';if(s.type==='yt')return`<div class="card-media ratio-16-9" style="cursor:pointer" onclick="openYT('${s.id}',event)"><img src="https://img.youtube.com/vi/${s.id}/mqdefault.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><div style="position:absolute;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center"><div style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center">▶</div></div>${csH}<div class="card-stats">${stats}</div></div>`;return`<div class="card-media ratio-16-9"><img src="${esc(s.url)}" loading="lazy">${dlBtn}${csH}<div class="card-stats">${stats}</div></div>`;}
-  const inner=slides.map((s,i)=>{const dlBtn=s.url&&s.type!=='yt'?`<a class="media-dl-btn" href="${esc(s.url)}" download target="_blank" onclick="event.stopPropagation()">⬇ Télécharger</a>`:'';if(s.type==='yt')return`<div class="media-slide" onclick="openYT('${s.id}',event)" style="cursor:pointer;position:relative"><img src="https://img.youtube.com/vi/${s.id}/mqdefault.jpg" style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center"><div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center">▶</div></div></div>`;return`<div class="media-slide"><img src="${esc(s.url)}" loading="lazy" style="width:100%;height:100%;object-fit:cover">${dlBtn}</div>`;}).join('');
-  const dots=slides.map((_,i)=>`<div class="gallery-dot${i===0?' active':''}" onclick="galSet('${gId}',${i},event)"></div>`).join('');
-  return`<div class="media-gallery ratio-16-9" id="${gId}"><div class="media-gallery-inner" id="${gId}-inner">${inner}</div><button class="gallery-arrow gl" onclick="galShift('${gId}',-1,event)">◀</button><button class="gallery-arrow gr" onclick="galShift('${gId}',1,event)">▶</button><div class="gallery-nav">${dots}</div>${csH}<div class="card-stats" style="bottom:30px">${stats}</div></div>`;
-}
-
-/* ════ CHANGELOG EDITOR ════ */
-function addClItem(){const ed=document.getElementById('clEditor');if(!ed)return;const row=document.createElement('div');row.className='cl-row';row.innerHTML=`<input type="text" class="inp cl-item" placeholder="Nouveauté..."><button class="btn btn-danger btn-sm" onclick="this.closest('.cl-row').remove()">✕</button>`;ed.appendChild(row);}
-function buildChangelogEditor(changelog){const items=Array.isArray(changelog)?changelog:[];return items.map(c=>`<div class="cl-row"><input type="text" class="inp cl-item" value="${esc(c)}" placeholder="Nouveauté..."><button class="btn btn-danger btn-sm" onclick="this.closest('.cl-row').remove()">✕</button></div>`).join('');}
-
-/* ════ INIT ════ */
 async function initApp(){
-  installPWA();
-  setLang(curLang);
   setFbPill('loading','⟳ ...');
   updateHdr(); renderSup();
   if(curUser){ setOnline(true); await loadMe(); updateHdr(); }
-  await Promise.all([loadSvcs(), loadTeam(), loadProjs(), loadCampaigns(), loadTestimonials()]);
+  await Promise.all([loadSvcs(), loadTeam(), loadProjs(), loadCampaigns()]);
   updateAboutStats();
   setFbPill('ok','✓ API');
 }
@@ -1455,47 +1255,24 @@ function renderProjs(){
   if(projQ) $('searchCount').textContent=tot===0?'Aucun résultat':`${tot} projet${tot>1?'s':''} trouvé${tot>1?'s':''}`;
 }
 
-function ytId(url){const m=(url||'').match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([^&?/\s]+)/);return m?m[1]:'';}
-function openYT(vid,e){e.stopPropagation();const ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;cursor:pointer';ov.innerHTML=`<div style="width:100%;max-width:860px;position:relative;cursor:default"><button onclick="this.closest('div[style*=fixed]').remove()" style="position:absolute;top:-38px;right:0;background:none;border:1px solid rgba(255,255,255,.2);color:#fff;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:.78rem">✕ Fermer</button><div style="padding-top:56.25%;position:relative"><iframe src="https://www.youtube.com/embed/${vid}?autoplay=1&rel=0" allow="autoplay;encrypted-media" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:none;border-radius:var(--r2)"></iframe></div></div>`;ov.addEventListener('click',ev=>{if(ev.target===ov)ov.remove();});document.body.appendChild(ov);}
-
-function buildSlides(p){
-  const imgs=parseUrls(p.imageUrls||p.imageUrl||'');
-  const vids=parseUrls(p.videoUrls||p.videoUrl||'');
-  const slides=[];
-  imgs.forEach(u=>slides.push({type:'image',url:u}));
-  vids.forEach(u=>{const id=ytId(u);if(id)slides.push({type:'yt',id});else if(u)slides.push({type:'video',url:u});});
-  return slides;
-}
-
 function buildCard(cat,p,idx){
   const card=document.createElement('div'); card.className='proj-card'; card.style.animationDelay=`${idx*.05}s`;
   const liked=likes[cat+':'+p.id]||likes[p.id];
   const m=CAT_META[cat];
-  const slides=buildSlides(p);
-  const audios=parseUrls(p.audioUrls||'');
-  const gId='g'+p.id.replace(/[^a-z0-9]/gi,'')+'_'+idx;
-  const stats=`${(p.views||0)>0?`<span class="stat-chip">\xf0\x9f\x91\x81 ${fmt(p.views)}</span>`:''}${(p.likes||0)>0?`<span class="stat-chip">\xe2\x9d\xa4 ${fmt(p.likes)}</span>`:''}`;
-  const csH=p.comingSoon?`<div style="position:absolute;top:8px;left:8px;z-index:4;font-size:.58rem;font-weight:700;background:rgba(253,203,110,.18);color:var(--gold);border:1px solid rgba(253,203,110,.45);padding:3px 9px;border-radius:99px">\xf0\x9f\x9a\x80 COMING SOON</div>`:'';
+  const img=parseUrls(p.imageUrls||p.imageUrl||'')[0]||'';
+  const stats=`${(p.views||0)>0?`<span class="stat-chip">👁 ${fmt(p.views)}</span>`:''}${(p.likes||0)>0?`<span class="stat-chip">❤ ${fmt(p.likes)}</span>`:''}`;
   let mediaH='';
-  if(cat==='music'&&!slides.length){
-    mediaH=`<div class="card-media compact" style="background:linear-gradient(135deg,rgba(232,67,147,.12),rgba(108,92,231,.1))"><div class="no-media-icon" style="font-size:2.6rem">\xf0\x9f\x8e\xb5</div>${csH}<div class="card-stats">${stats}</div></div>`;
-  } else if(slides.length){
-    mediaH=buildGallery(slides,gId,stats,csH);
-  } else {
-    mediaH=`<div class="card-media compact"><div class="no-media-icon">${m.icon}</div>${csH}<div class="card-stats">${stats}</div></div>`;
-  }
+  if(img){ mediaH=`<div class="card-media ratio-16-9"><img src="${esc(img)}" loading="lazy"><div class="card-media-overlay"></div><div class="card-stats">${stats}</div></div>`; }
+  else { mediaH=`<div class="card-media compact"><div class="no-media-icon">${m.icon}</div><div class="card-stats">${stats}</div></div>`; }
   const tags=((p.tags||'').split(',').map(t=>t.trim()).filter(Boolean)).map(t=>`<span class="card-tag">${esc(t)}</span>`).join('');
   const tech=((p.tech||'').split(',').map(t=>t.trim()).filter(Boolean)).map(t=>`<span class="card-tag tech">${esc(t)}</span>`).join('');
-  const vBadge=p.version?`<div class="card-version">\xf0\x9f\x93\xa6 v${esc(p.version)}</div>`:'';
   let acts='';
-  if(p.downloadUrl) acts+=`<a class="btn btn-green btn-sm" href="${esc(p.downloadUrl)}" target="_blank" onclick="event.stopPropagation()">\xe2\xac\x87</a>`;
-  if(p.url) acts+=`<a class="btn btn-cyan btn-sm" href="${esc(p.url)}" target="_blank" onclick="event.stopPropagation()">\xf0\x9f\x94\x97</a>`;
+  if(p.downloadUrl) acts+=`<a class="btn btn-green btn-sm" href="${esc(p.downloadUrl)}" target="_blank" onclick="event.stopPropagation()">⬇</a>`;
+  if(p.url) acts+=`<a class="btn btn-cyan btn-sm" href="${esc(p.url)}" target="_blank" onclick="event.stopPropagation()">🔗</a>`;
   if(p.inviteUrl) acts+=`<a class="btn btn-primary btn-sm" href="${esc(p.inviteUrl)}" target="_blank" onclick="event.stopPropagation()">+ Inviter</a>`;
   if(p.demoUrl) acts+=`<a class="btn btn-primary btn-sm" href="${esc(p.demoUrl)}" target="_blank" onclick="event.stopPropagation()">Demo</a>`;
-  const audioH=buildAudioSection(audios,gId);
-  card.innerHTML=`${mediaH}${audioH}<div class="card-body"><div class="card-tags">${tags}${tech}</div>${vBadge}<div class="card-title">${esc(p.title||'Sans titre')}</div><div class="card-desc">${esc(p.desc||'')}</div><div class="card-footer"><div class="card-actions">${acts}</div><button class="like-btn${liked?' liked':''}" onclick="toggleLike('${cat}','${esc(p.id)}',this);event.stopPropagation()">\xe2\x9d\xa4 ${p.likes||0}</button></div></div>`;
-  if(p.highlightOn&&p.highlight){const hl=document.createElement('div');hl.className='proj-highlight';hl.textContent=p.highlight;hl.addEventListener('click',e=>e.stopPropagation());card.appendChild(hl);}
-  card.addEventListener('click',e=>{if(e.target.closest('a,button,.audio-play-btn,.audio-progress-wrap,.gallery-arrow,.gallery-dot'))return;openProjDetail(cat,p);});
+  card.innerHTML=`${mediaH}<div class="card-body"><div class="card-tags">${tags}${tech}</div><div class="card-title">${esc(p.title||'Sans titre')}</div><div class="card-desc">${esc(p.desc||'')}</div><div class="card-footer"><div class="card-actions">${acts}</div><button class="like-btn${liked?' liked':''}" onclick="toggleLike('${cat}','${esc(p.id)}',this);event.stopPropagation()">❤ ${p.likes||0}</button></div></div>`;
+  card.addEventListener('click',e=>{if(e.target.closest('a,button'))return;openProjDetail(cat,p);});
   return card;
 }
 function parseUrls(str){ return (str||'').split('\n').map(s=>s.trim()).filter(Boolean); }
@@ -1528,11 +1305,7 @@ function openProjDetail(cat,p){
   if(p.demoUrl) acts+=`<a class="btn btn-primary" href="${esc(p.demoUrl)}" target="_blank">🔗 Demo</a>`;
   if(p.repoUrl) acts+=`<a class="btn btn-ghost" href="${esc(p.repoUrl)}" target="_blank">⎇ Code</a>`;
   acts+=`<button class="like-btn${(likes[cat+':'+p.id]||likes[p.id])?' liked':''}" onclick="toggleLike('${cat}','${esc(p.id)}',this)" style="margin-left:auto">❤ ${p.likes||0}</button>`;
-  const clItems=Array.isArray(p.changelog)?p.changelog:[];
-  const pluralS=(p.changelogPlural!==false&&clItems.length!==1)?'S':'';
-  const changelogH=p.version?`<div class="version-block"><div class="version-block-header"><span class="version-label">VERSION</span><span class="version-num">${esc(p.version)}</span></div>${clItems.length?`<div class="changelog-title">NOUVEAUTÉ${pluralS}</div><ul class="changelog-list">${clItems.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>`:''}</div>`:'';
-  const detAudioH=buildAudioSection(parseUrls(p.audioUrls||''),'det'+p.id.replace(/[^a-z0-9]/gi,''));
-  $('projDetail').innerHTML=`${mediaEl}<div class="proj-detail-bd"><div class="card-tags" style="margin-bottom:9px">${tags}${tech}</div><div class="proj-detail-title">${esc(p.title||'Sans titre')}</div><div class="proj-detail-desc">${esc(p.desc||'')}</div>${p.longDesc?`<div style="color:var(--txt2);font-size:.82rem;line-height:1.85;margin-bottom:18px;white-space:pre-wrap">${esc(p.longDesc)}</div>`:''} ${changelogH}<div class="proj-meta-grid" style="margin-bottom:18px">${meta}</div><div class="proj-detail-actions">${acts}</div></div>${detAudioH}`;
+  $('projDetail').innerHTML=`${mediaEl}<div class="proj-detail-bd"><div class="card-tags" style="margin-bottom:9px">${tags}${tech}</div><div class="proj-detail-title">${esc(p.title||'Sans titre')}</div><div class="proj-detail-desc">${esc(p.desc||'')}</div>${p.longDesc?`<div style="color:var(--txt2);font-size:.82rem;line-height:1.85;margin-bottom:18px;white-space:pre-wrap">${esc(p.longDesc)}</div>`:''}<div class="proj-meta-grid" style="margin-bottom:18px">${meta}</div><div class="proj-detail-actions">${acts}</div></div>`;
   $('projOv').classList.add('open');
 }
 function mi(lbl,val){ return `<div class="proj-meta-item"><div class="proj-meta-lbl">${lbl}</div><div class="proj-meta-val">${esc(String(val))}</div></div>`; }
@@ -1804,11 +1577,10 @@ function admTab(name){
   const tab=$('atab-'+name); if(tab)tab.classList.add('active');
   if(name==='messages')renderAdmMessages();
   if(name==='campaigns')renderAdmCampaigns();
-  if(name==='testimonials')renderAdmTestis();
   if(name==='stats')refreshAdmStats();
 }
-async function reloadAll(){ await Promise.all([loadSvcs(),loadTeam(),loadProjs(),loadCampaigns(),loadTestimonials(),loadUsers(),loadTickets()]); loadContactMsgs(); renderAdmAll(); toast('Rechargé !'); }
-function renderAdmAll(){ renderAdmSvcs(); renderAdmPp(); renderAdmProjs(); renderAdmUsers(); renderAdmTickets(); renderAdmTeam(); renderAdmCampaigns(); renderAdmTestis(); }
+async function reloadAll(){ await Promise.all([loadSvcs(),loadTeam(),loadProjs(),loadCampaigns(),loadUsers(),loadTickets()]); loadContactMsgs(); renderAdmAll(); toast('Rechargé !'); }
+function renderAdmAll(){ renderAdmSvcs(); renderAdmPp(); renderAdmProjs(); renderAdmUsers(); renderAdmTickets(); renderAdmTeam(); renderAdmCampaigns(); }
 
 /* Admin services */
 function renderAdmSvcs(){
@@ -1879,31 +1651,15 @@ function openProjForm(id,cat){
     <div class="grid2"><div class="fg"><label>Lien principal</label><input type="url" class="inp" id="pfUrl" value="${esc(p.url||'')}"></div><div class="fg"><label>GitHub</label><input type="url" class="inp" id="pfRepo" value="${esc(p.repoUrl||'')}"></div></div>
     <div class="grid2"><div class="fg"><label>Téléchargement</label><input type="url" class="inp" id="pfDl" value="${esc(p.downloadUrl||'')}"></div><div class="fg"><label>Demo / Play</label><input type="url" class="inp" id="pfDemo" value="${esc(p.demoUrl||'')}"></div></div>
     <div class="grid2"><div class="fg"><label>Invitation (bots)</label><input type="url" class="inp" id="pfInvite" value="${esc(p.inviteUrl||'')}"></div><div class="fg"><label>Plateformes</label><input type="text" class="inp" id="pfPlatforms" value="${esc(p.platforms||'')}"></div></div>
-    <div class="media-zone pink"><div class="media-zone-title">ðµ Audio — URL par ligne (MP3, OGG…)</div><textarea class="inp" id="pfAudios" style="min-height:50px" placeholder="https://exemple.com/track.mp3">${esc(p.audioUrls||'')}</textarea></div>
-    <div style="background:rgba(108,92,231,.06);border:1px solid rgba(108,92,231,.2);border-radius:var(--r);padding:14px;margin-bottom:13px">
-      <div style="font-size:.68rem;font-weight:700;color:var(--accent);margin-bottom:12px;letter-spacing:1px;text-transform:uppercase">ð¦ VERSION &amp; NOUVEAUTÉS</div>
-      <div class="grid2">
-        <div class="fg"><label>Version</label><input type="text" class="inp" id="pfVersion" value="${esc(p.version||'')}" placeholder="2.9"></div>
-        <div class="fg"><label>Le “S” de Nouveauté</label><label style="display:flex;align-items:center;gap:7px;margin-top:8px;cursor:pointer"><button class="tog-btn${p.changelogPlural!==false?' on':''}" id="pfClPlural" onclick="this.classList.toggle('on')"></button><span style="font-size:.78rem;color:var(--txt2)">NOUVEAUTÉ<b>S</b></span></label></div>
-      </div>
-      <div class="fg"><label>Nouveautés</label><div id="clEditor">${buildChangelogEditor(p.changelog)}</div><button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="addClItem()">+ Ajouter</button></div>
-    </div>
-    <div style="background:rgba(253,203,110,.06);border:1px solid rgba(253,203,110,.25);border-radius:var(--r);padding:13px;margin-bottom:12px">
-      <div style="font-size:.7rem;font-weight:700;color:var(--gold);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase">ð¬ PHRASE MISE EN AVANT</div>
-      <div class="fg"><label>Activer la bulle</label><label style="display:flex;align-items:center;gap:7px;margin-top:4px;cursor:pointer"><button class="tog-btn${p.highlightOn?' on':''}" id="pfHighlightOn" onclick="this.classList.toggle('on')"></button><span style="font-size:.8rem;color:var(--txt2)">Afficher une phrase flottante</span></label></div>
-      <div class="fg"><label>Phrase</label><input type="text" class="inp" id="pfHighlight" value="${esc(p.highlight||'')}" placeholder="Notre fierté du moment !" maxlength="120"></div>
-    </div>
-    <div class="fg"><label>Masquer le projet</label><label style="display:flex;align-items:center;gap:7px;cursor:pointer"><button class="tog-btn${p.hidden?' on':''}" id="pfHidden" onclick="this.classList.toggle('on')"></button><span style="font-size:.76rem;color:var(--txt2)">Ne pas afficher sur le site</span></label></div>`;
+    <div class="grid2"><div class="fg"><label>Version</label><input type="text" class="inp" id="pfVersion" value="${esc(p.version||'')}"></div><div class="fg"><label>Modèle IA</label><input type="text" class="inp" id="pfModel" value="${esc(p.model||'')}"></div></div>
+    <div class="fg"><label>Masquer</label><label style="display:flex;align-items:center;gap:7px;margin-top:4px;cursor:pointer"><button class="tog-btn${p.hidden?' on':''}" id="pfHidden" onclick="this.classList.toggle('on')"></button><span style="font-size:.8rem;color:var(--txt2)">Ne pas afficher sur le site</span></label></div>`;
   $('projFormOv').classList.add('open');
 }
 async function saveProj(){
   const isEdit=!!editProjId; const cat=isEdit?editProjCat:$('pfCat').value;
   const title=$('pfTitle').value.trim(); if(!title){toast('Entrez un titre','error');return;}
   const imgRaw=$('pfImgs').value.trim(); const vidRaw=$('pfVideos').value.trim();
-  const clItems=Array.from(document.querySelectorAll('.cl-item')).map(el=>el.value.trim()).filter(Boolean);
-  const clPlural=document.getElementById('pfClPlural')?.classList.contains('on')!==false;
-  const version=(document.getElementById('pfVersion')?.value||'').trim();
-  const data={title,desc:$('pfDesc').value.trim(),longDesc:$('pfLong').value.trim(),tags:$('pfTags').value.trim(),tech:$('pfTech').value.trim(),imageUrls:imgRaw,videoUrls:vidRaw,audioUrls:(document.getElementById('pfAudios')?.value||'').trim(),imageUrl:parseUrls(imgRaw)[0]||'',videoUrl:parseUrls(vidRaw)[0]||'',url:$('pfUrl')?.value.trim()||'',repoUrl:$('pfRepo')?.value.trim()||'',downloadUrl:$('pfDl')?.value.trim()||'',demoUrl:$('pfDemo')?.value.trim()||'',inviteUrl:$('pfInvite')?.value.trim()||'',platforms:$('pfPlatforms')?.value.trim()||'',version,model:$('pfModel')?.value.trim()||'',changelog:clItems,changelogPlural:clPlural,highlight:$('pfHighlight')?.value.trim()||'',highlightOn:$('pfHighlightOn')?.classList.contains('on')||false,hidden:$('pfHidden').classList.contains('on')};
+  const data={title,desc:$('pfDesc').value.trim(),longDesc:$('pfLong').value.trim(),tags:$('pfTags').value.trim(),tech:$('pfTech').value.trim(),imageUrls:imgRaw,videoUrls:vidRaw,imageUrl:parseUrls(imgRaw)[0]||'',videoUrl:parseUrls(vidRaw)[0]||'',url:$('pfUrl').value.trim(),repoUrl:$('pfRepo').value.trim(),downloadUrl:$('pfDl').value.trim(),demoUrl:$('pfDemo').value.trim(),inviteUrl:$('pfInvite').value.trim(),platforms:$('pfPlatforms').value.trim(),version:$('pfVersion').value.trim(),model:$('pfModel').value.trim(),hidden:$('pfHidden').classList.contains('on')};
   const existing=(projData[cat]||[]).find(x=>x.id===editProjId)||{};
   const id=editProjId||'p_'+uid();
   const fullData={...data,id,likes:existing.likes||0,views:existing.views||0,downloads:existing.downloads||0,createdAt:existing.createdAt||new Date().toISOString()};
@@ -1956,13 +1712,36 @@ function openCampForm(id){
   $('campFormOv').classList.add('open');
 }
 async function saveCampaign(){
-  const title=$('cfTitle').value.trim(); if(!title){toast('Titre requis','error');return;}
+  const title=$('cfTitle')?.value.trim();
+  if(!title){toast('Titre requis','error');return;}
   const id=editCampId||'camp_'+uid();
   const existing=editCampId?campaigns.find(x=>x.id===editCampId)||{}:{};
-  const data={id,title,desc:$('cfDesc').value.trim(),image:$('cfImage').value.trim(),goal:parseFloat($('cfGoal').value)||0,raised:parseFloat($('cfRaised').value)||0,minAmount:parseInt($('cfMin').value)||1,maxAmount:parseInt($('cfMax').value)||500,paypalLink:$('cfPaypal').value.trim(),stripeLink:$('cfStripe').value.trim(),active:$('cfActive').classList.contains('on'),featured:$('cfFeatured').classList.contains('on'),createdAt:existing.createdAt||new Date().toISOString()};
+  const data={
+    id, title,
+    desc:$('cfDesc')?.value.trim()||'',
+    image:$('cfImage')?.value.trim()||'',
+    goal:parseFloat($('cfGoal')?.value)||0,
+    raised:parseFloat($('cfRaised')?.value)||0,
+    minAmount:parseInt($('cfMin')?.value)||1,
+    maxAmount:parseInt($('cfMax')?.value)||500,
+    paypalLink:$('cfPaypal')?.value.trim()||'',
+    stripeLink:$('cfStripe')?.value.trim()||'',
+    active:document.getElementById('cfActive')?.classList.contains('on')??false,
+    featured:document.getElementById('cfFeatured')?.classList.contains('on')??false,
+    createdAt:existing.createdAt||new Date().toISOString()
+  };
   await autoSave(()=>apiPut('/api/admin/campaigns',data));
-  if(editCampId){const idx=campaigns.findIndex(x=>x.id===editCampId);if(idx>-1)campaigns[idx]=data;else campaigns.push(data);}else campaigns.push(data);
-  closeOv('campFormOv'); renderAdmCampaigns(); renderCampaigns(); toast(editCampId?'Campagne mise à jour !':'Campagne créée !'); editCampId=null;
+  if(editCampId){
+    const idx=campaigns.findIndex(x=>x.id===editCampId);
+    if(idx>-1)campaigns[idx]=data; else campaigns.push(data);
+  } else {
+    campaigns.push(data);
+  }
+  closeOv('campFormOv');
+  renderAdmCampaigns();
+  renderCampaigns();
+  toast(editCampId?'Campagne mise à jour !':'Campagne créée !');
+  editCampId=null;
 }
 async function delCampaign(id){ if(!confirm('Supprimer cette campagne ?'))return; campaigns=campaigns.filter(x=>x.id!==id); await autoSave(()=>apiDelete('/api/admin/campaigns',{id})); renderAdmCampaigns(); renderCampaigns(); toast('Campagne supprimée'); }
 async function toggleCampFeatured(id,btn){ const c=campaigns.find(x=>x.id===id); if(!c)return; c.featured=!c.featured; btn.classList.toggle('on',c.featured); await autoSave(()=>apiPut('/api/admin/campaigns',c)); renderCampaigns(); }
