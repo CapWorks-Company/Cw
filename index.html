@@ -194,12 +194,40 @@ body::before{
 
 /* Bouton désactivé */
 .enter-btn.disabled{
-    opacity:.55;
+    opacity:.7;
     cursor:not-allowed;
     pointer-events:none;
     border-color:#666;
-    color:#888;
-    box-shadow:none;
+    color:#cfcfcf;
+    background:rgba(255,255,255,.04);
+    box-shadow:0 0 10px #ffffff22;
+    position:relative;
+    overflow:hidden;
+    letter-spacing:2px;
+    text-transform:uppercase;
+}
+
+/* effet "scan futuriste" discret */
+.enter-btn.disabled::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-60%;
+    width:40%;
+    height:100%;
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.25),
+        transparent
+    );
+    transform:skewX(-20deg);
+    animation:scan 2.5s infinite;
+}
+
+@keyframes scan{
+    0%{left:-60%}
+    100%{left:140%}
 }
 
 .enter-btn.disabled:hover{
