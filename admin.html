@@ -9,7 +9,7 @@
 
 <script type="module">
   import { initializeApp }    from 'https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js';
-  import { getFirestore, collection, doc, getDocs, getDoc, setDoc, addDoc, updateDoc, deleteDoc, increment }
+  import { getFirestore, collection, doc, getDocs, getDoc, setDoc, addDoc, updateDoc, deleteDoc, increment, onSnapshot }
     from 'https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js';
   const firebaseConfig = {
     apiKey:            "AIzaSyAJOq0GjS7g75RPyL5WsqKogXp9K1Qja7M",
@@ -24,7 +24,7 @@
   const app = initializeApp(firebaseConfig);
   const db  = getFirestore(app);
   window.__db = db;
-  window.__firebase = { collection, doc, getDocs, getDoc, setDoc, addDoc, updateDoc, deleteDoc, increment };
+  window.__firebase = { collection, doc, getDocs, getDoc, setDoc, addDoc, updateDoc, deleteDoc, increment, onSnapshot };
   window.__firebaseReady = true;
   document.dispatchEvent(new Event('firebase-ready'));
 </script>
@@ -313,6 +313,7 @@ async function loadTeam(){ const d=await apiGet('/api/team'); team=Array.isArray
 
 /* ══ VIEW ROUTER ══ */
 function switchView(view){
+  if(view!=='users' && _usersUnsub){ _usersUnsub(); _usersUnsub=null; }
   activeView=view;
   document.querySelectorAll('.side-link').forEach(l=>l.classList.toggle('active',l.dataset.view===view));
   const c=$('content');
@@ -597,28 +598,52 @@ async function deleteTeam(id){
 }
 
 /* ══════════════ UTILISATEURS ══════════════ */
+const USER_ROLE_LBL={user:'Utilisateur',mod:'Modérateur',owner:'Administrateur'};
+const USER_ROLE_BADGE={user:'',mod:'<span class="item-badge" style="background:rgba(0,206,201,.12);color:var(--cyan);border:1px solid rgba(0,206,201,.3)">Modérateur</span>',owner:'<span class="item-badge" style="background:rgba(253,203,110,.12);color:var(--gold);border:1px solid rgba(253,203,110,.3)">Administrateur</span>'};
+let _usersUnsub=null;
 async function renderUsersView(c){
-  c.innerHTML=`<h2>🙂 Utilisateurs</h2><div class="sub">Comptes inscrits sur le site.</div><div id="usersList">Chargement...</div>`;
+  if(_usersUnsub){ _usersUnsub(); _usersUnsub=null; }
+  c.innerHTML=`<h2>🙂 Utilisateurs</h2><div class="sub">Comptes inscrits sur le site — le statut en ligne est mis à jour en temps réel.</div><div id="usersList">Chargement...</div>`;
   const users=await apiGet('/api/admin/users');
   if(users.error){ $('usersList').innerHTML=`<div class="empty-hint">Erreur : ${esc(users.error)}</div>`; return; }
   if(!users.length){ $('usersList').innerHTML='<div class="empty-hint">Aucun utilisateur.</div>'; return; }
   $('usersList').innerHTML=users.map(u=>`
-    <div class="item-row">
-      <div class="item-thumb">${u.emoji||'👤'}</div>
+    <div class="item-row" data-username="${esc(u.username)}">
+      <div class="item-thumb" style="position:relative">${u.emoji||'👤'}<span class="online-dot" style="position:absolute;bottom:-2px;right:-2px;width:11px;height:11px;border-radius:50%;border:2px solid var(--surf);background:${u.online?'var(--grn)':'var(--txt3)'};box-shadow:${u.online?'0 0 6px var(--grn)':'none'}"></span></div>
       <div class="item-main">
-        <div class="item-title">${esc(u.username)}${u.online?'<span class="item-badge hl">En ligne</span>':''}</div>
-        <div class="item-meta">${esc(u.email||'—')} · ${u.role||'user'}</div>
+        <div class="item-title">${esc(u.username)}<span class="online-label" style="font-size:.66rem;font-weight:600;color:${u.online?'var(--grn)':'var(--txt3)'}">${u.online?'● En ligne':'○ Hors ligne'}</span>${USER_ROLE_BADGE[u.role]||''}</div>
+        <div class="item-meta">${esc(u.email||'—')} · ${USER_ROLE_LBL[u.role]||u.role||'Utilisateur'}</div>
       </div>
       <div class="item-actions">
         <select class="inp" style="width:auto;padding:5px 8px;font-size:.72rem" onchange="changeUserRole('${esc(u.username)}',this.value)">
-          <option value="user"${u.role==='user'?' selected':''}>user</option>
-          <option value="mod"${u.role==='mod'?' selected':''}>mod</option>
-          <option value="owner"${u.role==='owner'?' selected':''}>owner</option>
+          <option value="user"${u.role==='user'?' selected':''}>Utilisateur</option>
+          <option value="mod"${u.role==='mod'?' selected':''}>Modérateur</option>
+          <option value="owner"${u.role==='owner'?' selected':''}>Administrateur</option>
         </select>
         <button class="btn btn-danger btn-sm" onclick="deleteUser('${esc(u.username)}')">🗑</button>
       </div>
     </div>`).join('');
+
+  // Style fix for the inline title layout
+  $('usersList').querySelectorAll('.item-title').forEach(el=>{ el.style.display='flex'; el.style.alignItems='center'; el.style.gap='8px'; });
+
+  // Realtime online status via Firestore (cw_users collection)
+  if(db && FB){
+    try{
+      _usersUnsub=FB.onSnapshot ? FB.onSnapshot(FB.collection(db,'cw_users'),snap=>{
+        snap.forEach(d=>{
+          const data=d.data(); const row=document.querySelector(`.item-row[data-username="${cssEsc(d.id)}"]`);
+          if(!row)return;
+          const dot=row.querySelector('.online-dot'), lbl=row.querySelector('.online-label');
+          const on=!!data.online;
+          if(dot){ dot.style.background=on?'var(--grn)':'var(--txt3)'; dot.style.boxShadow=on?'0 0 6px var(--grn)':'none'; }
+          if(lbl){ lbl.style.color=on?'var(--grn)':'var(--txt3)'; lbl.textContent=on?'● En ligne':'○ Hors ligne'; }
+        });
+      }) : null;
+    }catch(e){ console.warn('Realtime status indisponible :',e.message); }
+  }
 }
+function cssEsc(s){ return CSS.escape(String(s)); }
 async function changeUserRole(username,role){
   const res=await apiPost('/api/admin/users/role',{username,role});
   if(res.error){ toast('Erreur : '+res.error,'error'); return; }
