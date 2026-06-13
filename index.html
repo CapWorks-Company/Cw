@@ -2,144 +2,322 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CapWorks</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
 body{
-height:100vh;overflow:hidden;background:#050816;
-display:grid;place-items:center;position:relative
+    height:100vh;
+    overflow:hidden;
+    background:#050816;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
 }
-body:before{
-content:"";position:absolute;inset:-50%;
-background:
-radial-gradient(circle at 20% 30%,#0ff2,transparent 20%),
-radial-gradient(circle at 80% 70%,#f0f2,transparent 20%),
-radial-gradient(circle at 50% 50%,#06f2,transparent 30%);
-animation:spin 15s linear infinite
-}
-@keyframes spin{to{transform:rotate(360deg)}}
 
+/* Fond animé */
+body::before{
+    content:"";
+    position:absolute;
+    width:200%;
+    height:200%;
+    background:
+        radial-gradient(circle at 20% 30%, #00ffff22, transparent 20%),
+        radial-gradient(circle at 80% 70%, #ff00ff22, transparent 20%),
+        radial-gradient(circle at 50% 50%, #0066ff22, transparent 30%);
+    animation:bgMove 15s linear infinite;
+}
+
+@keyframes bgMove{
+    from{transform:rotate(0deg);}
+    to{transform:rotate(360deg);}
+}
+
+/* Lignes néon */
 .line{
-position:absolute;width:2px;height:250px;
-background:linear-gradient(transparent,#0ff,transparent);
-animation:fall linear infinite
-}
-@keyframes fall{
-from{transform:translateY(-300px);opacity:0}
-30%{opacity:1}
-to{transform:translateY(calc(100vh + 300px));opacity:0}
+    position:absolute;
+    width:2px;
+    height:250px;
+    background:linear-gradient(transparent,#00ffff,transparent);
+    filter:blur(1px);
+    animation:fall linear infinite;
 }
 
-.glow{
-position:absolute;width:500px;height:500px;
-border-radius:50%;filter:blur(120px)
+@keyframes fall{
+    from{
+        transform:translateY(-300px);
+        opacity:0;
+    }
+    30%{
+        opacity:1;
+    }
+    to{
+        transform:translateY(calc(100vh + 300px));
+        opacity:0;
+    }
 }
-.glow:first-child{background:#0ff2;left:-150px;top:-150px}
-.glow:nth-child(2){background:#f0f2;right:-150px;bottom:-150px}
 
 .container{
-position:relative;z-index:1;text-align:center;padding:20px
+    position:relative;
+    z-index:10;
+    text-align:center;
+    padding:20px;
 }
 
+/* Logo */
 .logo{
-font-size:7rem;font-weight:900;letter-spacing:8px;
-background:linear-gradient(90deg,#0ff,#0af,#f0f,#0ff);
-background-size:300%;
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-animation:shine 5s linear infinite,float 4s ease-in-out infinite
+    font-size:7rem;
+    font-weight:900;
+    letter-spacing:8px;
+    text-transform:uppercase;
+
+    background:linear-gradient(
+        90deg,
+        #00ffff,
+        #00aaff,
+        #ff00ff,
+        #00ffff
+    );
+
+    background-size:300% auto;
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+
+    animation:
+        shine 5s linear infinite,
+        float 4s ease-in-out infinite;
 }
-@keyframes shine{to{background-position:300%}}
-@keyframes float{50%{transform:translateY(-10px)}}
+
+@keyframes shine{
+    from{background-position:0% center;}
+    to{background-position:300% center;}
+}
+
+@keyframes float{
+    0%,100%{
+        transform:translateY(0px);
+    }
+    50%{
+        transform:translateY(-10px);
+    }
+}
 
 .subtitle{
-color:#b6c5ff;letter-spacing:6px;
-margin:15px 0 60px;font-size:1rem
+    color:#b6c5ff;
+    letter-spacing:6px;
+    margin-top:15px;
+    margin-bottom:60px;
+    font-size:1rem;
 }
 
-.notice{
-margin-bottom:20px;color:#ffd166;
-line-height:1.6;text-shadow:0 0 10px #ffd166;
-animation:pulse 2s infinite
+/* Message maintenance */
+.maintenance-notice{
+    margin-bottom:20px;
+    color:#ffd166;
+    font-size:1rem;
+    line-height:1.6;
+    text-shadow:
+        0 0 10px rgba(255,209,102,.8);
+    animation:pulseNotice 2s ease-in-out infinite;
 }
-@keyframes pulse{50%{opacity:1}0%,100%{opacity:.7}}
 
-.btn{
-display:inline-block;padding:18px 42px;
-border:2px solid #0ff;border-radius:60px;
-color:#fff;text-decoration:none;
-background:#ffffff08;backdrop-filter:blur(10px);
-box-shadow:0 0 15px #0ff,0 0 35px #0ff5;
-transition:.35s;position:relative;overflow:hidden
+@keyframes pulseNotice{
+    0%,100%{
+        opacity:.7;
+    }
+    50%{
+        opacity:1;
+    }
 }
-.btn:before{
-content:"";position:absolute;inset:0;
-left:-120%;
-background:linear-gradient(90deg,transparent,#fff9,transparent);
-transition:.6s
+
+/* Bouton */
+.enter-btn{
+    position:relative;
+    display:inline-block;
+    padding:18px 42px;
+    color:white;
+    text-decoration:none;
+    font-size:1.15rem;
+    letter-spacing:1px;
+
+    border:2px solid #00ffff;
+    border-radius:60px;
+
+    overflow:hidden;
+
+    background:rgba(255,255,255,.03);
+    backdrop-filter:blur(10px);
+
+    box-shadow:
+        0 0 15px #00ffff,
+        0 0 35px #00ffff55;
+
+    transition:.35s;
 }
-.btn:hover:before{left:120%}
-.btn:hover{
-transform:translateY(-4px) scale(1.05);
-box-shadow:0 0 25px #0ff,0 0 60px #0ff,0 0 100px #0ff
+
+.enter-btn::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-120%;
+    width:100%;
+    height:100%;
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.6),
+        transparent
+    );
+    transition:.6s;
 }
-.disabled{
-pointer-events:none;opacity:.55;
-border-color:#666;color:#888;box-shadow:none
+
+.enter-btn:hover::before{
+    left:120%;
+}
+
+.enter-btn:hover{
+    transform:translateY(-4px) scale(1.05);
+    box-shadow:
+        0 0 25px #00ffff,
+        0 0 60px #00ffff,
+        0 0 100px #00ffff;
+}
+
+/* Bouton désactivé */
+.enter-btn.disabled{
+    opacity:.55;
+    cursor:not-allowed;
+    pointer-events:none;
+    border-color:#666;
+    color:#888;
+    box-shadow:none;
+}
+
+.enter-btn.disabled:hover{
+    transform:none;
+}
+
+/* Effets lumineux */
+.glow{
+    position:absolute;
+    width:500px;
+    height:500px;
+    border-radius:50%;
+    filter:blur(120px);
+    z-index:0;
+}
+
+.glow1{
+    background:#00ffff15;
+    left:-150px;
+    top:-150px;
+}
+
+.glow2{
+    background:#ff00ff15;
+    right:-150px;
+    bottom:-150px;
 }
 
 @media(max-width:800px){
-.logo{font-size:4rem;letter-spacing:4px}
-.subtitle{font-size:.8rem;letter-spacing:2px}
-.btn{padding:15px 30px}
+
+    .logo{
+        font-size:4rem;
+        letter-spacing:4px;
+    }
+
+    .subtitle{
+        font-size:.8rem;
+        letter-spacing:2px;
+    }
+
+    .enter-btn{
+        padding:15px 30px;
+    }
 }
 </style>
 </head>
-
 <body>
 
-<div class="glow"></div>
-<div class="glow"></div>
+<div class="glow glow1"></div>
+<div class="glow glow2"></div>
 
 <div class="container">
-<h1 class="logo">CAPWORKS</h1>
 
-<div class="subtitle">
-DÉVELOPPEMENT • CRÉATIVITÉ • PASSION
-</div>
+    <h1 class="logo">CAPWORKS</h1>
 
-<a href="home.html" class="btn">
-Entrer dans l'univers →
-</a>
+    <div class="subtitle">
+        DÉVELOPPEMENT • CRÉATIVITÉ • PASSION
+    </div>
+
+    <a href="home.html" class="enter-btn">
+        Entrer dans l'univers →
+    </a>
+
 </div>
 
 <script>
-const SITE_OPEN=0,
-btn=document.querySelector(".btn");
 
-for(let i=25;i--;){
- let l=document.createElement("div");
- l.className="line";
- l.style.left=Math.random()*100+"vw";
- l.style.animation=`fall ${4+Math.random()*8}s linear ${-Math.random()*10}s infinite`;
- document.body.append(l);
+/* ===========================
+   CONFIGURATION
+   =========================== */
+
+const SITE_OPEN = false;
+
+/* ===========================
+   LIGNES NÉON
+   =========================== */
+
+for(let i=0;i<25;i++){
+
+    const line=document.createElement("div");
+
+    line.className="line";
+
+    line.style.left=Math.random()*100+"vw";
+
+    line.style.animationDuration=
+        (4+Math.random()*8)+"s";
+
+    line.style.animationDelay=
+        (-Math.random()*10)+"s";
+
+    document.body.appendChild(line);
 }
+
+/* ===========================
+   MAINTENANCE
+   =========================== */
+
+const button = document.querySelector(".enter-btn");
 
 if(!SITE_OPEN){
- document.querySelector(".container").insertAdjacentHTML(
- "beforeend",
- `<div class="notice">
- ⚠️ Le site est actuellement indisponible.<br>
- Nous modernisons actuellement cette page pour vous proposer une expérience encore meilleure.
- </div>`
- );
 
- btn.removeAttribute("href");
- btn.classList.add("disabled");
- btn.textContent="Bientôt disponible";
+    const notice = document.createElement("div");
+
+    notice.className = "maintenance-notice";
+
+    notice.innerHTML = `
+        ⚠️ Le site est actuellement indisponible.<br>
+        Nous modernisons actuellement cette page pour vous proposer une expérience encore meilleure. Merci de votre compréhension.
+    `;
+
+    button.parentNode.insertBefore(notice, button);
+
+    button.removeAttribute("href");
+    button.classList.add("disabled");
+    button.textContent = "Bientôt disponible";
 }
+
 </script>
 
 </body>
