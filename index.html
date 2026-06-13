@@ -58,19 +58,19 @@ from{transform:translateY(-350px);opacity:0;}
 to{transform:translateY(calc(100vh + 350px));opacity:0;}
 }
 
-/* ===== SCÈNE 3D ===== */
+/* ===== SCÈNE ===== */
 .container{
 position:relative;
 z-index:10;
-
 display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:center;
 gap:18px;
-
 transform-style:preserve-3d;
 transition:transform .15s ease-out;
+text-align:center;
+padding:20px;
 }
 
 /* ===== LOGO ===== */
@@ -81,30 +81,19 @@ letter-spacing:10px;
 display:flex;
 gap:2px;
 transform-style:preserve-3d;
+flex-wrap:wrap;
+justify-content:center;
 }
 
-/* ===== LETTRES : FACE SOMBRE + RELIEF NÉON ===== */
 .logo span{
 display:inline-block;
-
-/* ✔ FACE sombre */
 color:#0b0f1a;
-
-/* ❌ on enlève le gradient de la face */
-background:none;
--webkit-background-clip:unset;
-background-clip:unset;
--webkit-text-fill-color:unset;
-
-/* ===== RELIEF NÉON ===== */
 text-shadow:
 0 1px 0 #00e5ff,
 0 2px 0 #4da3ff,
 0 3px 0 #b56bff,
 0 6px 10px rgba(0,229,255,0.55),
 0 12px 25px rgba(181,107,255,0.35);
-
-/* animation du glow */
 animation:glowSwap 3.5s ease-in-out infinite;
 }
 
@@ -117,7 +106,6 @@ text-shadow:
 0 6px 10px rgba(0,229,255,0.55),
 0 12px 25px rgba(181,107,255,0.35);
 }
-
 50%{
 text-shadow:
 0 1px 0 #b56bff,
@@ -126,7 +114,6 @@ text-shadow:
 0 6px 12px rgba(181,107,255,0.55),
 0 12px 28px rgba(0,229,255,0.35);
 }
-
 100%{
 text-shadow:
 0 1px 0 #00e5ff,
@@ -146,26 +133,19 @@ opacity:.9;
 transform:translateZ(30px);
 }
 
-/* ===== BOUTON ===== */
+/* ===== BUTTON ===== */
 .enter-btn{
-position:relative;
 display:inline-block;
 padding:18px 44px;
 color:white;
 text-decoration:none;
 font-size:1.15rem;
 letter-spacing:1px;
-
 border:2px solid #00ffff;
 border-radius:999px;
-
 background:rgba(255,255,255,0.03);
 backdrop-filter:blur(12px);
-
-box-shadow:
-0 0 18px rgba(0,255,255,0.5),
-0 0 45px rgba(0,255,255,0.25);
-
+box-shadow:0 0 18px rgba(0,255,255,0.5);
 transition:.35s;
 transform:translateZ(40px);
 }
@@ -176,19 +156,48 @@ transform:translateZ(60px) translateY(-5px) scale(1.06);
 
 /* ===== MAINTENANCE ===== */
 .maintenance{
-text-align: center;
+text-align:center;
 color:#ffd166;
 font-size:1rem;
 line-height:1.6;
 text-shadow:0 0 12px rgba(255,209,102,.9);
 animation:pulse 2s ease-in-out infinite;
 transform:translateZ(20px);
+display:none;
 }
 
 @keyframes pulse{
 0%,100%{opacity:.75;}
 50%{opacity:1;}
 }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width:768px){
+
+.logo{
+font-size:3.5rem;
+letter-spacing:6px;
+}
+
+.subtitle{
+font-size:.85rem;
+letter-spacing:3px;
+}
+
+.enter-btn{
+padding:14px 28px;
+font-size:1rem;
+}
+
+}
+
+/* ===== TOUCH OPTIMISATION ===== */
+@media (hover:none){
+.enter-btn:hover{
+transform:translateZ(40px);
+}
+}
+
 </style>
 </head>
 
@@ -210,7 +219,7 @@ Entrer dans l'univers →
 
 <div class="maintenance" id="maintenance">
 ⚠️ Le site est actuellement indisponible.<br>
-Ce site est en cours de rénovation afin de vous offrir une meilleure expérience. Merci de votre compréhension.
+Ce site est en cours de rénovation afin de vous offrir une meilleure expérience.
 </div>
 
 </div>
@@ -226,8 +235,6 @@ if(IS_MAINTENANCE){
 btn.removeAttribute("href");
 btn.textContent = "Bientôt disponible";
 maintenance.style.display = "block";
-}else{
-maintenance.style.display = "none";
 }
 
 /* ===== LIGNES ===== */
@@ -240,17 +247,26 @@ l.style.animationDelay=(-Math.random()*10)+"s";
 document.body.appendChild(l);
 }
 
-/* ===== CAMÉRA 3D ===== */
 const scene=document.getElementById("scene");
 
-document.addEventListener("mousemove",(e)=>{
+let isTouch = window.matchMedia("(hover:none)").matches;
 
+/* ===== PC : souris ===== */
+if(!isTouch){
+document.addEventListener("mousemove",(e)=>{
 const x=(e.clientX/window.innerWidth - 0.5)*18;
 const y=(e.clientY/window.innerHeight - 0.5)*18;
+scene.style.transform=`rotateY(${x}deg) rotateX(${-y}deg)`;
+});
+}
 
-scene.style.transform=
-`rotateY(${x}deg) rotateX(${-y}deg)`;
-
+/* ===== MOBILE : gyroscope ===== */
+window.addEventListener("deviceorientation",(e)=>{
+if(isTouch && e.beta && e.gamma){
+const x = (e.gamma/45)*10;
+const y = (e.beta/45)*10;
+scene.style.transform=`rotateY(${x}deg) rotateX(${y}deg)`;
+}
 });
 
 </script>
