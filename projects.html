@@ -432,8 +432,7 @@ function buildCatSection(cat,items){
   head.innerHTML=`<span class="cat-section-label">${CAT_META[cat].icon} ${CAT_META[cat].label.toUpperCase()}</span><div class="cat-section-line"></div><span class="cat-section-count">${items.length} projet${items.length!==1?'s':''}</span>`;
   wrap.appendChild(head);
   const grid=document.createElement('div'); grid.className='projects-grid';
-  if(!items.length){ grid.innerHTML=`<div class="empty-state"><div class="empty-icon">${CAT_META[cat].icon}</div><p>Aucun projet — revenez bientôt.</p></div>`; }
-  else items.forEach((p,i)=>grid.appendChild(buildCard(cat,p,i)));
+  items.forEach((p,i)=>grid.appendChild(buildCard(cat,p,i)));
   wrap.appendChild(grid);
   return wrap;
 }
