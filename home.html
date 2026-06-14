@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CapWorks Studio</title>
-<link rel="icon" type="image/png" href="CWS_Logo.png">
+<title>CapWorks</title>
+<link rel="icon" type="image/png" href="CW_Logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -38,7 +38,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 @keyframes glow{0%,100%{box-shadow:0 0 12px rgba(108,92,231,.3)}50%{box-shadow:0 0 28px rgba(108,92,231,.6)}}
 
 /* HEADER */
-header{position:sticky;top:0;z-index:100;height:62px;padding:0 40px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+header{position:sticky;top:0;z-index:100;height:62px;padding:0 40px;display:flex;align-items:center;justify-content:space-between;
   background:rgba(6,6,14,.92);backdrop-filter:blur(30px);border-bottom:1px solid var(--bdr)}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--txt);font-family:var(--display);font-size:1.1rem;font-weight:700;letter-spacing:-.3px}
 .logo-img{width:34px;height:34px;border-radius:9px;overflow:hidden;background:linear-gradient(135deg,var(--accent),var(--cyan));box-shadow:0 0 16px var(--accentg);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem}
@@ -48,7 +48,6 @@ nav{display:flex;align-items:center;gap:2px}
 nav a{color:var(--txt2);text-decoration:none;font-size:.82rem;font-weight:500;padding:5px 13px;border-radius:8px;transition:all .2s}
 nav a:hover{color:var(--txt);background:var(--surf2)}
 nav a.active{color:var(--accent);background:rgba(108,92,231,.1)}
-#hdrR{display:flex;align-items:center;justify-content:flex-end;gap:8px}
 
 /* BUTTONS */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 20px;border-radius:var(--r);font-family:var(--font);font-size:.83rem;font-weight:600;cursor:pointer;transition:all .18s;border:none;text-decoration:none;line-height:1.2;white-space:nowrap}
@@ -259,19 +258,20 @@ footer a:hover{text-decoration:underline}
 <!-- ══════════════ HEADER ══════════════ -->
 <header>
   <a href="home.html" class="logo">
-    <div class="logo-img"><img src="CWS_Logo.png" alt="CWS" onerror="this.parentElement.textContent='⚡'"></div>
-    CapWorks <em>Studio</em>
+    <div class="logo-img"><img src="CW_Logo.png" alt="CW" onerror="this.parentElement.textContent='⚡'"></div>
+    CapWorks
   </a>
   <nav>
     <a href="home.html" class="active">Accueil</a>
     <a href="projects.html">Projets</a>
     <a href="campagnes.html">Campagnes</a>
+    <a href="capworks-studio.html">CapWorks Studio</a>
     <a href="#team">Équipe</a>
     <a href="#support">Support</a>
     <a href="#about">À propos</a>
     <a href="#contact">Contact</a>
   </nav>
-  <div id="hdrR">
+  <div id="hdrR" style="display:flex;align-items:center;gap:8px">
     <button class="btn btn-primary btn-sm" onclick="openAuth('login')">Connexion</button>
   </div>
 </header>
@@ -280,7 +280,7 @@ footer a:hover{text-decoration:underline}
 <section class="hero">
   <div class="hero-glow"></div>
   <div class="hero-badge"><div class="dot"></div> Développement sur demande · v6.0</div>
-  <h1>Avec CapWorks Studio,<br><em>vos projets commencent maintenant</em></h1>
+  <h1>Chez CapWorks,<br><em>vos projets commencent maintenant</em></h1>
   <p>Jeux, logiciels, sites, animations, bots, IA et plus encore — découvrez nos réalisations et soutenez nos campagnes !</p>
   <div class="hero-btns">
     <a href="projects.html" class="btn btn-primary">Voir les projets →</a>
@@ -353,7 +353,7 @@ footer a:hover{text-decoration:underline}
   <div class="about-grid">
     <div class="about-text">
       <h3>Une équipe passionnée de développeurs</h3>
-      <p>Depuis presque 1 an, la CapWorks Studio est alimentée par plusieurs personnes à l'aise en programmation.</p>
+      <p>Depuis presque 1 an, la CapWorks est alimentée par plusieurs personnes à l'aise en programmation.</p>
       <p>Nous vous aiderons de notre mieux pour que vous puissiez avoir de grands projets informatiques, tels que :
 - La modélisation 3D
 - Le développement de jeux vidéos
@@ -394,7 +394,7 @@ Mais nous ferons tout notre possible pour vous plaire !</p>
         <div><div class="c-lbl">Discord</div><div class="c-val">discord.gg/RSnKYzXsgm</div></div>
         <span style="margin-left:auto;color:var(--txt3)">→</span>
       </a>
-      <a href="mailto:contact@capworks.studio" class="c-link cl-mail">
+      <a href="mailto:contact@capworks.fr" class="c-link cl-mail">
         <div class="c-ico">📧</div>
         <div><div class="c-lbl">Email</div><div class="c-val">capkychannel@gmail.com</div></div>
         <span style="margin-left:auto;color:var(--txt3)">→</span>
@@ -427,10 +427,10 @@ Mais nous ferons tout notre possible pour vous plaire !</p>
 
 <footer>
   <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px">
-    <img src="https://raw.githubusercontent.com/Capky/CapWorks-Studio/main/CWS_Logo.png" alt="CWS" style="width:28px;height:28px;border-radius:7px" onerror="this.style.display='none'">
-    <div class="footer-logo">CapWorks <em>Studio</em></div>
+    <img src="https://raw.githubusercontent.com/Capky/CapWorks-Company/main/CW_Logo.png" alt="CW" style="width:28px;height:28px;border-radius:7px" onerror="this.style.display='none'">
+    <div class="footer-logo">CapWorks</div>
   </div>
-  <p>Développement sur mesure &nbsp;·&nbsp; Tous droits réservés<br><a href="https://discord.gg/RSnKYzXsgm" target="_blank">Discord CapWorks Studio</a> &nbsp;·&nbsp; <a href="admin.html">Admin</a></p>
+  <p>Développement sur mesure &nbsp;·&nbsp; Tous droits réservés<br><a href="https://discord.gg/RSnKYzXsgm" target="_blank">Discord CapWorks</a> &nbsp;·&nbsp; <a href="admin.html">Admin</a></p>
 </footer>
 
 <!-- AUTH MODAL -->
@@ -583,22 +583,6 @@ async function submitContact(){
   btn.disabled=false; btn.textContent='📤 Envoyer le message';
 }
 
-/* ══ EMOJI FILTER ══ */
-function filterEmoji(input){
-  const val=input.value;
-  // Extract only the first real emoji using Intl.Segmenter
-  const seg=new Intl.Segmenter();
-  const segments=[...seg.segment(val)];
-  // Keep only segments that are emoji (not letters/digits/symbols)
-  const emojiReg=/\p{Emoji_Presentation}|\p{Extended_Pictographic}/u;
-  const emojis=segments.filter(s=>emojiReg.test(s.segment));
-  if(emojis.length>0){
-    input.value=emojis[0].segment; // only first emoji
-  } else {
-    input.value=''; // no emoji found → clear
-  }
-}
-
 /* ══ AUTH ══ */
 function updateHdr(){
   const hr=$('hdrR');
@@ -622,7 +606,7 @@ function switchAuth(tab){
   if(tab==='login'){
     f.innerHTML=`<div class="fg"><label>Pseudo</label><input type="text" class="inp" id="lUser" placeholder="Votre pseudo..."></div><div class="fg"><label>Mot de passe</label><input type="password" class="inp" id="lPass" placeholder="••••••••" onkeypress="if(event.key==='Enter')doLogin()"></div><div class="err-msg" id="lErr"></div><div style="margin-top:14px"><button class="btn btn-primary btn-full" onclick="doLogin()">Se connecter →</button></div>`;
   } else {
-    f.innerHTML=`<div class="fg"><label>Pseudo</label><input type="text" class="inp" id="rUser" placeholder="Choisissez un pseudo..."></div><div class="fg"><label>Email <span style="color:var(--red)">*</span></label><input type="email" class="inp" id="rEmail" placeholder="exemple@gmail.com"></div><div class="fg"><label>Mot de passe</label><input type="password" class="inp" id="rPass" placeholder="Min. 8 caractères..."></div><div class="fg"><label>Avatar (emoji)</label><div style="display:flex;align-items:center;gap:10px"><input type="text" class="inp" id="rEmoji" placeholder="👤" style="width:64px;font-size:1.4rem;text-align:center" oninput="filterEmoji(this)"><span style="font-size:.72rem;color:var(--txt3)">Un seul emoji — cliquez sur le champ et utilisez le sélecteur d'emoji de votre clavier (Win+. ou Cmd+Ctrl+Espace)</span></div></div><div class="err-msg" id="rErr"></div><div style="margin-top:14px"><button class="btn btn-primary btn-full" id="rBtn" onclick="doRegister()">Créer mon compte →</button></div>`;
+    f.innerHTML=`<div class="fg"><label>Pseudo</label><input type="text" class="inp" id="rUser" placeholder="Choisissez un pseudo..."></div><div class="fg"><label>Email <span style="color:var(--red)">*</span></label><input type="email" class="inp" id="rEmail" placeholder="exemple@gmail.com"></div><div class="fg"><label>Mot de passe</label><input type="password" class="inp" id="rPass" placeholder="Min. 8 caractères..."></div><div class="fg"><label>Avatar (emoji)</label><input type="text" class="inp" id="rEmoji" placeholder="👤" maxlength="2"></div><div class="err-msg" id="rErr"></div><div style="margin-top:14px"><button class="btn btn-primary btn-full" id="rBtn" onclick="doRegister()">Créer mon compte →</button></div>`;
   }
 }
 async function doLogin(){
@@ -661,7 +645,7 @@ async function logout(){
 async function openSettings(){
   if(!curUser)return;
   $('settBody').innerHTML=`<div style="margin-bottom:14px;padding:12px 14px;background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--r);display:flex;align-items:center;gap:12px"><div style="width:44px;height:44px;border-radius:50%;background:var(--surf3);border:2px solid var(--bdr2);display:flex;align-items:center;justify-content:center;font-size:1.4rem">${curUser.emoji||'👤'}</div><div><div style="font-weight:700;font-size:.92rem">${esc(curUser.username)}</div><div style="font-size:.68rem;color:var(--accent)">${curUser.role}</div></div></div>
-  <div class="fg"><label>Avatar (emoji)</label><div style="display:flex;align-items:center;gap:10px"><input type="text" class="inp" id="setEmoji" value="${esc(curUser.emoji||'👤')}" style="width:64px;font-size:1.4rem;text-align:center" oninput="filterEmoji(this)"><span style="font-size:.72rem;color:var(--txt3)">Un seul emoji (Win+. ou Cmd+Ctrl+Espace)</span></div></div>
+  <div class="fg"><label>Avatar (emoji)</label><input type="text" class="inp" id="setEmoji" value="${esc(curUser.emoji||'👤')}" maxlength="2"></div>
   <div class="fg"><label>Actuel</label><input type="password" class="inp" id="setPwC"></div>
   <div class="fg"><label>Nouveau mot de passe</label><input type="password" class="inp" id="setPwN"></div>
   <div class="fg"><label>Confirmer</label><input type="password" class="inp" id="setPwCf"></div>
