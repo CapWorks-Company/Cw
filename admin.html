@@ -238,10 +238,11 @@ function ovClick(e,id){if(e.target===$(id))closeOv(id);}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(el=>el.classList.remove('open'));});
 function toast(msg,type='success'){const t=document.createElement('div');t.className='toast '+type;t.textContent=(type==='success'?'✓ ':'✕ ')+msg;document.body.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='all .3s';setTimeout(()=>t.remove(),300);},3200);}
 
-const CATS=['sites','games','software','animations','bots','ai','assets','other'];
+const CATS=['sites','games','software','animations','music','bots','ai','assets','other'];
 const CAT_META={
   sites:{label:'Sites Web',icon:'🌐'}, games:{label:'Jeux Vidéos',icon:'🎮'},
   software:{label:'Logiciels',icon:'⚙️'}, animations:{label:'Animations',icon:'🎬'},
+  music:{label:'Musique',icon:'🎵'},
   bots:{label:'Bots Discord',icon:'🤖'}, ai:{label:'IA',icon:'🧠'},
   assets:{label:'Assets',icon:'📦'}, other:{label:'Autres',icon:'◈'}
 };
@@ -365,16 +366,18 @@ const CAT_FIELDS={
   sites:[ ['url','URL du site','text'], ['status','Statut','select',['live:🟢 En ligne','wip:🟡 En développement']], ['repoUrl','Lien du code (repo)','text'] ],
   games:[ ['downloadUrl','Lien de téléchargement','text'], ['playUrl','Lien pour jouer (web)','text'], ['platforms','Plateformes (ex: Windows, Web)','text'], ['repoUrl','Lien du code (repo)','text'] ],
   software:[ ['downloadUrl','Lien de téléchargement','text'], ['url','Site / page du logiciel','text'], ['version','Version','text'], ['os','OS supportés','text'] ],
-  animations:[ ['downloadUrl','Lien de téléchargement','text'], ['software','Logiciel utilisé','text'], ['resolution','Résolution','text'] ],
+  animations:[ ['downloadUrl','Lien de téléchargement','text'], ['software','Logiciel utilisé','text'], ['resolution','Résolution','text'], ['duration','Durée (ex: 2:45)','text'] ],
+  music:[ ['downloadUrl','Lien de téléchargement','text'], ['streamUrl','Lien streaming (SoundCloud, Spotify...)','text'], ['duration','Durée (ex: 3:22)','text'], ['genre','Genre musical','text'], ['bpm','BPM','text'] ],
   bots:[ ['inviteUrl',"Lien d'invitation Discord",'text'], ['url','Site / dashboard','text'], ['prefix','Préfixe des commandes','text'], ['servers','Nombre de serveurs','text'] ],
   ai:[ ['model','Modèle utilisé','text'], ['demoUrl','Lien de démo','text'], ['downloadUrl','Lien de téléchargement','text'], ['features','Fonctionnalités (résumé)','textarea'] ],
   assets:[ ['downloadUrl','Lien de téléchargement (ZIP)','text'], ['size',"Taille de l'archive (ex: 24 Mo)",'text'], ['license','Licence','text'], ['folderTree','Arborescence des fichiers','tree'] ],
   other:[ ['url','Lien principal','text'], ['downloadUrl','Lien de téléchargement','text'] ]
 };
+// Champs communs à toutes les catégories (sans durée — elle est dans les champs spécifiques si pertinente)
 const COMMON_FIELDS=[
   ['title','Titre','text'], ['desc','Description courte','textarea'], ['longDesc','Description complète','textarea'],
-  ['tags','Tags (séparés par des virgules)','text'], ['tech','Technologies (séparées par des virgules)','text'],
-  ['imageUrl','Image (URL)','text'], ['videoUrl','Vidéo YouTube (URL)','text'], ['duration','Durée (ex: 2:45)','text'],
+  ['tags','Tags (séparés par des virgules)','text'], ['tech','Technologies / outils','text'],
+  ['imageUrl','Image (URL)','text'], ['videoUrl','Vidéo YouTube (URL)','text'],
   ['order',"Ordre d'affichage",'number']
 ];
 
@@ -421,11 +424,6 @@ function openProjForm(cat,id){
     <div style="font-size:.65rem;color:var(--txt3);margin-top:-6px;margin-bottom:11px">Le réglage global « Afficher les messages attractifs » (onglet Paramètres) doit aussi être activé pour qu'il apparaisse sur le site.</div>
     <div class="fieldset-title">Visibilité</div>
     <div class="tog-row"><label>🙈 Masquer ce projet sur le site</label><button class="tog-btn" id="pf_hidden_tog" onclick="toggleTog(this)"></button></div>
-    <div class="fg-row">
-      <div class="fg"><label>Likes</label><input type="number" class="inp" id="pf_likes"></div>
-      <div class="fg"><label>Vues</label><input type="number" class="inp" id="pf_views"></div>
-    </div>
-    <div class="fg"><label>Téléchargements</label><input type="number" class="inp" id="pf_downloads"></div>
     <div style="display:flex;gap:8px;margin-top:6px">
       <button class="btn btn-primary" style="flex:1" onclick="saveProj()">💾 Enregistrer</button>
       <button class="btn btn-ghost" onclick="closeProjForm()">Annuler</button>
@@ -444,7 +442,6 @@ function openProjForm(cat,id){
   });
   setTog('pf_highlightOn_tog',!!proj.highlightOn);
   setTog('pf_hidden_tog',!!proj.hidden);
-  $('pf_likes').value=proj.likes||0; $('pf_views').value=proj.views||0; $('pf_downloads').value=proj.downloads||0;
   wrap.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function closeProjForm(){ const wrap=$('projFormInline'); if(wrap){ wrap.style.display='none'; wrap.innerHTML=''; } }
@@ -464,10 +461,9 @@ async function saveProj(){
   data.highlight=$('pf_highlight').value.trim();
   data.highlightOn=$('pf_highlightOn_tog').classList.contains('on');
   data.hidden=$('pf_hidden_tog').classList.contains('on');
-  data.likes=Number($('pf_likes').value)||0;
-  data.views=Number($('pf_views').value)||0;
-  data.downloads=Number($('pf_downloads').value)||0;
   data.order=Number(data.order)||999;
+  // likes/views/downloads sont gérés automatiquement par projects.html — on ne les écrase pas à la création
+  if(!id){ data.likes=0; data.views=0; data.downloads=0; }
 
   try{
     if(id){ await FB.updateDoc(FB.doc(db,`projects_${cat}`,id),data); const idx=projects[cat].findIndex(p=>p.id===id); projects[cat][idx]={...projects[cat][idx],...data,id}; }
