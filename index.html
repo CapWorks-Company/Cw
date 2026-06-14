@@ -25,7 +25,7 @@ background:#050816;
 display:flex;
 justify-content:center;
 align-items:center;
-perspective:1200px;
+perspective:600px;
 position:relative;
 }
 
@@ -81,7 +81,7 @@ align-items:center;
 justify-content:center;
 gap:18px;
 transform-style:preserve-3d;
-transition:transform .15s ease-out;
+transition:transform .08s ease-out;
 text-align:center;
 padding:20px;
 max-width:100%;
@@ -145,7 +145,7 @@ color:#b6c5ff;
 letter-spacing:6px;
 font-size:1rem;
 opacity:.9;
-transform:translateZ(30px);
+transform:translateZ(60px);
 }
 
 /* ===== BUTTON ===== */
@@ -162,12 +162,12 @@ background:rgba(255,255,255,0.03);
 backdrop-filter:blur(12px);
 box-shadow:0 0 18px rgba(0,255,255,0.5);
 transition:.35s;
-transform:translateZ(40px);
+transform:translateZ(90px);
 -webkit-tap-highlight-color:transparent;
 }
 
 .enter-btn:hover{
-transform:translateZ(60px) translateY(-5px) scale(1.06);
+transform:translateZ(120px) translateY(-5px) scale(1.06);
 }
 
 /* ===== TILT HINT (mobile) ===== */
@@ -317,8 +317,8 @@ const isTouch = window.matchMedia("(hover:none)").matches;
 /* ===== PC : tilt à la souris ===== */
 if(!isTouch){
 document.addEventListener("mousemove",(e)=>{
-const x=(e.clientX/window.innerWidth - 0.5)*18;
-const y=(e.clientY/window.innerHeight - 0.5)*18;
+const x=(e.clientX/window.innerWidth - 0.5)*32;
+const y=(e.clientY/window.innerHeight - 0.5)*32;
 scene.style.transform=`rotateY(${x}deg) rotateX(${-y}deg)`;
 });
 }
@@ -332,8 +332,8 @@ function startTilt(){
   let lastX=0,lastY=0;
   window.addEventListener("deviceorientation",(e)=>{
     if(e.beta==null || e.gamma==null)return;
-    const x=Math.max(-10,Math.min(10,(e.gamma/45)*10));
-    const y=Math.max(-10,Math.min(10,(e.beta/45)*10));
+    const x=Math.max(-20,Math.min(20,(e.gamma/45)*20));
+    const y=Math.max(-20,Math.min(20,(e.beta/45)*20));
     lastX=lastX*0.85+x*0.15;
     lastY=lastY*0.85+y*0.15;
     scene.style.transform=`rotateY(${lastX}deg) rotateX(${lastY}deg)`;
