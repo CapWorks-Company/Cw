@@ -564,6 +564,35 @@ Chaque projet est une nouvelle aventure que nous menons avec le cœur.</p>
   </div>
 </div>
 
+<!-- EMAIL CHANGE MODAL -->
+<div class="overlay" id="emailOv" onclick="ovClick(event,'emailOv')">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-hd">
+      <h3>✉️ Changer d'email</h3>
+      <button class="x-btn" onclick="closeOv('emailOv')">✕</button>
+    </div>
+    <div class="modal-bd">
+      <div style="font-size:.8rem;color:var(--txt2);margin-bottom:16px;line-height:1.6">
+        Un code de vérification sera envoyé à votre nouvel email pour confirmer le changement.
+      </div>
+      <div class="fg">
+        <label>Email actuel</label>
+        <input type="text" class="inp" id="emailCurrent" readonly style="color:var(--txt3);cursor:default">
+      </div>
+      <div class="fg">
+        <label>Nouvel email</label>
+        <input type="email" class="inp" id="emailNew" placeholder="nouveau@exemple.com" onkeypress="if(event.key==='Enter')submitEmailChange()">
+      </div>
+      <div class="err-msg" id="emailOvErr" style="margin-bottom:10px"></div>
+      <div id="emailOtpZone"></div>
+      <div id="emailOvBtns" style="display:flex;gap:8px">
+        <button class="btn btn-primary" style="flex:1" id="emailOvBtn" onclick="submitEmailChange()">📨 Envoyer le code</button>
+        <button class="btn btn-ghost" onclick="closeOv('emailOv')" style="flex-shrink:0">Annuler</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 const API = 'https://capworks-worker.capkychannel.workers.dev';
 const $ = id => document.getElementById(id);
@@ -830,9 +859,8 @@ async function verifyOtp(mode){
     curUser.email=data.email;
     localStorage.setItem('cw_session',JSON.stringify(curUser));
     _emailChangePending=null;
-    $('emailOtpZone').innerHTML='';
-    const msgEl=$('setMsg'); if(msgEl){msgEl.className='ok-msg';msgEl.textContent='✓ Email mis à jour !';}
-    toast('Email mis à jour !'); updateHdr();
+    closeOv('emailOv');
+    toast('✓ Email mis à jour !');
   }
   if(btn){btn.disabled=false;btn.textContent='✓ Valider →';}
 }
@@ -849,8 +877,7 @@ async function resendOtp(mode){
 
 function cancelEmailChange(){
   _emailChangePending=null;
-  const z=$('emailOtpZone'); if(z)z.innerHTML='';
-  const msgEl=$('setMsg'); if(msgEl){msgEl.className='err-msg';msgEl.textContent='';}
+  closeOv('emailOv');
 }
 
 async function logout(){
@@ -883,17 +910,31 @@ async function openSettings(){
   $('settOv').classList.add('open');
 }
 
-async function startEmailChange(){
-  const newEmail=prompt('Nouvel email :');
-  if(!newEmail||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)){
-    if(newEmail!==null)toast('Email invalide','error');
-    return;
+function startEmailChange(){
+  $('emailCurrent').value = curUser.email || '—';
+  $('emailNew').value = '';
+  $('emailOvErr').textContent = '';
+  $('emailOtpZone').innerHTML = '';
+  $('emailOvBtns').style.display = 'flex';
+  $('emailOvBtn').disabled = false;
+  $('emailOvBtn').textContent = '📨 Envoyer le code';
+  $('emailOv').classList.add('open');
+  setTimeout(()=>{ $('emailNew').focus(); }, 120);
+}
+
+async function submitEmailChange(){
+  const newEmail = $('emailNew').value.trim();
+  const errEl = $('emailOvErr'), btn = $('emailOvBtn');
+  errEl.textContent = '';
+  if(!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)){
+    errEl.textContent = '✕ Email invalide'; return;
   }
-  if(newEmail===curUser.email){toast('C\'est déjà votre email','error');return;}
-  const msgEl=$('setMsg'); if(msgEl){msgEl.textContent='';}
-  const res=await apiPost('/api/auth/otp/request-email',{newEmail});
-  if(res.error){toast('✕ '+res.error,'error');return;}
-  _emailChangePending={newEmail};
+  if(newEmail === curUser.email){ errEl.textContent = '✕ C\'est déjà votre email actuel'; return; }
+  btn.disabled = true; btn.textContent = '⟳ Envoi...';
+  const res = await apiPost('/api/auth/otp/request-email', {newEmail});
+  if(res.error){ errEl.textContent = '✕ ' + res.error; btn.disabled=false; btn.textContent='📨 Envoyer le code'; return; }
+  _emailChangePending = {newEmail};
+  $('emailOvBtns').style.display = 'none';
   showOtpForm('email');
 }
 
