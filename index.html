@@ -241,6 +241,7 @@ transform:none !important;
 }
 
 </style>
+<script src="maintenance.js"></script>
 </head>
 
 <body>
@@ -270,17 +271,17 @@ Ce site est en cours de rénovation afin de vous offrir une meilleure expérienc
 
 <script>
 
-const IS_MAINTENANCE = false;
-
 const btn = document.getElementById("btn");
 const maintenance = document.getElementById("maintenance");
 const scene = document.getElementById("scene");
 const tiltHint = document.getElementById("tiltHint");
 
-if(IS_MAINTENANCE){
+// Lit IS_MAINTENANCE depuis maintenance.js (chargé juste avant)
+if(typeof IS_MAINTENANCE !== "undefined" && IS_MAINTENANCE){
 btn.removeAttribute("href");
 btn.textContent = "Bientôt disponible";
 maintenance.style.display = "block";
+if(maintenance.querySelector('p')) maintenance.querySelector('p').textContent = typeof MAINTENANCE_MESSAGE !== "undefined" ? MAINTENANCE_MESSAGE : maintenance.querySelector('p').textContent;
 }
 
 /* ===== LIGNES (moins nombreuses sur petit écran pour la perf) ===== */
