@@ -196,6 +196,8 @@ select.inp{cursor:pointer}
     <p>Connectez-vous avec un compte ayant le rôle <b>owner</b>.</p>
     <div class="fg"><label>Pseudo</label><input type="text" class="inp" id="lUser" placeholder="Votre pseudo..."></div>
     <div class="fg"><label>Mot de passe</label><input type="password" class="inp" id="lPass" placeholder="••••••••" onkeypress="if(event.key==='Enter')doAdminLogin()"></div>
+    <div style="height:1px;background:var(--bdr);margin:16px 0"></div>
+    <div class="fg"><label style="display:flex;align-items:center;gap:6px">🔑 Mot de passe administration <span style="font-size:.58rem;color:var(--txt3);font-weight:400;text-transform:none;letter-spacing:0">(défini dans Paramètres)</span></label><input type="password" class="inp" id="lAdminPass" placeholder="••••••••" onkeypress="if(event.key==='Enter')doAdminLogin()"></div>
     <div class="err-msg" id="lErr"></div>
     <button class="btn btn-primary btn-full" style="margin-top:6px" onclick="doAdminLogin()">Se connecter →</button>
   </div>
@@ -264,9 +266,11 @@ async function apiGet(path){try{const r=await fetch(API+path,{headers:curUser?.t
 async function apiPost(path,body,method='POST'){try{const r=await fetch(API+path,{method,headers:{'Content-Type':'application/json',...(curUser?.token&&{Authorization:`Bearer ${curUser.token}`})},body:JSON.stringify(body)});try{return await r.json();}catch{return{ok:r.ok,error:r.ok?undefined:`HTTP ${r.status}`};}}catch(e){return{error:'Réseau'};}}
 
 async function doAdminLogin(){
-  const u=$('lUser').value.trim(), p=$('lPass').value;
+  const u=$('lUser').value.trim(), p=$('lPass').value, ap=$('lAdminPass').value;
   const err=$('lErr');
-  if(!u||!p){err.textContent='✕ Remplissez tous les champs';return;}
+  if(!u||!p||!ap){err.textContent='✕ Remplissez tous les champs';return;}
+  const adminCheck=await apiPost('/api/admin/login',{password:ap});
+  if(adminCheck.error){err.textContent='✕ Mot de passe administration incorrect';return;}
   const data=await apiPost('/api/auth/login',{username:u,password:p});
   if(data.error){err.textContent='✕ '+data.error;return;}
   if(data.role!=='owner'){err.textContent='✕ Accès réservé au rôle owner';return;}
