@@ -234,7 +234,7 @@ select.inp{cursor:pointer}
 
 <!-- HELFO FORM MODAL -->
 <div class="overlay" id="helfoFormOv" onclick="ovClick(event,'helfoFormOv')">
-  <div class="modal" style="max-width:700px">
+  <div class="modal" style="max-width:760px">
     <div class="modal-hd">
       <h3>🧠 Créer / Modifier un Helfo</h3>
       <button class="x-btn" onclick="closeOv('helfoFormOv')">✕</button>
@@ -252,38 +252,10 @@ select.inp{cursor:pointer}
       <div class="tog-row"><label>⭐ Mettre en vedette</label><button class="tog-btn" id="hf_featured_tog" onclick="toggleTog(this)"></button></div>
       <div class="tog-row"><label>🙈 Masquer (brouillon)</label><button class="tog-btn" id="hf_hidden_tog" onclick="toggleTog(this)"></button></div>
 
-      <div class="fieldset-title">Contenu — Blocs</div>
-      <div id="hf_blocks" style="margin-bottom:12px"></div>
+      <div class="fieldset-title">Contenu du guide</div>
+      <div id="hf_rte_wrap"></div>
 
-      <div style="background:var(--surf2);border:1px solid var(--bdr2);border-radius:var(--r2);padding:12px 14px;margin-bottom:14px">
-        <div style="font-size:.65rem;font-weight:700;color:var(--txt2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">+ Ajouter un bloc</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px">
-          <button class="btn btn-ghost btn-sm" onclick="addHelfoBlock('title')">📌 Titre</button>
-          <button class="btn btn-ghost btn-sm" onclick="addHelfoBlock('text')">📝 Texte</button>
-          <button class="btn btn-ghost btn-sm" onclick="addHelfoBlock('image')">🖼️ Image</button>
-          <button class="btn btn-ghost btn-sm" onclick="addHelfoBlock('video')">▶️ Vidéo</button>
-          <button class="btn btn-ghost btn-sm" onclick="addHelfoBlock('link')">🔗 Lien</button>
-          <button class="btn btn-ghost btn-sm" onclick="addHelfoBlock('tip')">💡 Astuce</button>
-          <button class="btn btn-ghost btn-sm" onclick="addHelfoBlock('warning')">⚠️ Avertissement</button>
-          <button class="btn btn-ghost btn-sm" onclick="addHelfoBlock('code')">💻 Code</button>
-        </div>
-      </div>
-
-      <button class="btn btn-primary btn-full" onclick="saveHelfo()">💾 Enregistrer le Helfo</button>
-    </div>
-  </div>
-</div>
-
-<!-- BLOCK EDIT MODAL -->
-<div class="overlay" id="blockEditOv" onclick="ovClick(event,'blockEditOv')">
-  <div class="modal" style="max-width:500px">
-    <div class="modal-hd">
-      <h3 id="blockEditTitle">Modifier le bloc</h3>
-      <button class="x-btn" onclick="closeOv('blockEditOv')">✕</button>
-    </div>
-    <div class="modal-bd">
-      <input type="hidden" id="be_idx">
-      <div id="blockEditBody"></div>
+      <button class="btn btn-primary btn-full" onclick="saveHelfo()" style="margin-top:14px">💾 Enregistrer le Helfo</button>
     </div>
   </div>
 </div>
@@ -547,8 +519,46 @@ async function saveProj(){
 
 
 /* ══════════════ HELFOS ══════════════ */
+
+/* ── RTE STYLES (injected once) ── */
+(function(){
+  if(document.getElementById('rte-admin-styles')) return;
+  const s=document.createElement('style');
+  s.id='rte-admin-styles';
+  s.textContent=`
+  .rte-toolbar{display:flex;flex-wrap:wrap;gap:3px;padding:7px 8px;background:var(--surf3);border:1px solid var(--bdr2);border-bottom:none;border-radius:var(--r) var(--r) 0 0}
+  .rte-btn{background:var(--surf2);border:1px solid var(--bdr2);color:var(--txt2);width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:.72rem;font-weight:700;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;font-family:var(--font)}
+  .rte-btn:hover{background:var(--accentg);border-color:var(--accent);color:var(--txt)}
+  .rte-btn.active{background:var(--accentg);border-color:var(--accent);color:var(--accent)}
+  .rte-sep{width:1px;background:var(--bdr2);margin:0 2px;align-self:stretch}
+  .rte-select{background:var(--surf2);border:1px solid var(--bdr2);color:var(--txt2);height:28px;border-radius:6px;font-size:.7rem;font-family:var(--font);padding:0 6px;cursor:pointer;outline:none}
+  .rte-select:hover{border-color:var(--accent)}
+  .rte-textarea{width:100%;min-height:200px;background:var(--surf2);border:1.5px solid var(--bdr2);color:var(--txt);padding:10px 12px;border-radius:0 0 var(--r) var(--r);font-family:var(--mono);font-size:.78rem;outline:none;resize:vertical;line-height:1.7;transition:border-color .2s}
+  .rte-textarea:focus{border-color:var(--accent)}
+  .rte-preview{margin-top:10px;background:var(--surf2);border:1px solid var(--bdr2);border-radius:var(--r);padding:14px;min-height:60px;font-size:.85rem;line-height:1.8}
+  .rte-preview-label{font-size:.6rem;font-weight:700;color:var(--txt3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .rte-preview strong{font-weight:700}
+  .rte-preview em{font-style:italic}
+  .rte-preview u{text-decoration:underline}
+  .rte-preview .hl-red{background:rgba(232,67,147,.2);color:#f57fb5;padding:1px 3px;border-radius:3px}
+  .rte-preview .hl-orange{background:rgba(253,150,80,.2);color:#ff9d57;padding:1px 3px;border-radius:3px}
+  .rte-preview .hl-yellow{background:rgba(253,203,110,.2);color:var(--gold);padding:1px 3px;border-radius:3px}
+  .rte-preview .hl-green{background:rgba(0,184,148,.2);color:var(--grn);padding:1px 3px;border-radius:3px}
+  .rte-preview .hl-blue{background:rgba(0,206,201,.2);color:var(--cyan);padding:1px 3px;border-radius:3px}
+  .rte-preview .hl-purple{background:rgba(108,92,231,.2);color:#a78bfa;padding:1px 3px;border-radius:3px}
+  .rte-preview .fs-sm{font-size:.78rem}.rte-preview .fs-md{font-size:.9rem}.rte-preview .fs-lg{font-size:1.05rem}.rte-preview .fs-xl{font-size:1.25rem}.rte-preview .fs-xxl{font-size:1.5rem}
+  .rte-preview .ff-mono{font-family:var(--mono)}.rte-preview .ff-display{font-family:var(--display)}
+  .rte-preview a{color:var(--accent)}
+  .rte-preview img{max-width:100%;border-radius:6px;margin:4px 0;display:block;max-height:160px;object-fit:cover}
+  .rte-preview .yt-thumb{display:flex;align-items:center;gap:8px;background:var(--surf3);border-radius:6px;padding:8px 12px;margin:4px 0;font-size:.76rem;color:var(--txt2)}
+  .rte-preview .yt-thumb-icon{font-size:1.3rem}
+  .rte-preview p{margin-bottom:6px}
+  `;
+  document.head.appendChild(s);
+})();
+
 function renderHelfosView(c){
-  c.innerHTML=`<h2>🧠 Helfos</h2><div class="sub">Créez des guides détaillés accessibles depuis le site — avec titre, description riche, images, vidéos et liens.</div>
+  c.innerHTML=`<h2>🧠 Helfos</h2><div class="sub">Créez des guides détaillés accessibles depuis la page Helfos du site.</div>
   <div style="margin-bottom:14px"><button class="btn btn-primary btn-sm" onclick="openHelfoForm()">+ Nouveau Helfo</button></div>
   <div id="helfoList"></div>`;
   renderHelfoList();
@@ -556,7 +566,7 @@ function renderHelfosView(c){
 
 function renderHelfoList(){
   const list=$('helfoList');
-  if(!helfos.length){ list.innerHTML='<div class="empty-hint">Aucun Helfo pour le moment. Créez votre premier guide !</div>'; return; }
+  if(!helfos.length){ list.innerHTML='<div class="empty-hint">Aucun Helfo. Créez votre premier guide !</div>'; return; }
   list.innerHTML=helfos.map(h=>`
     <div class="item-row">
       <div class="item-thumb" style="font-size:1.5rem">${h.icon||'🧠'}</div>
@@ -565,7 +575,7 @@ function renderHelfoList(){
           ${h.hidden?'<span class="item-badge hidden">Masqué</span>':''}
           ${h.featured?'<span class="item-badge hl">⭐ En vedette</span>':''}
         </div>
-        <div class="item-meta">🏷 ${esc(h.category||'Général')} · 📋 ${(h.blocks||[]).length} bloc(s) · ordre ${h.order||999}</div>
+        <div class="item-meta">🏷 ${esc(h.category||'Général')} · ordre ${h.order||999}</div>
       </div>
       <div class="item-actions">
         <button class="btn btn-ghost btn-sm" onclick="openHelfoForm('${h.id}')">✏️</button>
@@ -574,12 +584,171 @@ function renderHelfoList(){
     </div>`).join('');
 }
 
-/* ── Helfo modal ── */
-let helfoBlocks=[]; // working copy of blocks during edit
+/* ── RTE LOGIC ── */
+
+// Insert text at cursor in the textarea
+function rteInsert(textareaId, before, after='') {
+  const ta = document.getElementById(textareaId);
+  if(!ta) return;
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  const sel = ta.value.substring(start, end);
+  const replacement = before + (sel || (after ? 'texte' : '')) + after;
+  ta.value = ta.value.substring(0, start) + replacement + ta.value.substring(end);
+  // Place cursor after insertion
+  const pos = sel ? start + replacement.length : start + before.length;
+  ta.selectionStart = ta.selectionEnd = sel ? pos : start + before.length;
+  ta.focus();
+  updateRTEPreview(textareaId);
+}
+
+function rteWrapSize(textareaId, size) {
+  const ta = document.getElementById(textareaId);
+  if(!ta) return;
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  const sel = ta.value.substring(start, end) || 'texte';
+  const replacement = `[size:${size}]${sel}[/size]`;
+  ta.value = ta.value.substring(0, start) + replacement + ta.value.substring(end);
+  ta.selectionStart = ta.selectionEnd = start + replacement.length;
+  ta.focus();
+  updateRTEPreview(textareaId);
+}
+
+function rteWrapFont(textareaId, font) {
+  const ta = document.getElementById(textareaId);
+  if(!ta) return;
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  const sel = ta.value.substring(start, end) || 'texte';
+  const replacement = `[font:${font}]${sel}[/font]`;
+  ta.value = ta.value.substring(0, start) + replacement + ta.value.substring(end);
+  ta.selectionStart = ta.selectionEnd = start + replacement.length;
+  ta.focus();
+  updateRTEPreview(textareaId);
+}
+
+function rteHighlight(textareaId, color) {
+  const ta = document.getElementById(textareaId);
+  if(!ta) return;
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  const sel = ta.value.substring(start, end) || 'texte';
+  const replacement = `_${color}_${sel}_`;
+  ta.value = ta.value.substring(0, start) + replacement + ta.value.substring(end);
+  ta.selectionStart = ta.selectionEnd = start + replacement.length;
+  ta.focus();
+  updateRTEPreview(textareaId);
+}
+
+function rteLink(textareaId) {
+  const url = prompt('URL du lien :','https://');
+  if(!url) return;
+  const ta = document.getElementById(textareaId);
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  const sel = ta.value.substring(start, end) || 'Texte du lien';
+  const replacement = `[${sel}](${url})`;
+  ta.value = ta.value.substring(0, start) + replacement + ta.value.substring(end);
+  ta.focus();
+  updateRTEPreview(textareaId);
+}
+
+function rteImage(textareaId) {
+  const url = prompt('URL de l\'image :','https://');
+  if(!url) return;
+  const ta = document.getElementById(textareaId);
+  const pos = ta.selectionEnd;
+  const nl = ta.value[pos-1]==='\n'||pos===0 ? '' : '\n';
+  ta.value = ta.value.substring(0, pos) + nl + url + '\n' + ta.value.substring(pos);
+  ta.focus();
+  updateRTEPreview(textareaId);
+}
+
+function rteVideo(textareaId) {
+  const url = prompt('URL YouTube :','https://www.youtube.com/watch?v=');
+  if(!url) return;
+  const ta = document.getElementById(textareaId);
+  const pos = ta.selectionEnd;
+  const nl = ta.value[pos-1]==='\n'||pos===0 ? '' : '\n';
+  ta.value = ta.value.substring(0, pos) + nl + url + '\n' + ta.value.substring(pos);
+  ta.focus();
+  updateRTEPreview(textareaId);
+}
+
+/* ── MINI PREVIEW PARSER (admin) ── */
+function previewRTE(raw) {
+  if(!raw) return '<span style="color:var(--txt3);font-size:.76rem">Aperçu du contenu...</span>';
+  const YT = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  const IMG = /^https?:\/\/.+\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i;
+  let html = '';
+  raw.split('\n').forEach(line => {
+    const t = line.trim();
+    if(!t){ html+='<br>'; return; }
+    if(IMG.test(t)){ html+=`<img src="${t}" style="max-height:80px;border-radius:4px;margin:2px 0">`; return; }
+    const ym = t.match(YT);
+    if(ym && t.match(/^https?:\/\//)){
+      html+=`<div class="yt-thumb"><span class="yt-thumb-icon">▶️</span><span>YouTube — ${ym[1]}</span></div>`; return;
+    }
+    let p = t;
+    p=p.replace(/\[size:(sm|md|lg|xl|xxl)\](.*?)\[\/size\]/gi,'<span class="fs-$1">$2</span>');
+    p=p.replace(/\[font:(mono|display|default)\](.*?)\[\/font\]/g,'<span class="ff-$1">$2</span>');
+    p=p.replace(/_([A-Za-z]+)_(.*?)_/g,(f,c,t2)=>['red','orange','yellow','green','blue','purple'].includes(c.toLowerCase())?`<span class="hl-${c.toLowerCase()}">${t2}</span>`:f);
+    p=p.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+    p=p.replace(/\*([^*]+)\*/g,'<em>$1</em>');
+    p=p.replace(/(?<!class="hl-)_((?!Red_|Orange_|Yellow_|Green_|Blue_|Purple_)[^_]+)_/g,'<u>$1</u>');
+    p=p.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" style="color:var(--accent)">$1</a>');
+    html+=`<p>${p}</p>`;
+  });
+  return html;
+}
+
+function updateRTEPreview(textareaId) {
+  const ta = document.getElementById(textareaId);
+  const prev = document.getElementById(textareaId+'_preview');
+  if(ta && prev) prev.innerHTML = previewRTE(ta.value);
+}
+
+function buildRTEToolbar(textareaId) {
+  return `<div class="rte-toolbar">
+    <button class="rte-btn" title="Gras" onclick="rteInsert('${textareaId}','**','**')"><b>G</b></button>
+    <button class="rte-btn" title="Italique" onclick="rteInsert('${textareaId}','*','*')"><i>I</i></button>
+    <button class="rte-btn" title="Souligné" onclick="rteInsert('${textareaId}','_','_')"><u>S</u></button>
+    <div class="rte-sep"></div>
+    <button class="rte-btn" title="Surligner Rouge" onclick="rteHighlight('${textareaId}','Red')" style="color:#f57fb5;border-color:rgba(232,67,147,.4)">Su</button>
+    <select class="rte-select" title="Couleur surlignage" onchange="if(this.value){rteHighlight('${textareaId}',this.value);this.value=''}">
+      <option value="">🎨 Couleur</option>
+      <option value="Red">🔴 Rouge</option>
+      <option value="Orange">🟠 Orange</option>
+      <option value="Yellow">🟡 Jaune</option>
+      <option value="Green">🟢 Vert</option>
+      <option value="Blue">🔵 Bleu</option>
+      <option value="Purple">🟣 Violet</option>
+    </select>
+    <div class="rte-sep"></div>
+    <select class="rte-select" title="Taille" onchange="if(this.value){rteWrapSize('${textareaId}',this.value);this.value=''}">
+      <option value="">📏 Taille</option>
+      <option value="sm">Petit (sm)</option>
+      <option value="md">Normal (md)</option>
+      <option value="lg">Grand (lg)</option>
+      <option value="xl">Très grand (xl)</option>
+      <option value="xxl">Énorme (xxl)</option>
+    </select>
+    <select class="rte-select" title="Police" onchange="if(this.value){rteWrapFont('${textareaId}',this.value);this.value=''}">
+      <option value="">🔤 Police</option>
+      <option value="default">Space Grotesk (défaut)</option>
+      <option value="display">Syne (display)</option>
+      <option value="mono">JetBrains Mono</option>
+    </select>
+    <div class="rte-sep"></div>
+    <button class="rte-btn" title="Lien" onclick="rteLink('${textareaId}')" style="font-size:.65rem">🔗</button>
+    <button class="rte-btn" title="Image (URL)" onclick="rteImage('${textareaId}')" style="font-size:.65rem">🖼️</button>
+    <button class="rte-btn" title="Vidéo YouTube" onclick="rteVideo('${textareaId}')" style="font-size:.65rem">▶️</button>
+    <div class="rte-sep"></div>
+    <span style="font-size:.6rem;color:var(--txt3);align-self:center;margin-left:4px">**gras** *italique* _souligné_ _Couleur_texte_</span>
+  </div>
+  <textarea class="rte-textarea inp" id="${textareaId}" placeholder="Commencez à écrire votre guide ici..." oninput="updateRTEPreview('${textareaId}')"></textarea>
+  <div class="rte-preview-label" style="margin-top:10px;font-size:.6rem;font-weight:700;color:var(--txt3);letter-spacing:1px;text-transform:uppercase">Aperçu</div>
+  <div class="rte-preview" id="${textareaId}_preview"><span style="color:var(--txt3);font-size:.76rem">Aperçu du contenu...</span></div>`;
+}
 
 function openHelfoForm(id){
   const h=id?helfos.find(x=>x.id===id):{};
-  helfoBlocks=JSON.parse(JSON.stringify(h?.blocks||[]));
   document.getElementById('helfoFormOv').classList.add('open');
   document.getElementById('hf_id').value=h?.id||'';
   document.getElementById('hf_title').value=h?.title||'';
@@ -591,119 +760,11 @@ function openHelfoForm(id){
   const hidTog=document.getElementById('hf_hidden_tog');
   featTog.className='tog-btn'+(h?.featured?' on':'');
   hidTog.className='tog-btn'+(h?.hidden?' on':'');
-  renderHelfoBlocks();
-}
-
-function renderHelfoBlocks(){
-  const cont=document.getElementById('hf_blocks');
-  if(!helfoBlocks.length){
-    cont.innerHTML=`<div style="text-align:center;padding:18px;color:var(--txt3);font-size:.8rem;border:1.5px dashed var(--bdr2);border-radius:var(--r2)">
-      Aucun bloc. Ajoutez du contenu ci-dessous ↓</div>`;
-    return;
-  }
-  cont.innerHTML=helfoBlocks.map((b,i)=>`
-    <div style="background:var(--surf2);border:1px solid var(--bdr2);border-radius:var(--r2);padding:12px 14px;margin-bottom:8px;position:relative">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <span style="font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px">${getBlockIcon(b.type)} ${b.type}</span>
-        <div style="display:flex;gap:4px">
-          ${i>0?`<button class="btn btn-ghost btn-sm" onclick="moveHelfoBlock(${i},-1)" style="padding:3px 7px">↑</button>`:''}
-          ${i<helfoBlocks.length-1?`<button class="btn btn-ghost btn-sm" onclick="moveHelfoBlock(${i},1)" style="padding:3px 7px">↓</button>`:''}
-          <button class="btn btn-danger btn-sm" onclick="removeHelfoBlock(${i})" style="padding:3px 7px">✕</button>
-        </div>
-      </div>
-      ${renderBlockPreview(b)}
-    </div>`).join('');
-}
-
-function getBlockIcon(type){
-  return {text:'📝',image:'🖼️',video:'▶️',link:'🔗',title:'📌',warning:'⚠️',tip:'💡',code:'💻'}[type]||'📄';
-}
-
-function renderBlockPreview(b){
-  switch(b.type){
-    case 'title': return `<div style="font-weight:700;font-size:.9rem;color:var(--txt)">${esc(b.content||'')}</div>`;
-    case 'text': return `<div style="font-size:.78rem;color:var(--txt2);line-height:1.5;white-space:pre-wrap">${esc((b.content||'').substring(0,120))}${b.content?.length>120?'…':''}</div>`;
-    case 'image': return `<div style="display:flex;align-items:center;gap:8px"><div style="width:48px;height:32px;background:var(--surf3);border-radius:5px;overflow:hidden;flex-shrink:0">${b.url?`<img src="${esc(b.url)}" style="width:100%;height:100%;object-fit:cover">`:'🖼️'}</div><span style="font-size:.76rem;color:var(--txt2)">${esc(b.caption||b.url||'Image')}</span></div>`;
-    case 'video': return `<div style="display:flex;align-items:center;gap:8px"><div style="font-size:1.5rem">▶️</div><div><div style="font-size:.76rem;font-weight:600">${esc(b.title||'Vidéo YouTube')}</div><div style="font-size:.68rem;color:var(--txt3)">${esc(b.url||'')}</div></div></div>`;
-    case 'link': return `<div style="font-size:.76rem"><span style="color:var(--cyan)">${esc(b.label||b.url||'')}</span> <span style="color:var(--txt3)">→ ${esc(b.url||'')}</span></div>`;
-    case 'warning': return `<div style="font-size:.78rem;color:var(--gold);padding:6px 10px;background:var(--goldg);border-radius:6px;border-left:3px solid var(--gold)">⚠️ ${esc((b.content||'').substring(0,100))}</div>`;
-    case 'tip': return `<div style="font-size:.78rem;color:var(--grn);padding:6px 10px;background:var(--grng);border-radius:6px;border-left:3px solid var(--grn)">💡 ${esc((b.content||'').substring(0,100))}</div>`;
-    case 'code': return `<div style="font-family:var(--mono);font-size:.72rem;color:var(--cyan);background:var(--bg);padding:6px 10px;border-radius:6px">${esc((b.content||'').substring(0,120))}</div>`;
-    default: return `<div style="font-size:.76rem;color:var(--txt3)">${esc(JSON.stringify(b).substring(0,80))}</div>`;
-  }
-}
-
-function addHelfoBlock(type){
-  const b={type};
-  if(type==='title')b.content='';
-  else if(type==='text')b.content='';
-  else if(type==='image'){b.url='';b.caption='';}
-  else if(type==='video'){b.url='';b.title='';}
-  else if(type==='link'){b.url='';b.label='';}
-  else if(type==='warning')b.content='';
-  else if(type==='tip')b.content='';
-  else if(type==='code'){b.content='';b.lang='java';}
-  helfoBlocks.push(b);
-  renderHelfoBlocks();
-  // Open inline edit for new block
-  openBlockEdit(helfoBlocks.length-1);
-}
-
-function removeHelfoBlock(i){ helfoBlocks.splice(i,1); renderHelfoBlocks(); }
-function moveHelfoBlock(i,dir){ const tmp=helfoBlocks[i]; helfoBlocks[i]=helfoBlocks[i+dir]; helfoBlocks[i+dir]=tmp; renderHelfoBlocks(); }
-
-function openBlockEdit(i){
-  const b=helfoBlocks[i];
-  const overlay=document.getElementById('blockEditOv');
-  const body=document.getElementById('blockEditBody');
-  document.getElementById('blockEditTitle').textContent=`${getBlockIcon(b.type)} Modifier — ${b.type}`;
-  document.getElementById('be_idx').value=i;
-  let html='';
-  switch(b.type){
-    case 'title':
-      html=`<div class="fg"><label>Texte du titre</label><input type="text" class="inp" id="be_content" value="${esc(b.content||'')}" placeholder="Ex: Comment créer votre premier plugin ?"></div>`;
-      break;
-    case 'text':
-      html=`<div class="fg"><label>Contenu (texte libre)</label><textarea class="inp" id="be_content" style="min-height:120px">${esc(b.content||'')}</textarea></div>`;
-      break;
-    case 'image':
-      html=`<div class="fg"><label>URL de l'image</label><input type="text" class="inp" id="be_url" value="${esc(b.url||'')}" placeholder="https://..."></div>
-      <div class="fg"><label>Légende (optionnel)</label><input type="text" class="inp" id="be_caption" value="${esc(b.caption||'')}" placeholder="Description de l'image"></div>`;
-      break;
-    case 'video':
-      html=`<div class="fg"><label>URL YouTube</label><input type="text" class="inp" id="be_url" value="${esc(b.url||'')}" placeholder="https://www.youtube.com/watch?v=..."></div>
-      <div class="fg"><label>Titre de la vidéo</label><input type="text" class="inp" id="be_title" value="${esc(b.title||'')}" placeholder="Ex: Tutoriel complet"></div>`;
-      break;
-    case 'link':
-      html=`<div class="fg"><label>URL</label><input type="text" class="inp" id="be_url" value="${esc(b.url||'')}" placeholder="https://..."></div>
-      <div class="fg"><label>Texte du lien</label><input type="text" class="inp" id="be_label" value="${esc(b.label||'')}" placeholder="Ex: Voir la documentation"></div>`;
-      break;
-    case 'warning':
-      html=`<div class="fg"><label>Texte d'avertissement</label><textarea class="inp" id="be_content" style="min-height:80px">${esc(b.content||'')}</textarea></div>`;
-      break;
-    case 'tip':
-      html=`<div class="fg"><label>Conseil / Astuce</label><textarea class="inp" id="be_content" style="min-height:80px">${esc(b.content||'')}</textarea></div>`;
-      break;
-    case 'code':
-      html=`<div class="fg"><label>Langage</label><input type="text" class="inp" id="be_lang" value="${esc(b.lang||'java')}" placeholder="java, js, python..."></div>
-      <div class="fg"><label>Code</label><textarea class="inp" style="min-height:120px;font-family:var(--mono)" id="be_content">${esc(b.content||'')}</textarea></div>`;
-      break;
-  }
-  body.innerHTML=html+`<button class="btn btn-primary btn-full" onclick="saveBlockEdit()" style="margin-top:10px">✓ Confirmer</button>`;
-  overlay.classList.add('open');
-}
-
-function saveBlockEdit(){
-  const i=parseInt(document.getElementById('be_idx').value);
-  const b=helfoBlocks[i];
-  const gv=id=>{ const el=document.getElementById(id); return el?el.value.trim():''; };
-  if(b.type==='title'||b.type==='text'||b.type==='warning'||b.type==='tip')b.content=gv('be_content');
-  else if(b.type==='code'){b.content=gv('be_content');b.lang=gv('be_lang')||'java';}
-  else if(b.type==='image'){b.url=gv('be_url');b.caption=gv('be_caption');}
-  else if(b.type==='video'){b.url=gv('be_url');b.title=gv('be_title');}
-  else if(b.type==='link'){b.url=gv('be_url');b.label=gv('be_label');}
-  document.getElementById('blockEditOv').classList.remove('open');
-  renderHelfoBlocks();
+  // Build RTE
+  const rteWrap = document.getElementById('hf_rte_wrap');
+  rteWrap.innerHTML = buildRTEToolbar('hf_content');
+  document.getElementById('hf_content').value = h?.content||'';
+  updateRTEPreview('hf_content');
 }
 
 async function saveHelfo(){
@@ -717,7 +778,7 @@ async function saveHelfo(){
     order:Number(document.getElementById('hf_order').value)||999,
     featured:document.getElementById('hf_featured_tog').classList.contains('on'),
     hidden:document.getElementById('hf_hidden_tog').classList.contains('on'),
-    blocks:helfoBlocks,
+    content:document.getElementById('hf_content').value,
     updatedAt:new Date().toISOString()
   };
   if(!data.title){toast('Le titre est requis','error');return;}
