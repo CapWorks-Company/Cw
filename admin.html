@@ -7,27 +7,8 @@
 <link rel="icon" type="image/png" href="CWS_Logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-<script type="module">
-  import { initializeApp }    from 'https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js';
-  import { getFirestore, collection, doc, getDocs, getDoc, setDoc, addDoc, updateDoc, deleteDoc, increment, onSnapshot }
-    from 'https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js';
-  const firebaseConfig = {
-    apiKey:            "AIzaSyAJOq0GjS7g75RPyL5WsqKogXp9K1Qja7M",
-    authDomain:        "capworks-studio-fr.firebaseapp.com",
-    databaseURL:       "https://capworks-studio-fr-default-rtdb.firebaseio.com",
-    projectId:         "capworks-studio-fr",
-    storageBucket:     "capworks-studio-fr.firebasestorage.app",
-    messagingSenderId: "466455700751",
-    appId:             "1:466455700751:web:6ca548df73dd8e47b70a7a",
-    measurementId:     "G-8DMZPBS6J3"
-  };
-  const app = initializeApp(firebaseConfig);
-  const db  = getFirestore(app);
-  window.__db = db;
-  window.__firebase = { collection, doc, getDocs, getDoc, setDoc, addDoc, updateDoc, deleteDoc, increment, onSnapshot };
-  window.__firebaseReady = true;
-  document.dispatchEvent(new Event('firebase-ready'));
-</script>
+<!-- Firebase supprimé : tout passe désormais par le Worker (voir API plus bas) -->
+
 
 <style>
 :root {
@@ -286,7 +267,6 @@ const CAT_META={
   assets:{label:'Assets',icon:'📦'}, other:{label:'Autres',icon:'◈'}
 };
 
-let db=null, FB=null;
 let curUser=JSON.parse(localStorage.getItem('cw_session')||'null');
 let projects={}; CATS.forEach(c=>projects[c]=[]);
 let campaigns=[], team=[], helfos=[], activeCat='sites', activeView='projects';
@@ -318,8 +298,6 @@ async function initAdmin(){
   $('loginWrap').style.display='none';
   $('adminPanel').style.display='grid';
   $('hdrR').innerHTML=`<div style="font-size:.78rem;color:var(--txt2);font-weight:600">${curUser.emoji||'👑'} ${esc(curUser.username)}</div><a href="home.html" class="btn btn-ghost btn-sm">← Site</a><button class="btn btn-danger btn-sm" onclick="logout()">🚪 Déco</button>`;
-  await waitForFirebase();
-  db=window.__db; FB=window.__firebase;
   await Promise.all([loadAllProjects(),loadSettings(),loadCampaigns(),loadTeam(),loadHelfos()]);
   switchView('projects');
 }
@@ -327,24 +305,23 @@ function showLogin(msg){
   $('loginWrap').style.display='flex'; $('adminPanel').style.display='none';
   if(msg)$('lErr').textContent='✕ '+msg;
 }
-function waitForFirebase(){return new Promise(resolve=>{if(window.__firebaseReady){resolve();return;}document.addEventListener('firebase-ready',resolve,{once:true});setTimeout(resolve,6000);});}
 
 async function loadAllProjects(){
   for(const cat of CATS){
-    const snap=await FB.getDocs(FB.collection(db,`projects_${cat}`));
-    projects[cat]=[]; snap.forEach(d=>projects[cat].push({id:d.id,...d.data()}));
+    const list=await apiGet('/api/projects?cat='+cat);
+    projects[cat]=Array.isArray(list)?list:[];
     projects[cat].sort((a,b)=>(a.order||999)-(b.order||999));
   }
 }
 async function loadSettings(){
-  try{ const snap=await FB.getDoc(FB.doc(db,'config','projects_settings')); if(snap.exists())settings={...settings,...snap.data()}; }catch(e){}
+  try{ const s=await apiGet('/api/admin/projects/settings'); if(s && !s.error) settings={...settings,...s}; }catch(e){}
 }
 async function loadCampaigns(){ const d=await apiGet('/api/admin/campaigns'); campaigns=Array.isArray(d)?d:[]; }
 async function loadTeam(){ const d=await apiGet('/api/team'); team=Array.isArray(d)?d:[]; }
 async function loadHelfos(){
   try{
-    const snap=await FB.getDocs(FB.collection(db,'helfos'));
-    helfos=[]; snap.forEach(d=>helfos.push({id:d.id,...d.data()}));
+    const list=await apiGet('/api/admin/helfos');
+    helfos=Array.isArray(list)?list:[];
     helfos.sort((a,b)=>(a.order||999)-(b.order||999));
     const cnt=document.getElementById('helfosCnt');
     if(cnt)cnt.textContent=helfos.length;
@@ -397,12 +374,14 @@ function renderProjList(){
 async function toggleHidden(cat,id){
   const p=projects[cat].find(x=>x.id===id); if(!p)return;
   p.hidden=!p.hidden;
-  await FB.updateDoc(FB.doc(db,`projects_${cat}`,id),{hidden:p.hidden});
+  const res=await apiPost('/api/admin/projects',{cat,id,hidden:p.hidden},'PATCH');
+  if(res.error){ p.hidden=!p.hidden; toast('Erreur : '+res.error,'error'); return; }
   toast(p.hidden?'Projet masqué':'Projet affiché'); renderProjList();
 }
 async function deleteProj(cat,id){
   if(!confirm('Supprimer définitivement ce projet ?'))return;
-  await FB.deleteDoc(FB.doc(db,`projects_${cat}`,id));
+  const res=await apiPost('/api/admin/projects',{cat,id},'DELETE');
+  if(res.error){ toast('Erreur : '+res.error,'error'); return; }
   projects[cat]=projects[cat].filter(p=>p.id!==id);
   toast('Projet supprimé'); renderProjList();
 }
@@ -508,13 +487,18 @@ async function saveProj(){
   data.highlightOn=$('pf_highlightOn_tog').classList.contains('on');
   data.hidden=$('pf_hidden_tog').classList.contains('on');
   data.order=Number(data.order)||999;
-  if(!id){ data.likes=0; data.views=0; data.downloads=0; }
-  try{
-    if(id){ await FB.updateDoc(FB.doc(db,`projects_${cat}`,id),data); const idx=projects[cat].findIndex(p=>p.id===id); projects[cat][idx]={...projects[cat][idx],...data,id}; }
-    else { const ref=await FB.addDoc(FB.collection(db,`projects_${cat}`),data); projects[cat].push({id:ref.id,...data}); }
-    projects[cat].sort((a,b)=>(a.order||999)-(b.order||999));
-    closeProjForm(); toast('Projet enregistré !'); renderProjList();
-  }catch(e){ toast('Erreur : '+e.message,'error'); }
+  const isNew=!id;
+  const finalId=id||(cat+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,8));
+  // Fusion avec le projet existant pour ne pas perdre likes/vues/téléchargements
+  // (le Worker remplace le document entier, contrairement à l'ancien updateDoc de Firestore).
+  const existing=isNew?{}:(projects[cat].find(p=>p.id===id)||{});
+  const project={ ...existing, ...data, id:finalId };
+  if(isNew){ project.likes=0; project.views=0; project.downloads=0; }
+  const res=await apiPost('/api/admin/projects',{cat,project},'PUT');
+  if(res.error){ toast('Erreur : '+res.error,'error'); return; }
+  if(isNew){ projects[cat].push(project); } else { const idx=projects[cat].findIndex(p=>p.id===id); projects[cat][idx]=project; }
+  projects[cat].sort((a,b)=>(a.order||999)-(b.order||999));
+  closeProjForm(); toast('Projet enregistré !'); renderProjList();
 }
 
 
@@ -790,29 +774,27 @@ async function saveHelfo(){
     updatedAt:new Date().toISOString()
   };
   if(!data.title){toast('Le titre est requis','error');return;}
-  try{
-    await FB.setDoc(FB.doc(db,'helfos',id),data);
-    const idx=helfos.findIndex(x=>x.id===id);
-    if(idx>=0)helfos[idx]=data; else helfos.push(data);
-    helfos.sort((a,b)=>(a.order||999)-(b.order||999));
-    const cnt=document.getElementById('helfosCnt');
-    if(cnt)cnt.textContent=helfos.length;
-    document.getElementById('helfoFormOv').classList.remove('open');
-    toast('Helfo enregistré ! 🧠');
-    if(activeView==='helfos')renderHelfosView($('content'));
-  }catch(e){toast('Erreur : '+e.message,'error');}
+  const res=await apiPost('/api/admin/helfos',data,'PUT');
+  if(res.error){ toast('Erreur : '+res.error,'error'); return; }
+  const idx=helfos.findIndex(x=>x.id===id);
+  if(idx>=0)helfos[idx]=data; else helfos.push(data);
+  helfos.sort((a,b)=>(a.order||999)-(b.order||999));
+  const cnt=document.getElementById('helfosCnt');
+  if(cnt)cnt.textContent=helfos.length;
+  document.getElementById('helfoFormOv').classList.remove('open');
+  toast('Helfo enregistré ! 🧠');
+  if(activeView==='helfos')renderHelfosView($('content'));
 }
 
 async function deleteHelfo(id){
   if(!confirm('Supprimer ce Helfo ?'))return;
-  try{
-    await FB.deleteDoc(FB.doc(db,'helfos',id));
-    helfos=helfos.filter(x=>x.id!==id);
-    const cnt=document.getElementById('helfosCnt');
-    if(cnt)cnt.textContent=helfos.length;
-    toast('Helfo supprimé');
-    renderHelfosView($('content'));
-  }catch(e){toast('Erreur : '+e.message,'error');}
+  const res=await apiPost('/api/admin/helfos',{id},'DELETE');
+  if(res.error){ toast('Erreur : '+res.error,'error'); return; }
+  helfos=helfos.filter(x=>x.id!==id);
+  const cnt=document.getElementById('helfosCnt');
+  if(cnt)cnt.textContent=helfos.length;
+  toast('Helfo supprimé');
+  renderHelfosView($('content'));
 }
 
 /* ══════════════ CAMPAGNES ══════════════ */
@@ -974,20 +956,22 @@ async function renderUsersView(c){
 
   $('usersList').querySelectorAll('.item-title').forEach(el=>{ el.style.display='flex'; el.style.alignItems='center'; el.style.gap='8px'; el.style.flexWrap='wrap'; });
 
-  if(db && FB){
-    try{
-      _usersUnsub=FB.onSnapshot ? FB.onSnapshot(FB.collection(db,'cw_users'),snap=>{
-        snap.forEach(d=>{
-          const data=d.data(); const row=document.querySelector(`.item-row[data-username="${cssEsc(d.id)}"]`);
-          if(!row)return;
-          const dot=row.querySelector('.online-dot'), lbl=row.querySelector('.online-label');
-          const on=!!data.online;
-          if(dot){ dot.style.background=on?'var(--grn)':'var(--txt3)'; dot.style.boxShadow=on?'0 0 6px var(--grn)':'none'; }
-          if(lbl){ lbl.style.color=on?'var(--grn)':'var(--txt3)'; lbl.textContent=on?'● En ligne':'○ Hors ligne'; }
-        });
-      }) : null;
-    }catch(e){ console.warn('Realtime status indisponible :',e.message); }
-  }
+  // Pas de temps réel poussé par le serveur (Worker sans WebSocket) : on
+  // rafraîchit le statut en ligne par un petit polling toutes les 8s tant
+  // que cette vue est affichée.
+  const intervalId=setInterval(async()=>{
+    const fresh=await apiGet('/api/admin/users');
+    if(fresh.error || !Array.isArray(fresh))return;
+    fresh.forEach(u=>{
+      const row=document.querySelector(`.item-row[data-username="${cssEsc(u.username)}"]`);
+      if(!row)return;
+      const dot=row.querySelector('.online-dot'), lbl=row.querySelector('.online-label');
+      const on=!!u.online;
+      if(dot){ dot.style.background=on?'var(--grn)':'var(--txt3)'; dot.style.boxShadow=on?'0 0 6px var(--grn)':'none'; }
+      if(lbl){ lbl.style.color=on?'var(--grn)':'var(--txt3)'; lbl.textContent=on?'● En ligne':'○ Hors ligne'; }
+    });
+  },8000);
+  _usersUnsub=()=>clearInterval(intervalId);
 }
 function cssEsc(s){ return CSS.escape(String(s)); }
 async function changeUserRole(username,role){
@@ -1097,8 +1081,9 @@ async function saveProjectSettings(){
     enableDownloadCount:$('st_enableDownloadCount').classList.contains('on'),
     showHighlights:$('st_showHighlights').classList.contains('on')
   };
-  try{ await FB.setDoc(FB.doc(db,'config','projects_settings'),settings); toast('Paramètres enregistrés !'); }
-  catch(e){ toast('Erreur : '+e.message,'error'); }
+  const res=await apiPost('/api/admin/projects/settings',settings);
+  if(res.error){ toast('Erreur : '+res.error,'error'); return; }
+  toast('Paramètres enregistrés !');
 }
 async function changeAdminPassword(){
   const p=$('st_newPass').value; const msg=$('st_passMsg');
