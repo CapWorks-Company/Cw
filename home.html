@@ -376,7 +376,7 @@ let curUser=JSON.parse(localStorage.getItem('cw_session')||'null');
 let team=[],tickets={},activeTicket=null;
 
 async function apiGet(path){try{const r=await fetch(API+path,{headers:curUser?.token?{Authorization:`Bearer ${curUser.token}`}:{}});if(!r.ok)return{error:`HTTP ${r.status}`};return r.json();}catch(e){return{error:'Réseau'};}}
-async function apiPost(path,body){try{const r=await fetch(API+path,{method:'POST',headers:{'Content-Type':'application/json',...(curUser?.token&&{Authorization:`Bearer ${curUser.token}`})},body:JSON.stringify(body)});if(!r.ok){try{return await r.json();}catch{return{error:`HTTP ${r.status}`};}}return r.json();}catch(e){return{error:'Réseau'};}}
+async function apiPost(path,body){try{const r=await fetch(API+path,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',...(curUser?.token&&{Authorization:`Bearer ${curUser.token}`})},body:JSON.stringify(body)});if(!r.ok){try{return await r.json();}catch{return{error:`HTTP ${r.status}`};}}return r.json();}catch(e){return{error:'Réseau'};}}
 
 async function initApp(){updateHdr();renderSup();if(curUser){setOnline(true);await loadMe();updateHdr();}await loadTeam();updateAboutStats();}
 async function loadMe(){if(!curUser)return;const me=await apiGet('/api/user/me');if(!me||me.error)return;curUser={...curUser,...me};localStorage.setItem('cw_session',JSON.stringify(curUser));}
