@@ -7,27 +7,7 @@
 <link rel="icon" type="image/png" href="CW_Logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-<script type="module">
-  import { initializeApp }    from 'https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js';
-  import { getFirestore, collection, getDocs, doc, getDoc }
-    from 'https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js';
-  const firebaseConfig = {
-    apiKey:            "AIzaSyAJOq0GjS7g75RPyL5WsqKogXp9K1Qja7M",
-    authDomain:        "capworks-studio-fr.firebaseapp.com",
-    databaseURL:       "https://capworks-studio-fr-default-rtdb.firebaseio.com",
-    projectId:         "capworks-studio-fr",
-    storageBucket:     "capworks-studio-fr.firebasestorage.app",
-    messagingSenderId: "466455700751",
-    appId:             "1:466455700751:web:6ca548df73dd8e47b70a7a",
-    measurementId:     "G-8DMZPBS6J3"
-  };
-  const app = initializeApp(firebaseConfig);
-  const db  = getFirestore(app);
-  window.__db = db;
-  window.__firebase = { collection, getDocs, doc, getDoc };
-  window.__firebaseReady = true;
-  document.dispatchEvent(new Event('firebase-ready'));
-</script>
+<!-- Firebase supprimé : cette page utilise déjà l'API publique du Worker (/api/helfos) -->
 
 <style>
 :root {
@@ -455,27 +435,17 @@ function embedYT(el, vid){
 }
 
 /* ══════════════════════════════════════
-   FIREBASE LOAD
+   CHARGEMENT DES HELFOS (via l'API publique du Worker)
 ══════════════════════════════════════ */
-function waitForFirebase(){
-  return new Promise(resolve=>{
-    if(window.__firebaseReady){resolve();return;}
-    document.addEventListener('firebase-ready',resolve,{once:true});
-    setTimeout(resolve,6000);
-  });
-}
+const API='https://capworks-worker.capkychannel.workers.dev';
 
 async function loadHelfos(){
-  await waitForFirebase();
-  const db=window.__db, FB=window.__firebase;
   try{
-    const snap = await FB.getDocs(FB.collection(db,'helfos'));
-    allHelfos = [];
-    snap.forEach(d => {
-      const data = {id:d.id,...d.data()};
-      if(!data.hidden) allHelfos.push(data);
-    });
-    allHelfos.sort((a,b)=>(a.order||999)-(b.order||999));
+    const res=await fetch(API+'/api/helfos');
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const list=await res.json();
+    // Le Worker filtre déjà les éléments masqués et trie par ordre.
+    allHelfos=Array.isArray(list)?list:[];
     buildCatFilters();
     renderGrid();
   }catch(e){
