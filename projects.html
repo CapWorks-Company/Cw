@@ -7,31 +7,7 @@
 <link rel="icon" type="image/png" href="CW_Logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-<!-- Firebase SDK v12 -->
-<script type="module">
-  import { initializeApp }    from 'https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js';
-  import { getFirestore, collection, doc, getDocs, getDoc, setDoc, addDoc, updateDoc, deleteDoc, increment }
-    from 'https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js';
-
-  const firebaseConfig = {
-    apiKey:            "AIzaSyAJOq0GjS7g75RPyL5WsqKogXp9K1Qja7M",
-    authDomain:        "capworks-studio-fr.firebaseapp.com",
-    databaseURL:       "https://capworks-studio-fr-default-rtdb.firebaseio.com",
-    projectId:         "capworks-studio-fr",
-    storageBucket:     "capworks-studio-fr.firebasestorage.app",
-    messagingSenderId: "466455700751",
-    appId:             "1:466455700751:web:6ca548df73dd8e47b70a7a",
-    measurementId:     "G-8DMZPBS6J3"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db  = getFirestore(app);
-
-  window.__db        = db;
-  window.__firebase  = { collection, doc, getDocs, getDoc, setDoc, addDoc, updateDoc, deleteDoc, increment };
-  window.__firebaseReady = true;
-  document.dispatchEvent(new Event('firebase-ready'));
-</script>
+<!-- Firebase supprimé : tout passe désormais par le Worker (voir plus bas) -->
 
 <style>
 :root {
@@ -326,7 +302,7 @@ footer a:hover{text-decoration:underline}
     <a href="home.html#contact">Contact</a>
   </nav>
   <div style="display:flex;align-items:center;gap:8px">
-    <span class="fb-pill" id="fbPill" style="display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.6rem;padding:3px 10px;border-radius:99px;color:var(--gold);background:rgba(253,203,110,.07);border:1px solid rgba(253,203,110,.2)"><span class="spin" style="display:inline-block;animation:spin .8s linear infinite">⟳</span> Firebase</span>
+    <span class="fb-pill" id="fbPill" style="display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:.6rem;padding:3px 10px;border-radius:99px;color:var(--gold);background:rgba(253,203,110,.07);border:1px solid rgba(253,203,110,.2)"><span class="spin" style="display:inline-block;animation:spin .8s linear infinite">⟳</span> DB</span>
     <a href="home.html" class="btn btn-ghost btn-sm">← Accueil</a>
   </div>
 </header>
@@ -402,11 +378,11 @@ const CAT_META={
 };
 
 const LS_LIKES='cw_likes';
-let db=null, FB=null;
+const API='https://capworks-worker.capkychannel.workers.dev';
 let projects={}; CATS.forEach(c=>projects[c]=[]);
 let activeCat='all', searchQuery='';
 let likedProjects=JSON.parse(localStorage.getItem(LS_LIKES)||'{}');
-// Global feature toggles, configured from admin.html and stored in Firestore (config/projects_settings)
+// Réglages globaux, configurés depuis admin.html, servis par le Worker (Supabase derrière)
 let settings={ enableLikes:true, enableViews:true, enableDownloadCount:true, showHighlights:true };
 
 function setFbPill(t,x){
@@ -417,44 +393,33 @@ function setFbPill(t,x){
   el.innerHTML=x;
 }
 
-/* ══ FIREBASE INIT ══ */
-function waitForFirebase(){
-  return new Promise(resolve=>{
-    if(window.__firebaseReady){ resolve(); return; }
-    document.addEventListener('firebase-ready',resolve,{once:true});
-    setTimeout(resolve,6000);
-  });
-}
-async function initFirebase(){
-  await waitForFirebase();
-  if(!window.__db){ setFbPill('err','✕ Firebase'); return; }
-  db=window.__db; FB=window.__firebase;
-  await loadSettings();
-  await loadAllProjects();
-  setFbPill('ok','✓ Firebase');
+async function apiGet(path){try{const r=await fetch(API+path);if(!r.ok)return{error:`HTTP ${r.status}`};return r.json();}catch(e){return{error:'Réseau'};}}
+async function apiPost(path,body,method='POST'){try{const r=await fetch(API+path,{method,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});try{return await r.json();}catch{return{ok:r.ok,error:r.ok?undefined:`HTTP ${r.status}`};}}catch(e){return{error:'Réseau'};}}
+
+/* ══ CHARGEMENT (via le Worker, plus de SDK client) ══ */
+async function initData(){
+  await Promise.all([loadSettings(),loadAllProjects()]);
 }
 async function loadSettings(){
-  try{
-    const snap=await FB.getDoc(FB.doc(db,'config','projects_settings'));
-    if(snap.exists()){ settings={...settings,...snap.data()}; }
-  }catch(e){ /* defaults stay */ }
+  const s=await apiGet('/api/projects/settings');
+  if(s && !s.error) settings={...settings,...s};
 }
 async function loadAllProjects(){
-  if(!db)return;
   setFbPill('loading','<span class="spin" style="display:inline-block;animation:spin .8s linear infinite">⟳</span> Chargement');
   try{
     for(const cat of CATS){
-      const snap=await FB.getDocs(FB.collection(db,`projects_${cat}`));
-      projects[cat]=[];
-      snap.forEach(d=>projects[cat].push({id:d.id,...d.data()}));
+      const list=await apiGet('/api/projects?cat='+cat);
+      projects[cat]=(Array.isArray(list)?list:[]).filter(p=>!p.hidden);
       projects[cat].sort((a,b)=>(a.order||999)-(b.order||999));
     }
     updateCounts(); renderAll();
+    setFbPill('ok','✓ DB');
   }catch(e){ console.error(e); setFbPill('err','✕ Erreur'); }
 }
 async function incrementStat(cat,id,field){
-  if(!db)return;
-  try{ await FB.updateDoc(FB.doc(db,`projects_${cat}`,id),{[field]:FB.increment(1)}); }catch(e){}
+  const route={likes:'/api/public/project/like',views:'/api/public/project/view',downloads:'/api/public/project/download'}[field];
+  if(!route)return;
+  await apiPost(route,{cat,id}).catch(()=>{});
 }
 
 /* ══ COUNTS & SEARCH ══ */
@@ -723,15 +688,15 @@ function toggleLike(cat,id,btn){
   const key=cat+':'+id; const was=likedProjects[key]||likedProjects[id];
   if(was){ delete likedProjects[key]; delete likedProjects[id]; } else { likedProjects[key]=true; }
   localStorage.setItem(LS_LIKES,JSON.stringify(likedProjects));
-  if(db) incrementStat(cat,id,'likes');
+  apiPost('/api/public/project/like',{cat,id,delta:was?-1:1}).catch(()=>{});
   const proj=(projects[cat]||[]).find(p=>p.id===id);
   if(proj) proj.likes=(proj.likes||0)+(was?-1:1);
   btn.classList.toggle('liked',!was);
   btn.innerHTML=`<span class="like-ico">❤</span> ${proj?.likes||0}`;
 }
-function trackView(cat,id){ if(settings.enableViews===false||!db)return; incrementStat(cat,id,'views'); }
+function trackView(cat,id){ if(settings.enableViews===false)return; incrementStat(cat,id,'views'); }
 function trackDownload(cat,id){
-  if(settings.enableDownloadCount===false||!db)return;
+  if(settings.enableDownloadCount===false)return;
   incrementStat(cat,id,'downloads');
   const proj=(projects[cat]||[]).find(p=>p.id===id);
   if(proj) proj.downloads=(proj.downloads||0)+1;
@@ -763,7 +728,7 @@ function mpTick(pid){ const aud=document.getElementById('aud_'+pid); if(!aud||!a
 function mpMeta(pid){ const aud=document.getElementById('aud_'+pid); if(!aud)return; const dur=document.getElementById('dur_'+pid); if(dur)dur.textContent=_mpFmt(aud.duration); }
 function mpSeek(pid,e){ const aud=document.getElementById('aud_'+pid); if(!aud||!aud.duration)return; const bar=document.getElementById('bar_'+pid); const rect=bar.getBoundingClientRect(); aud.currentTime=((e.clientX-rect.left)/rect.width)*aud.duration; }
 
-initFirebase();
+initData();
 </script>
 </body>
 </html>
