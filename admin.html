@@ -945,7 +945,7 @@ function renderPluginsList(){
     <div class="item-row">
       <div class="item-thumb">${esc(p.icon||'🧩')}</div>
       <div class="item-main">
-        <div class="item-title">${esc(p.name||p.id)}${p.hidden?'<span class="item-badge hidden">Masqué</span>':''}</div>
+        <div class="item-title">${esc(p.name||p.id)}${p.hidden?'<span class="item-badge hidden">Masqué</span>':''}${p.price>0?`<span class="item-badge hl">${esc(String(p.price))}€</span>`:'<span class="item-badge" style="background:var(--grng);color:var(--grn);border:1px solid rgba(0,184,148,.3)">Gratuit</span>'}</div>
         <div class="item-meta">${esc(p.version||'—')} · MC ${esc(p.mc||'—')} · ${(p.tags||[]).join(', ')||'Aucun tag'}</div>
       </div>
       <div class="item-actions">
@@ -971,7 +971,11 @@ function openPluginForm(id){
     <div class="fg"><label>Description</label><textarea class="inp" id="pf_desc" rows="3" placeholder="Décrivez le plugin...">${esc(p?.desc||'')}</textarea></div>
     <div class="fg"><label>Tags / catégories <span style="font-weight:400;text-transform:none;color:var(--txt3)">(séparés par des virgules — génèrent les boutons de filtre sur la page CPlugins)</span></label><input type="text" class="inp" id="pf_tags" value="${esc((p?.tags||[]).join(', '))}" placeholder="Économie, Boutique"></div>
     <div class="fg-row">
-      <div class="fg"><label>Lien de téléchargement direct</label><input type="text" class="inp" id="pf_direct" value="${esc(p?.directLink||'')}" placeholder="https://..."></div>
+      <div class="fg"><label>Prix (€) <span style="font-weight:400;text-transform:none;color:var(--txt3)">— 0 = gratuit</span></label><input type="number" class="inp" id="pf_price" min="0" step="0.01" value="${p?.price??0}" placeholder="0"></div>
+      <div class="fg"><label>Lien d'achat <span style="font-weight:400;text-transform:none;color:var(--txt3)">(si payant)</span></label><input type="text" class="inp" id="pf_buy" value="${esc(p?.buyLink||'')}" placeholder="https://..."></div>
+    </div>
+    <div class="fg-row">
+      <div class="fg"><label>Lien de téléchargement direct <span style="font-weight:400;text-transform:none;color:var(--txt3)">(si gratuit)</span></label><input type="text" class="inp" id="pf_direct" value="${esc(p?.directLink||'')}" placeholder="https://..."></div>
       <div class="fg"><label>Lien de documentation</label><input type="text" class="inp" id="pf_docs" value="${esc(p?.docsLink||'')}" placeholder="https://..."></div>
     </div>
     <div class="tog-row"><label>🙈 Masquer sur la page publique</label><button class="tog-btn ${p?.hidden?'on':''}" id="pf_hidden_tog" onclick="toggleTog(this)"></button></div>
@@ -983,9 +987,11 @@ async function savePlugin(){
   const data={ id, icon:$('pf_icon').value.trim()||'🧩', order:Number($('pf_order').value)||999,
     name:$('pf_name').value.trim(), version:$('pf_version').value.trim(), mc:$('pf_mc').value.trim(),
     desc:$('pf_desc').value.trim(), tags:$('pf_tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+    price:Math.max(0,Number($('pf_price').value)||0), buyLink:$('pf_buy').value.trim(),
     directLink:$('pf_direct').value.trim(), docsLink:$('pf_docs').value.trim(),
     hidden:$('pf_hidden_tog').classList.contains('on') };
   if(!data.name){ toast('Le nom est requis','error'); return; }
+  if(data.price>0 && !data.buyLink){ toast('Un lien d\'achat est requis pour un plugin payant','error'); return; }
   const res=await apiPost('/api/admin/plugins',data,'PUT');
   if(res.error){ toast('Erreur : '+res.error,'error'); return; }
   const idx=plugins.findIndex(x=>x.id===id);
