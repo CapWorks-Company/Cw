@@ -36,9 +36,10 @@
       padding:16px 14px;border-bottom:1px solid var(--bdr,#1e1e38);flex-shrink:0;min-height:62px}
     .cw-sb-logo{display:flex;align-items:center;gap:9px;text-decoration:none;
       font-family:var(--display,sans-serif);font-weight:800;font-size:.92rem;
-      color:var(--txt,#e8e8f8);white-space:nowrap;overflow:hidden}
+      color:var(--txt,#e8e8f8);white-space:nowrap;overflow:hidden;
+      max-width:160px;opacity:1;transition:opacity .22s ease,max-width .3s ease,margin .3s ease}
     .cw-sb-logo img{width:26px;height:26px;border-radius:7px;flex-shrink:0;object-fit:cover}
-    #cwSidebar.collapsed .cw-sb-logo span{display:none}
+    #cwSidebar.collapsed .cw-sb-logo{opacity:0;max-width:0;margin-right:-9px;pointer-events:none}
     .cw-sb-toggle{background:var(--surf2,#141428);border:1px solid var(--bdr2,#2a2a4a);
       color:var(--txt2,#8888aa);width:26px;height:26px;border-radius:7px;
       display:flex;align-items:center;justify-content:center;cursor:pointer;
