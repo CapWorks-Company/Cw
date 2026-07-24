@@ -129,6 +129,7 @@ footer a:hover{text-decoration:underline}
   if(req.status===200){var text=req.responseText;var m=text.match(/IS_MAINTENANCE\s*=\s*(true|false)/);if(m&&m[1]==='true'){window.location.replace('index.html');}}
 })();
 </script>
+<script src="sidebar.js" defer></script>
 </head>
 <body>
 
@@ -142,6 +143,7 @@ footer a:hover{text-decoration:underline}
     <a href="projects.html">Projets</a>
     <a href="campagnes.html">Campagnes</a>
     <a href="societes.html" class="active">Sous-sociétés</a>
+    <a href="cplugins.html">CPlugins</a>
     <a href="helfos.html">Helfos</a>
     <a href="home.html#team">Équipe</a>
     <a href="home.html#contact">Contact</a>
@@ -183,33 +185,20 @@ footer a:hover{text-decoration:underline}
       <div class="sub-arrow">Découvrir →</div>
     </a>
 
-    <div class="sub-card locked" style="animation-delay:.1s">
-      <div class="sub-glow" style="background:#00cec9"></div>
+    <a href="cplugins.html" class="sub-card" style="animation-delay:.1s">
+      <div class="sub-glow" style="background:#5cb85c"></div>
       <div class="sub-top">
-        <div class="sub-ico" style="background:rgba(0,206,201,.12);color:#00cec9">🧩</div>
+        <div class="sub-ico" style="background:rgba(92,184,92,.14);color:#5cb85c">⛏️</div>
         <div>
-          <div class="sub-name">Nouvelle branche</div>
-          <div class="sub-tag">Domaine à définir</div>
+          <div class="sub-name">CPlugins</div>
+          <div class="sub-tag">Plugins Minecraft</div>
         </div>
       </div>
       <div class="sub-status soon"><span class="sdot"></span>Bientôt</div>
-      <div class="sub-desc">Un futur pôle CapWorks est en réflexion. Revenez bientôt pour découvrir cette prochaine sous-société.</div>
-      <div class="sub-arrow">À venir</div>
-    </div>
-
-    <div class="sub-card locked" style="animation-delay:.15s">
-      <div class="sub-glow" style="background:#fdcb6e"></div>
-      <div class="sub-top">
-        <div class="sub-ico" style="background:rgba(253,203,110,.12);color:#fdcb6e">✨</div>
-        <div>
-          <div class="sub-name">Nouvelle branche</div>
-          <div class="sub-tag">Domaine à définir</div>
-        </div>
-      </div>
-      <div class="sub-status soon"><span class="sdot"></span>Bientôt</div>
-      <div class="sub-desc">L'aventure CapWorks continue de grandir. Une place est réservée ici pour votre prochaine idée de pôle.</div>
-      <div class="sub-arrow">À venir</div>
-    </div>
+      <div class="sub-desc">Développement de plugins Minecraft sur mesure (Spigot/Paper), extensions de gameplay et outils pour serveurs. Le pôle CapWorks dédié à l'univers Minecraft.</div>
+      <div class="sub-focus"><span>Spigot</span><span>Paper</span><span>Serveurs</span></div>
+      <div class="sub-arrow">Aperçu →</div>
+    </a>
 
   </div>
 </section>

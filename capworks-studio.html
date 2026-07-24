@@ -181,6 +181,7 @@ footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(
   if(req.status===200){var text=req.responseText;var m=text.match(/IS_MAINTENANCE\s*=\s*(true|false)/);if(m&&m[1]==='true'){window.location.replace('index.html');}}
 })();
 </script>
+<script src="sidebar.js" defer></script>
 </head>
 <body>
 <header>
@@ -192,6 +193,7 @@ footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(
     <a href="home.html">Accueil CapWorks</a>
     <a href="capworks-studio.html" class="active">Studio</a>
     <a href="societes.html">Sous-sociétés</a>
+    <a href="cplugins.html">CPlugins</a>
     <a href="helfos.html">Helfos</a>
     <a href="#disciplines">Disciplines</a>
     <a href="#team">Équipe</a>
