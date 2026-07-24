@@ -85,9 +85,6 @@ nav a.active{color:var(--accent);background:rgba(92,184,92,.1)}
 .p-mc{font-size:.6rem;color:var(--cyan);border-color:rgba(139,195,74,.3)!important;background:rgba(139,195,74,.08)!important}
 .p-actions{display:flex;gap:8px}
 .p-actions .btn{flex:1}
-.p-example{position:relative}
-.p-example::after{content:'⚠ Exemple';position:absolute;top:-9px;right:16px;background:var(--gold);color:#1a1400;font-size:.58rem;font-weight:800;padding:2px 9px;border-radius:99px;letter-spacing:.5px}
-
 .empty-state{text-align:center;padding:60px 20px;color:var(--txt3)}
 .empty-state .ic{font-size:2.2rem;margin-bottom:10px}
 
@@ -150,10 +147,6 @@ footer a:hover{text-decoration:underline}
 </section>
 
 <section class="section">
-  <div class="notice-box" id="exampleNotice">
-    ⚠️ <b>Page en préparation.</b> Aucun plugin n'a encore été publié depuis l'admin — les fiches ci-dessous sont des <b>exemples</b> pour prévisualiser le rendu. Ajoutez vos plugins depuis <code>admin.html</code> → CPlugins pour qu'ils remplacent automatiquement ces exemples.
-  </div>
-
   <div class="filter-bar" id="filterBar">
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
@@ -209,31 +202,15 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
    ============================================================ */
 const API='https://capworks-worker.capkychannel.workers.dev';
 
-/* Exemples affichés uniquement tant qu'aucun plugin n'est publié depuis admin.html */
-const EXAMPLE_PLUGINS = [
-  { id:'ex1', name:'CapEco', version:'v1.4.2', icon:'💰', mc:'1.20 – 1.21',
-    desc:"Système d'économie complet avec monnaie virtuelle, boutiques joueurs et intégration Vault.",
-    tags:['Économie','Vault','Boutique'], directLink:'#', docsLink:'#', example:true },
-  { id:'ex2', name:'CapGuard', version:'v2.0.0', icon:'🛡️', mc:'1.20 – 1.21',
-    desc:'Protection de terrains et de claims avec permissions fines par joueur ou par groupe.',
-    tags:['Protection','Claims','Permissions'], directLink:'#', docsLink:'#', example:true },
-  { id:'ex3', name:'CapEvents', version:'v1.1.0', icon:'🎉', mc:'1.20 – 1.21',
-    desc:"Gestion et planification d'événements et minigames automatisés sur votre serveur.",
-    tags:['Gameplay','Minigames'], directLink:'#', docsLink:'#', example:true },
-  { id:'ex4', name:'CapAdmin', version:'v3.2.1', icon:'🧰', mc:'1.19 – 1.21',
-    desc:'Panel de modération complet : logs, kick/ban avancés, freeze, gestion de whitelist.',
-    tags:['Administration','Logs','Whitelist'], directLink:'#', docsLink:'#', example:true }
-];
-
 let PLUGINS = [];
 let activeCat = '';
+let loadError = false;
 
 function normalizePlugin(p){
   return {
     id:p.id, name:p.name||'—', version:p.version||'', icon:p.icon||'🧩', mc:p.mc||'—',
     desc:p.desc||p.description||'', tags:Array.isArray(p.tags)?p.tags:[],
-    directLink:p.directLink||p.direct_link||'#', docsLink:p.docsLink||p.docs_link||'#',
-    example:false
+    directLink:p.directLink||p.direct_link||'#', docsLink:p.docsLink||p.docs_link||'#'
   };
 }
 
@@ -242,17 +219,11 @@ async function loadPlugins(){
     const r=await fetch(API+'/api/plugins');
     if(r.ok){
       const data=await r.json();
-      if(Array.isArray(data)&&data.length){
-        PLUGINS=data.map(normalizePlugin);
-        $('exampleNotice').style.display='none';
-        buildCategories();
-        renderPlugins();
-        return;
-      }
+      PLUGINS=Array.isArray(data)?data.map(normalizePlugin):[];
+    } else {
+      loadError=true;
     }
-  }catch(e){ /* API indisponible → on garde les exemples */ }
-  PLUGINS=EXAMPLE_PLUGINS;
-  $('exampleNotice').style.display='block';
+  }catch(e){ loadError=true; }
   buildCategories();
   renderPlugins();
 }
@@ -281,12 +252,21 @@ function renderPlugins(){
   });
   const grid=$('pluginGrid');
   $('stCount').textContent=PLUGINS.length;
+  if(!PLUGINS.length){
+    grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1">
+      <div class="ic">${loadError?'⚠️':'⛏️'}</div>
+      <p>${loadError
+        ? "Impossible de charger les plugins pour le moment. Réessayez plus tard."
+        : "Aucun plugin publié pour l'instant. Ajoutez-en depuis <code>admin.html</code> → CPlugins."}</p>
+    </div>`;
+    return;
+  }
   if(!list.length){
     grid.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="ic">🔍</div><p>Aucun plugin ne correspond à votre recherche.</p></div>';
     return;
   }
   grid.innerHTML=list.map((p,i)=>`
-    <div class="plugin-card${p.example?' p-example':''}" style="animation-delay:${i*.05}s">
+    <div class="plugin-card" style="animation-delay:${i*.05}s">
       <div class="p-top">
         <div class="p-ico">${p.icon}</div>
         <div>
