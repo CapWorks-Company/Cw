@@ -175,10 +175,10 @@ select.inp{cursor:pointer}
     <div style="font-size:2rem;margin-bottom:10px">🔐</div>
     <h2>Accès administrateur</h2>
     <p>Connectez-vous avec un compte étant <b>administrateur</b>.</p>
-    <div class="fg"><label>Pseudo</label><input type="text" class="inp" id="lUser" placeholder="Votre pseudo..."></div>
-    <div class="fg"><label>Mot de passe</label><input type="password" class="inp" id="lPass" placeholder="••••••••" onkeypress="if(event.key==='Enter')doAdminLogin()"></div>
+    <div class="fg"><label>Pseudo admin</label><input type="text" class="inp" id="lUser" placeholder="Votre pseudo..."></div>
+    <div class="fg"><label>Mot de passe admin</label><input type="password" class="inp" id="lPass" placeholder="••••••••" onkeypress="if(event.key==='Enter')doAdminLogin()"></div>
     <div style="height:1px;background:var(--bdr);margin:16px 0"></div>
-    <div class="fg"><label style="display:flex;align-items:center;gap:6px">🔑 Mot de passe administration <span style="font-size:.58rem;color:var(--txt3);font-weight:400;text-transform:none;letter-spacing:0">(défini dans Paramètres)</span></label><input type="password" class="inp" id="lAdminPass" placeholder="••••••••" onkeypress="if(event.key==='Enter')doAdminLogin()"></div>
+    <div class="fg"><label style="display:flex;align-items:center;gap:6px">🔑 Mot de passe du panel admin <span style="font-size:.58rem;color:var(--txt3);font-weight:400;text-transform:none;letter-spacing:0">(défini dans Paramètres)</span></label><input type="password" class="inp" id="lAdminPass" placeholder="••••••••" onkeypress="if(event.key==='Enter')doAdminLogin()"></div>
     <div class="err-msg" id="lErr"></div>
     <button class="btn btn-primary btn-full" style="margin-top:6px" onclick="doAdminLogin()">Se connecter →</button>
   </div>
