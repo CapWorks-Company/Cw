@@ -196,6 +196,7 @@ select.inp{cursor:pointer}
       <div class="side-link" data-view="helfos" onclick="switchView('helfos')">🧠 Helfos <span class="cnt" id="helfosCnt">0</span></div>
       <div class="side-link" data-view="campaigns" onclick="switchView('campaigns')">💛 Campagnes</div>
       <div class="side-link" data-view="team" onclick="switchView('team')">👥 Équipe</div>
+      <div class="side-link" data-view="plugins" onclick="switchView('plugins')">⛏️ CPlugins <span class="cnt" id="pluginsCnt">0</span></div>
     </div>
     <div class="side-section">
       <div class="side-title">Communauté</div>
@@ -269,7 +270,7 @@ const CAT_META={
 
 let curUser=JSON.parse(localStorage.getItem('cw_session')||'null');
 let projects={}; CATS.forEach(c=>projects[c]=[]);
-let campaigns=[], team=[], helfos=[], activeCat='sites', activeView='projects';
+let campaigns=[], team=[], helfos=[], plugins=[], activeCat='sites', activeView='projects';
 let settings={ enableLikes:true, enableViews:true, enableDownloadCount:true, showHighlights:true };
 
 async function apiGet(path){try{const r=await fetch(API+path,{headers:curUser?.token?{Authorization:`Bearer ${curUser.token}`}:{}});if(!r.ok)return{error:`HTTP ${r.status}`};return r.json();}catch(e){return{error:'Réseau'};}}
@@ -298,7 +299,7 @@ async function initAdmin(){
   $('loginWrap').style.display='none';
   $('adminPanel').style.display='grid';
   $('hdrR').innerHTML=`<div style="font-size:.78rem;color:var(--txt2);font-weight:600">${curUser.emoji||'👑'} ${esc(curUser.username)}</div><a href="home.html" class="btn btn-ghost btn-sm">← Site</a><button class="btn btn-danger btn-sm" onclick="logout()">🚪 Déco</button>`;
-  await Promise.all([loadAllProjects(),loadSettings(),loadCampaigns(),loadTeam(),loadHelfos()]);
+  await Promise.all([loadAllProjects(),loadSettings(),loadCampaigns(),loadTeam(),loadHelfos(),loadPlugins()]);
   switchView('projects');
 }
 function showLogin(msg){
@@ -318,6 +319,13 @@ async function loadSettings(){
 }
 async function loadCampaigns(){ const d=await apiGet('/api/admin/campaigns'); campaigns=Array.isArray(d)?d:[]; }
 async function loadTeam(){ const d=await apiGet('/api/team'); team=Array.isArray(d)?d:[]; }
+async function loadPlugins(){
+  const d=await apiGet('/api/admin/plugins');
+  plugins=Array.isArray(d)?d:[];
+  plugins.sort((a,b)=>(a.order||999)-(b.order||999));
+  const cnt=document.getElementById('pluginsCnt');
+  if(cnt)cnt.textContent=plugins.length;
+}
 async function loadHelfos(){
   try{
     const list=await apiGet('/api/admin/helfos');
@@ -337,6 +345,7 @@ function switchView(view){
   else if(view==='helfos')renderHelfosView(c);
   else if(view==='campaigns')renderCampaignsView(c);
   else if(view==='team')renderTeamView(c);
+  else if(view==='plugins')renderPluginsView(c);
   else if(view==='users')renderUsersView(c);
   else if(view==='tickets')renderTicketsView(c);
   else if(view==='messages')renderMessagesView(c);
@@ -920,6 +929,76 @@ async function deleteTeam(id){
   const res=await apiPost('/api/admin/team',{id},'DELETE');
   if(res.error){ toast('Erreur : '+res.error,'error'); return; }
   team=team.filter(t=>t.id!==id); toast('Membre supprimé'); renderTeamList();
+}
+
+/* ══════════════ CPLUGINS ══════════════ */
+function renderPluginsView(c){
+  c.innerHTML=`<h2>⛏️ CPlugins</h2><div class="sub">Plugins Minecraft affichés sur la page publique CPlugins. Les catégories (boutons de filtre) sont générées automatiquement à partir des tags que vous ajoutez ici.</div>
+  <div style="margin-bottom:14px"><button class="btn btn-primary btn-sm" onclick="openPluginForm()">+ Ajouter un plugin</button></div>
+  <div id="pluginsList"></div>`;
+  renderPluginsList();
+}
+function renderPluginsList(){
+  const list=$('pluginsList');
+  if(!plugins.length){ list.innerHTML='<div class="empty-hint">Aucun plugin. Cliquez sur « + Ajouter un plugin » pour créer le premier.</div>'; return; }
+  list.innerHTML=plugins.map(p=>`
+    <div class="item-row">
+      <div class="item-thumb">${esc(p.icon||'🧩')}</div>
+      <div class="item-main">
+        <div class="item-title">${esc(p.name||p.id)}${p.hidden?'<span class="item-badge hidden">Masqué</span>':''}</div>
+        <div class="item-meta">${esc(p.version||'—')} · MC ${esc(p.mc||'—')} · ${(p.tags||[]).join(', ')||'Aucun tag'}</div>
+      </div>
+      <div class="item-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openPluginForm('${p.id}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deletePlugin('${p.id}')">🗑</button>
+      </div>
+    </div>`).join('');
+}
+function openPluginForm(id){
+  const p=id?plugins.find(x=>x.id===id):{};
+  $('genFormTitle').textContent=id?'✏️ Modifier le plugin':'+ Nouveau plugin';
+  $('genFormBody').innerHTML=`
+    <input type="hidden" id="pf_id" value="${p?.id||''}">
+    <div class="fg-row">
+      <div class="fg"><label>Icône (emoji)</label><input type="text" class="inp" id="pf_icon" maxlength="2" value="${esc(p?.icon||'🧩')}" style="font-size:1.3rem;text-align:center"></div>
+      <div class="fg"><label>Ordre d'affichage</label><input type="number" class="inp" id="pf_order" value="${p?.order??999}"></div>
+    </div>
+    <div class="fg"><label>Nom du plugin</label><input type="text" class="inp" id="pf_name" value="${esc(p?.name||'')}" placeholder="Ex: CapEco"></div>
+    <div class="fg-row">
+      <div class="fg"><label>Version</label><input type="text" class="inp" id="pf_version" value="${esc(p?.version||'')}" placeholder="v1.0.0"></div>
+      <div class="fg"><label>Compatibilité MC</label><input type="text" class="inp" id="pf_mc" value="${esc(p?.mc||'')}" placeholder="1.20 – 1.21"></div>
+    </div>
+    <div class="fg"><label>Description</label><textarea class="inp" id="pf_desc" rows="3" placeholder="Décrivez le plugin...">${esc(p?.desc||'')}</textarea></div>
+    <div class="fg"><label>Tags / catégories <span style="font-weight:400;text-transform:none;color:var(--txt3)">(séparés par des virgules — génèrent les boutons de filtre sur la page CPlugins)</span></label><input type="text" class="inp" id="pf_tags" value="${esc((p?.tags||[]).join(', '))}" placeholder="Économie, Boutique"></div>
+    <div class="fg-row">
+      <div class="fg"><label>Lien de téléchargement direct</label><input type="text" class="inp" id="pf_direct" value="${esc(p?.directLink||'')}" placeholder="https://..."></div>
+      <div class="fg"><label>Lien de documentation</label><input type="text" class="inp" id="pf_docs" value="${esc(p?.docsLink||'')}" placeholder="https://..."></div>
+    </div>
+    <div class="tog-row"><label>🙈 Masquer sur la page publique</label><button class="tog-btn ${p?.hidden?'on':''}" id="pf_hidden_tog" onclick="toggleTog(this)"></button></div>
+    <button class="btn btn-primary btn-full" onclick="savePlugin()" style="margin-top:6px">💾 Enregistrer</button>`;
+  $('genFormOv').classList.add('open');
+}
+async function savePlugin(){
+  const id=$('pf_id').value||('plugin_'+Date.now().toString(36));
+  const data={ id, icon:$('pf_icon').value.trim()||'🧩', order:Number($('pf_order').value)||999,
+    name:$('pf_name').value.trim(), version:$('pf_version').value.trim(), mc:$('pf_mc').value.trim(),
+    desc:$('pf_desc').value.trim(), tags:$('pf_tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+    directLink:$('pf_direct').value.trim(), docsLink:$('pf_docs').value.trim(),
+    hidden:$('pf_hidden_tog').classList.contains('on') };
+  if(!data.name){ toast('Le nom est requis','error'); return; }
+  const res=await apiPost('/api/admin/plugins',data,'PUT');
+  if(res.error){ toast('Erreur : '+res.error,'error'); return; }
+  const idx=plugins.findIndex(x=>x.id===id);
+  if(idx>=0)plugins[idx]=data; else plugins.push(data);
+  closeOv('genFormOv'); toast('Plugin enregistré !'); renderPluginsList();
+  const cnt=document.getElementById('pluginsCnt'); if(cnt)cnt.textContent=plugins.length;
+}
+async function deletePlugin(id){
+  if(!confirm('Supprimer ce plugin ?'))return;
+  const res=await apiPost('/api/admin/plugins',{id},'DELETE');
+  if(res.error){ toast('Erreur : '+res.error,'error'); return; }
+  plugins=plugins.filter(x=>x.id!==id); toast('Plugin supprimé'); renderPluginsList();
+  const cnt=document.getElementById('pluginsCnt'); if(cnt)cnt.textContent=plugins.length;
 }
 
 /* ══════════════ UTILISATEURS ══════════════ */

@@ -150,8 +150,8 @@ footer a:hover{text-decoration:underline}
 </section>
 
 <section class="section">
-  <div class="notice-box">
-    ⚠️ <b>Page en préparation.</b> CPlugins vient de rejoindre les sous-sociétés CapWorks — les fiches ci-dessous sont des <b>exemples</b> pour prévisualiser le rendu. Donnez-nous la vraie liste de vos plugins (nom, description, version, lien de téléchargement) et cette page sera mise à jour avec le contenu définitif.
+  <div class="notice-box" id="exampleNotice">
+    ⚠️ <b>Page en préparation.</b> Aucun plugin n'a encore été publié depuis l'admin — les fiches ci-dessous sont des <b>exemples</b> pour prévisualiser le rendu. Ajoutez vos plugins depuis <code>admin.html</code> → CPlugins pour qu'ils remplacent automatiquement ces exemples.
   </div>
 
   <div class="filter-bar" id="filterBar">
@@ -159,11 +159,7 @@ footer a:hover{text-decoration:underline}
       <span class="search-icon">🔍</span>
       <input type="text" id="searchInp" placeholder="Rechercher un plugin..." oninput="renderPlugins()">
     </div>
-    <button class="filter-btn active" data-cat="" onclick="setCat(this,'')">Tout</button>
-    <button class="filter-btn" data-cat="Gameplay" onclick="setCat(this,'Gameplay')">Gameplay</button>
-    <button class="filter-btn" data-cat="Administration" onclick="setCat(this,'Administration')">Administration</button>
-    <button class="filter-btn" data-cat="Économie" onclick="setCat(this,'Économie')">Économie</button>
-    <button class="filter-btn" data-cat="Protection" onclick="setCat(this,'Protection')">Protection</button>
+    <div id="fbButtons" style="display:flex;gap:10px;flex-wrap:wrap"></div>
   </div>
 
   <div class="plugin-grid" id="pluginGrid"></div>
@@ -211,34 +207,75 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
    - directLink : lien de téléchargement direct du .jar
    - docsLink   : lien vers la documentation / page d'installation
    ============================================================ */
-const PLUGINS = [
-  {
-    name:'CWards',
-    version:'v1.0.0',
-    icon:'💰',
-    category:'Récompenses',
-    mc:'1.20 – 1.21',
-    desc:"Système de récompense complet avec LootBox et récompense de PlayTime.",
-    tags:['LootBox','Rewards'],
-    directLink:'#',
-    docsLink:'#',
-    example:false
-  }
+const API='https://capworks-worker.capkychannel.workers.dev';
+
+/* Exemples affichés uniquement tant qu'aucun plugin n'est publié depuis admin.html */
+const EXAMPLE_PLUGINS = [
+  { id:'ex1', name:'CapEco', version:'v1.4.2', icon:'💰', mc:'1.20 – 1.21',
+    desc:"Système d'économie complet avec monnaie virtuelle, boutiques joueurs et intégration Vault.",
+    tags:['Économie','Vault','Boutique'], directLink:'#', docsLink:'#', example:true },
+  { id:'ex2', name:'CapGuard', version:'v2.0.0', icon:'🛡️', mc:'1.20 – 1.21',
+    desc:'Protection de terrains et de claims avec permissions fines par joueur ou par groupe.',
+    tags:['Protection','Claims','Permissions'], directLink:'#', docsLink:'#', example:true },
+  { id:'ex3', name:'CapEvents', version:'v1.1.0', icon:'🎉', mc:'1.20 – 1.21',
+    desc:"Gestion et planification d'événements et minigames automatisés sur votre serveur.",
+    tags:['Gameplay','Minigames'], directLink:'#', docsLink:'#', example:true },
+  { id:'ex4', name:'CapAdmin', version:'v3.2.1', icon:'🧰', mc:'1.19 – 1.21',
+    desc:'Panel de modération complet : logs, kick/ban avancés, freeze, gestion de whitelist.',
+    tags:['Administration','Logs','Whitelist'], directLink:'#', docsLink:'#', example:true }
 ];
 
-let activeCat='';
+let PLUGINS = [];
+let activeCat = '';
 
-function setCat(btn,cat){
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+function normalizePlugin(p){
+  return {
+    id:p.id, name:p.name||'—', version:p.version||'', icon:p.icon||'🧩', mc:p.mc||'—',
+    desc:p.desc||p.description||'', tags:Array.isArray(p.tags)?p.tags:[],
+    directLink:p.directLink||p.direct_link||'#', docsLink:p.docsLink||p.docs_link||'#',
+    example:false
+  };
+}
+
+async function loadPlugins(){
+  try{
+    const r=await fetch(API+'/api/plugins');
+    if(r.ok){
+      const data=await r.json();
+      if(Array.isArray(data)&&data.length){
+        PLUGINS=data.map(normalizePlugin);
+        $('exampleNotice').style.display='none';
+        buildCategories();
+        renderPlugins();
+        return;
+      }
+    }
+  }catch(e){ /* API indisponible → on garde les exemples */ }
+  PLUGINS=EXAMPLE_PLUGINS;
+  $('exampleNotice').style.display='block';
+  buildCategories();
+  renderPlugins();
+}
+
+/* Génère automatiquement les boutons de filtre à partir des tags présents sur les plugins */
+function buildCategories(){
+  const cats=[...new Set(PLUGINS.flatMap(p=>p.tags))].sort((a,b)=>a.localeCompare(b,'fr'));
+  if(activeCat && !cats.includes(activeCat)) activeCat='';
+  const wrap=$('fbButtons');
+  wrap.innerHTML = `<button class="filter-btn${!activeCat?' active':''}" onclick="setCat('')">Tout</button>`
+    + cats.map(c=>`<button class="filter-btn${activeCat===c?' active':''}" onclick="setCat('${esc(c).replace(/'/g,"\\'")}')">${esc(c)}</button>`).join('');
+}
+
+function setCat(cat){
   activeCat=cat;
+  buildCategories();
   renderPlugins();
 }
 
 function renderPlugins(){
   const q=($('searchInp').value||'').toLowerCase().trim();
   const list=PLUGINS.filter(p=>{
-    const matchCat=!activeCat||p.category===activeCat;
+    const matchCat=!activeCat||p.tags.includes(activeCat);
     const matchQ=!q||p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q)||p.tags.some(t=>t.toLowerCase().includes(q));
     return matchCat&&matchQ;
   });
@@ -254,7 +291,7 @@ function renderPlugins(){
         <div class="p-ico">${p.icon}</div>
         <div>
           <div class="p-name">${esc(p.name)}</div>
-          <div class="p-ver">${esc(p.version)} · ${esc(p.category)}</div>
+          <div class="p-ver">${esc(p.version)}${p.tags[0]?' · '+esc(p.tags[0]):''}</div>
         </div>
       </div>
       <div class="p-desc">${esc(p.desc)}</div>
@@ -267,7 +304,7 @@ function renderPlugins(){
   `).join('');
 }
 
-renderPlugins();
+loadPlugins();
 </script>
 </body>
 </html>
