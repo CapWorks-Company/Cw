@@ -47,6 +47,8 @@ nav a.active{color:var(--accent);background:rgba(92,184,92,.1)}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px var(--accentg)}
 .btn-ghost{background:transparent;border:1px solid var(--bdr2);color:var(--txt2)}
 .btn-ghost:hover{border-color:var(--accent);color:var(--accent);background:rgba(92,184,92,.06)}
+.btn-gold{background:linear-gradient(135deg,#c9a227,#e6c458);color:#1a1400;font-weight:700}
+.btn-gold:hover{transform:translateY(-2px)}
 .btn-sm{padding:5px 13px;font-size:.75rem;border-radius:7px}
 .section{position:relative;z-index:1;padding:60px 40px;max-width:1300px;margin:0 auto}
 .sec-div{height:1px;background:linear-gradient(90deg,transparent,var(--bdr),transparent);margin:0 40px}
@@ -76,6 +78,9 @@ nav a.active{color:var(--accent);background:rgba(92,184,92,.1)}
 .plugin-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r2);padding:24px;transition:all .3s;animation:fadeUp .5s ease both;display:flex;flex-direction:column}
 .plugin-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 14px 40px rgba(92,184,92,.12)}
 .p-top{display:flex;align-items:flex-start;gap:13px;margin-bottom:14px}
+.p-price{flex-shrink:0;font-size:.68rem;font-weight:800;padding:4px 10px;border-radius:99px;white-space:nowrap;font-family:var(--mono)}
+.p-price.free{color:var(--grn);background:var(--grng);border:1px solid rgba(0,184,148,.3)}
+.p-price.paid{color:#e6c458;background:rgba(230,196,88,.12);border:1px solid rgba(230,196,88,.35)}
 .p-ico{width:44px;height:44px;border-radius:11px;background:var(--accentg);border:1px solid rgba(92,184,92,.3);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
 .p-name{font-family:var(--display);font-weight:800;font-size:1.02rem;letter-spacing:-.3px}
 .p-ver{font-size:.66rem;color:var(--txt3);font-family:var(--mono);margin-top:2px}
@@ -142,7 +147,7 @@ footer a:hover{text-decoration:underline}
   <div class="hero-stats">
     <div class="hstat"><b id="stCount">—</b><span>Plugins</span></div>
     <div class="hstat"><b>1.20 – 1.21</b><span>Compatibilité</span></div>
-    <div class="hstat"><b>Gratuit</b><span>Tarif</span></div>
+    <div class="hstat"><b id="stFree">—</b><span>Gratuits</span></div>
   </div>
 </section>
 
@@ -210,6 +215,7 @@ function normalizePlugin(p){
   return {
     id:p.id, name:p.name||'—', version:p.version||'', icon:p.icon||'🧩', mc:p.mc||'—',
     desc:p.desc||p.description||'', tags:Array.isArray(p.tags)?p.tags:[],
+    price:Number(p.price)||0, buyLink:p.buyLink||p.buy_link||'#',
     directLink:p.directLink||p.direct_link||'#', docsLink:p.docsLink||p.docs_link||'#'
   };
 }
@@ -252,12 +258,13 @@ function renderPlugins(){
   });
   const grid=$('pluginGrid');
   $('stCount').textContent=PLUGINS.length;
+  $('stFree').textContent=PLUGINS.filter(p=>!p.price).length;
   if(!PLUGINS.length){
     grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1">
       <div class="ic">${loadError?'⚠️':'⛏️'}</div>
       <p>${loadError
         ? "Impossible de charger les plugins pour le moment. Réessayez plus tard."
-        : "Aucun plugin publié pour l'instant."}</p>
+        : "Aucun plugin publié pour l'instant. Ajoutez-en depuis <code>admin.html</code> → CPlugins."}</p>
     </div>`;
     return;
   }
@@ -269,15 +276,18 @@ function renderPlugins(){
     <div class="plugin-card" style="animation-delay:${i*.05}s">
       <div class="p-top">
         <div class="p-ico">${p.icon}</div>
-        <div>
+        <div style="flex:1">
           <div class="p-name">${esc(p.name)}</div>
           <div class="p-ver">${esc(p.version)}${p.tags[0]?' · '+esc(p.tags[0]):''}</div>
         </div>
+        <div class="p-price ${p.price>0?'paid':'free'}">${p.price>0?esc(p.price.toFixed(2).replace(/\.00$/,''))+' €':'Gratuit'}</div>
       </div>
       <div class="p-desc">${esc(p.desc)}</div>
       <div class="p-tags"><span class="p-mc">MC ${esc(p.mc)}</span>${p.tags.map(t=>`<span>${esc(t)}</span>`).join('')}</div>
       <div class="p-actions">
-        <a href="${esc(p.directLink)}" class="btn btn-primary btn-sm">⬇ Téléchargement direct</a>
+        ${p.price>0
+          ? `<a href="${esc(p.buyLink)}" class="btn btn-gold btn-sm">🛒 Acheter</a>`
+          : `<a href="${esc(p.directLink)}" class="btn btn-primary btn-sm">⬇ Téléchargement direct</a>`}
         <a href="${esc(p.docsLink)}" class="btn btn-ghost btn-sm">📖 Doc</a>
       </div>
     </div>
