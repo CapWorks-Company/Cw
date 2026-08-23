@@ -15,7 +15,7 @@
     {href:'campagnes.html',         icon:'💛', label:'Campagnes'},
     {href:'societes.html',          icon:'🏢', label:'Sous-sociétés'},
     {href:'capworks-studio.html',   icon:'🎬', label:'CapWorks Studio'},
-    {href:'cplugins.html',          icon:'⛏️', label:'CPlugins'},
+    {href:'clugins.html',          icon:'⛏️', label:'Clugins'},
     {href:'helfos.html',            icon:'🧠', label:'Helfos'},
     {href:'home.html#team',         icon:'👥', label:'Équipe'},
     {href:'home.html#support',      icon:'💬', label:'Support'},
