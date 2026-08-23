@@ -34,6 +34,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 @keyframes reel{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 @keyframes skelPulse{0%,100%{opacity:.3}50%{opacity:.6}}
 @keyframes scrollBounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinning{display:inline-block;animation:spin .7s linear infinite}
 .filmstrip{width:100%;overflow:hidden;padding:20px 0;position:relative;z-index:1;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
 .filmstrip-track{display:flex;gap:16px;animation:reel 32s linear infinite;width:max-content}
 .film-item{display:flex;align-items:center;gap:10px;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:8px 16px;white-space:nowrap;font-size:.76rem;color:var(--txt2);font-weight:500;flex-shrink:0}
@@ -190,7 +192,6 @@ footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(
     <button class="btn btn-primary btn-sm" onclick="openAuth('login')">Connexion</button>
   </div>
 </header>
-
 <section class="hero">
   <div class="hero-glow"></div>
   <div class="hero-badge"><div class="dot"></div> Développement sur demande · v6.0</div>
@@ -203,7 +204,6 @@ footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(
   </div>
   <div class="hero-scroll"><span>Scroll</span><div class="hero-scroll-arrow"></div></div>
 </section>
-
 <div class="filmstrip"><div class="filmstrip-track" id="filmTrack">
   <div class="film-item"><div class="film-dot" style="background:var(--accent)"></div>Jeux Vidéos</div>
   <div class="film-item"><div class="film-dot" style="background:var(--cyan)"></div>Sites Web</div>
@@ -230,7 +230,6 @@ footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(
   <div class="film-item"><div class="film-dot" style="background:var(--red)"></div>Développement sur mesure</div>
   <div class="film-item"><div class="film-dot" style="background:#a78bfa"></div>Campagnes de don</div>
 </div></div>
-
 <div class="sec-div"></div>
 <section class="section" style="padding-top:48px;padding-bottom:48px">
   <div class="qlinks">
@@ -240,7 +239,6 @@ footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(
   </div>
 </section>
 <div class="sec-div"></div>
-
 <section class="section" id="team">
   <div class="sec-head"><span class="sec-tag">// notre équipe</span><h2>Des gens de confiance</h2></div>
   <div class="team-grid" id="teamGrid">
@@ -250,13 +248,11 @@ footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(
   </div>
 </section>
 <div class="sec-div"></div>
-
 <section class="section" id="support">
   <div class="sec-head"><span class="sec-tag">// assistance</span><h2>Support en direct</h2></div>
   <div id="supRoot"></div>
 </section>
 <div class="sec-div"></div>
-
 <section class="section" id="about">
   <div class="sec-head"><span class="sec-tag">// à propos</span><h2>Qui sommes-nous ?</h2></div>
   <div class="about-grid">
@@ -270,7 +266,6 @@ footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(
 - Et des dizaines d'autres domaines</p>
       <p>Cependant, l'entreprise reste qu'une image.
 Nous ne sommes pas encore en mesure de la créer.
-
 Mais nous ferons tout notre possible pour vous plaire !</p>
       <div class="about-vals">
         <div class="about-val"><div class="av-ico">⚡</div><div><div class="av-title">Réactivité</div><div class="av-desc">Réponse rapide. Suivi régulier tout au long du projet.</div></div></div>
@@ -288,7 +283,6 @@ Mais nous ferons tout notre possible pour vous plaire !</p>
   </div>
 </section>
 <div class="sec-div"></div>
-
 <section class="section" id="contact">
   <div class="sec-head"><span class="sec-tag">// contact</span><h2>Nous contacter</h2></div>
   <div class="contact-grid">
@@ -316,7 +310,6 @@ Mais nous ferons tout notre possible pour vous plaire !</p>
     </div>
   </div>
 </section>
-
 <footer>
   <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px">
     <img src="https://raw.githubusercontent.com/Capky/CapWorks-Company/main/CW_Logo.png" alt="CW" style="width:28px;height:28px;border-radius:7px" onerror="this.style.display='none'">
@@ -324,7 +317,6 @@ Mais nous ferons tout notre possible pour vous plaire !</p>
   </div>
   <p>Développement sur mesure &nbsp;·&nbsp; Tous droits réservés<br><a href="https://discord.gg/RSnKYzXsgm" target="_blank">Discord CapWorks</a> &nbsp;·&nbsp; <a href="admin.html">Admin</a></p>
 </footer>
-
 <!-- AUTH MODAL -->
 <div class="overlay" id="authOv" onclick="ovClick(event,'authOv')">
   <div class="modal">
@@ -335,7 +327,6 @@ Mais nous ferons tout notre possible pour vous plaire !</p>
     </div>
   </div>
 </div>
-
 <!-- SETTINGS MODAL -->
 <div class="overlay" id="settOv" onclick="ovClick(event,'settOv')">
   <div class="modal" style="max-width:500px">
@@ -343,7 +334,6 @@ Mais nous ferons tout notre possible pour vous plaire !</p>
     <div class="modal-bd" id="settBody"></div>
   </div>
 </div>
-
 <!-- EMAIL CHANGE MODAL -->
 <div class="overlay" id="emailOv" onclick="ovClick(event,'emailOv')">
   <div class="modal" style="max-width:420px">
@@ -361,7 +351,6 @@ Mais nous ferons tout notre possible pour vous plaire !</p>
     </div>
   </div>
 </div>
-
 <script>
 const API='https://capworks-worker.capkychannel.workers.dev';
 const $=id=>document.getElementById(id);
@@ -370,16 +359,20 @@ function closeOv(id){$(id).classList.remove('open');}
 function ovClick(e,id){if(e.target===$(id))closeOv(id);}
 function toast(msg,type='success'){const t=document.createElement('div');t.className='toast '+type;t.textContent=(type==='success'?'✓ ':'✕ ')+msg;document.body.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='all .3s';setTimeout(()=>t.remove(),300);},3500);}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(el=>el.classList.remove('open'));});
-
 const ROLE_LBL={owner:'Fondateur',dev:'Développeur',mod:'Modérateur',support:'Support'};
 const ROLE_CSS={owner:'ro',dev:'rd',mod:'rm',support:'rs'};
 let curUser=JSON.parse(localStorage.getItem('cw_session')||'null');
 let team=[],tickets={},activeTicket=null;
-
 async function apiGet(path){try{const r=await fetch(API+path,{headers:curUser?.token?{Authorization:`Bearer ${curUser.token}`}:{}});if(!r.ok)return{error:`HTTP ${r.status}`};return r.json();}catch(e){return{error:'Réseau'};}}
 async function apiPost(path,body){try{const r=await fetch(API+path,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',...(curUser?.token&&{Authorization:`Bearer ${curUser.token}`})},body:JSON.stringify(body)});if(!r.ok){try{return await r.json();}catch{return{error:`HTTP ${r.status}`};}}return r.json();}catch(e){return{error:'Réseau'};}}
-
-async function initApp(){updateHdr();renderSup();if(curUser){setOnline(true);await loadMe();updateHdr();}await loadTeam();updateAboutStats();}
+async function initApp(){
+  updateHdr();renderSup();
+  if(curUser){
+    setOnline(true);await loadMe();updateHdr();
+    if(isStaff(curUser.role))loadAllTickets(); // chargement initial unique des salons (staff)
+  }
+  await loadTeam();updateAboutStats();
+}
 async function loadMe(){if(!curUser)return;const me=await apiGet('/api/user/me');if(!me||me.error)return;curUser={...curUser,...me};localStorage.setItem('cw_session',JSON.stringify(curUser));}
 async function loadTeam(){const d=await apiGet('/api/team');if(d?.error||!Array.isArray(d))return;team=d;renderTeam();const el=$('statTeam');if(el)el.textContent=team.length;}
 function renderTeam(){const g=$('teamGrid');g.innerHTML='';team.forEach((m,i)=>{const div=document.createElement('div');div.className='team-card';div.style.animationDelay=`${i*.08}s`;div.innerHTML=`<div class="t-ava${m.online?' online':''}">${m.avatar}</div><div class="t-name">${esc(m.name)}</div><div class="t-role ${ROLE_CSS[m.role]||''}">${ROLE_LBL[m.role]||m.role}</div><div class="t-tags">${(m.tags||[]).map(t=>`<span class="t-tag">${esc(t)}</span>`).join('')}</div>`;g.appendChild(div);});}
@@ -388,7 +381,6 @@ function updateAboutStats(){
   apiGet('/api/campaigns').then(d=>{if(Array.isArray(d)){const el=$('statCamp');if(el)el.textContent=d.filter(c=>c.active).length;}});
   apiGet('/api/projects').then(d=>{if(d&&!d.error){let n=0;Object.values(d).forEach(arr=>{if(Array.isArray(arr))n+=arr.filter(p=>!p.hidden).length;});const el=$('statProj');if(el&&n>0)el.textContent=n;else if(el)el.textContent='—';}}).catch(()=>{});
 }
-
 function renderSup(){
   const root=$('supRoot');if(!root)return;
   if(!curUser){root.innerHTML=`<div style="min-height:200px;display:flex;align-items:center;justify-content:center"><div style="text-align:center;padding:36px"><div style="font-size:2rem;margin-bottom:10px">🔐</div><h4 style="font-size:.97rem;font-weight:700;margin-bottom:5px">Connexion requise</h4><p style="color:var(--txt2);font-size:.8rem;margin-bottom:18px">Connectez-vous pour accéder au support.</p><button class="btn btn-primary" onclick="openAuth('login')">Se connecter</button></div></div>`;return;}
@@ -406,15 +398,26 @@ function renderStaffSup(root){
   const uns=Object.keys(tickets);
   const sb=uns.map(u=>{const msgs=tickets[u]||[];const last=msgs[msgs.length-1];return `<div class="ticket-item${activeTicket===u?' active':''}" onclick="openTkt('${esc(u)}')"><div class="t-user">👤 ${esc(u)}</div><div class="t-prev">${last?esc(last.text):'Pas de messages'}</div><div class="t-meta"><span>${last?last.time:'—'}</span><span>${msgs.length} msg</span></div></div>`;}).join('')||'<div style="color:var(--txt3);font-size:.73rem;padding:14px;text-align:center">Aucun salon</div>';
   let main=activeTicket&&tickets[activeTicket]?`<div class="sup-main"><div class="sup-hdr"><div style="font-size:.9rem;font-weight:700">💬 ${esc(activeTicket)}</div></div><div class="chat-area" id="chatArea">${tickets[activeTicket].map(m=>msgHtml(m)).join('')||'<div style="color:var(--txt3);font-size:.75rem;text-align:center;padding:20px">Aucun message</div>'}</div><div class="chat-input-bar"><input type="text" class="chat-inp" id="chatInp" placeholder="Répondre..." onkeypress="if(event.key==='Enter')sendMsg()"><button class="chat-send" onclick="sendMsg()">➤</button></div></div>`:`<div class="sup-main" style="display:flex;align-items:center;justify-content:center"><div style="text-align:center;color:var(--txt3);font-size:.75rem"><div style="font-size:2rem;margin-bottom:8px">💬</div>Sélectionnez un salon</div></div>`;
-  root.innerHTML=`<div class="sup-layout"><div class="sup-sidebar"><div class="sup-sb-head"><h4>🎟 Salons (${uns.length})</h4></div><div class="ticket-list">${sb}</div></div>${main}</div>`;
-  loadAllTickets();scrollChat();
+  root.innerHTML=`<div class="sup-layout"><div class="sup-sidebar"><div class="sup-sb-head" style="display:flex;align-items:center;justify-content:space-between"><h4>🎟 Salons (${uns.length})</h4><button class="btn btn-ghost btn-sm" id="supRefreshBtn" onclick="loadAllTickets()" title="Rafraîchir les salons">↻</button></div><div class="ticket-list">${sb}</div></div>${main}</div>`;
+  scrollChat();
 }
-async function loadAllTickets(){const d=await apiGet('/api/admin/tickets');if(Array.isArray(d)){tickets={};d.forEach(t=>{tickets[t.username]=t.messages||[];});renderSup();}}
+async function loadAllTickets(){
+  const btn=$('supRefreshBtn');
+  if(btn){btn.disabled=true;btn.classList.add('spinning');}
+  const d=await apiGet('/api/admin/tickets');
+  if(Array.isArray(d)){
+    tickets={};d.forEach(t=>{tickets[t.username]=t.messages||[];});
+    renderSup(); // ré-affiche avec les nouvelles données ; ne redéclenche PAS de fetch
+  }else{
+    const btn2=$('supRefreshBtn');
+    if(btn2){btn2.disabled=false;btn2.classList.remove('spinning');}
+    toast('Impossible de rafraîchir les salons','error');
+  }
+}
 function msgHtml(m){const isOwn=curUser&&m.user===curUser.username;const nc=m.role==='owner'?'is-owner':m.role==='mod'?'is-mod':'';const badge=m.role==='owner'?'<span class="mbadge owner">Owner</span>':m.role==='mod'?'<span class="mbadge mod">Mod</span>':'';return `<div class="chat-msg${isOwn?' own':''}"><div class="msg-ava">${m.emoji||'👤'}</div><div class="msg-body"><div class="msg-meta"><span class="msg-name ${nc}">${esc(m.user)}</span>${badge}<span class="msg-time">${m.time}</span></div><div class="msg-bubble">${esc(m.text)}</div></div></div>`;}
 function openTkt(u){activeTicket=u;renderSup();}
 async function sendMsg(){if(!curUser)return;const inp=$('chatInp');if(!inp)return;const text=inp.value.trim();if(!text)return;const t=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});let target=curUser.username;if(isStaff(curUser.role)&&activeTicket)target=activeTicket;if(!tickets[target])tickets[target]=[];const msg={user:curUser.username,emoji:curUser.emoji||'👤',role:curUser.role,text,time:t};tickets[target].push(msg);await apiPost('/api/support/send',{target,text});inp.value='';renderSup();}
 function scrollChat(){setTimeout(()=>{const a=$('chatArea');if(a)a.scrollTop=a.scrollHeight;},50);}
-
 async function submitContact(){
   const name=$('cfName').value.trim(),email=$('cfEmail').value.trim(),subj=$('cfSubj').value,msg=$('cfMsg2').value.trim();
   const msgEl=$('cfMsg'),btn=$('cfBtn');
@@ -426,7 +429,6 @@ async function submitContact(){
   else{msgEl.className='cf-msg ok';msgEl.textContent='✓ Message envoyé !';['cfName','cfEmail','cfSubj','cfMsg2'].forEach(id=>{const e=$(id);if(e)e.value='';});toast('Message envoyé !');}
   btn.disabled=false;btn.textContent='📤 Envoyer le message';
 }
-
 function updateHdr(){
   const hr=$('hdrR');
   if(curUser){
@@ -438,9 +440,7 @@ function updateHdr(){
 async function setOnline(v){if(!curUser)return;await apiPost('/api/user/online',{online:v}).catch(()=>{});}
 document.addEventListener('visibilitychange',()=>{if(curUser)setOnline(!document.hidden);});
 window.addEventListener('beforeunload',()=>{if(curUser)setOnline(false);});
-
 let _otpPending=null,_emailChangePending=null,_resendTimer=null;
-
 function openAuth(tab='login'){$('authOv').classList.add('open');switchAuth(tab);}
 function switchAuth(tab){
   document.querySelectorAll('.auth-tab').forEach((t,i)=>t.classList.toggle('active',['login','register'][i]===tab));
@@ -449,7 +449,6 @@ function switchAuth(tab){
   if(tab==='login'){f.innerHTML=`<div class="fg"><label>Pseudo</label><input type="text" class="inp" id="lUser" placeholder="Votre pseudo..."></div><div class="fg"><label>Mot de passe</label><input type="password" class="inp" id="lPass" placeholder="••••••••" onkeypress="if(event.key==='Enter')doLogin()"></div><div class="err-msg" id="lErr"></div><div style="margin-top:14px"><button class="btn btn-primary btn-full" onclick="doLogin()">Se connecter →</button></div>`;}
   else{f.innerHTML=`<div class="fg"><label>Pseudo</label><input type="text" class="inp" id="rUser" placeholder="Choisissez un pseudo..."></div><div class="fg"><label>Email <span style="color:var(--red)">*</span></label><input type="email" class="inp" id="rEmail" placeholder="exemple@gmail.com"></div><div class="fg"><label>Mot de passe</label><input type="password" class="inp" id="rPass" placeholder="Min. 8 caractères..."></div><div class="fg"><label>Avatar (emoji)</label><input type="text" class="inp" id="rEmoji" placeholder="👤" maxlength="2"></div><div class="err-msg" id="rErr"></div><div style="margin-top:14px"><button class="btn btn-primary btn-full" id="rBtn" onclick="doRegister()">Recevoir le code →</button></div>`;}
 }
-
 async function doLogin(){
   const u=$('lUser').value.trim(),p=$('lPass').value;const errEl=$('lErr');
   if(!u||!p){errEl.textContent='✕ Remplissez tous les champs';return;}
@@ -457,9 +456,8 @@ async function doLogin(){
   if(data.error){errEl.textContent='✕ '+data.error;return;}
   curUser={username:data.username,role:data.role,emoji:data.emoji,token:data.token,email:data.email||''};
   localStorage.setItem('cw_session',JSON.stringify(curUser));
-  await loadMe();closeOv('authOv');updateHdr();renderSup();toast(`Bienvenue, ${u} !`);
+  await loadMe();closeOv('authOv');updateHdr();renderSup();if(isStaff(curUser.role))loadAllTickets();toast(`Bienvenue, ${u} !`);
 }
-
 async function doRegister(){
   const u=$('rUser').value.trim(),email=$('rEmail').value.trim(),p=$('rPass').value,e=($('rEmoji').value.trim()||'👤');
   const errEl=$('rErr'),btn=$('rBtn');
@@ -470,7 +468,6 @@ async function doRegister(){
   if(data.error){errEl.textContent='✕ '+data.error;btn.disabled=false;btn.textContent='Recevoir le code →';return;}
   _otpPending={username:u,email,password:p,emoji:e};showOtpForm('register');btn.disabled=false;
 }
-
 function showOtpForm(mode){
   const email=mode==='register'?_otpPending?.email:_emailChangePending?.newEmail;
   const target=mode==='register'?'authForm':'emailOtpZone';
@@ -482,15 +479,12 @@ function showOtpForm(mode){
   setTimeout(()=>{const el=$('otpInput');if(el)el.focus();},100);
   startResendCooldown();
 }
-
 function startResendCooldown(){
   clearInterval(_resendTimer);let remaining=60;
   const btn=$('resendBtn');if(btn){btn.disabled=true;btn.textContent=`↺ ${remaining}s`;}
   _resendTimer=setInterval(()=>{remaining--;const b=$('resendBtn');if(!b){clearInterval(_resendTimer);return;}if(remaining<=0){clearInterval(_resendTimer);b.disabled=false;b.textContent='↺ Renvoyer';}else{b.textContent=`↺ ${remaining}s`;}},1000);
 }
-
 async function pasteOtp(){try{const text=await navigator.clipboard.readText();const digits=text.replace(/[^0-9]/g,'').slice(0,6);const el=$('otpInput');if(el){el.value=digits;el.focus();}}catch{toast('Autorisez le presse-papiers pour coller le code','error');}}
-
 async function verifyOtp(mode){
   const code=($('otpInput')?.value||'').trim();const errEl=$('otpErr'),btn=$('otpBtn');
   if(!code||code.length!==6){if(errEl)errEl.textContent='✕ Code à 6 chiffres requis';return;}
@@ -500,7 +494,7 @@ async function verifyOtp(mode){
     if(data.error){if(errEl)errEl.textContent='✕ '+data.error;if(btn){btn.disabled=false;btn.textContent='✓ Valider →';}return;}
     curUser={username:data.username,role:data.role,emoji:data.emoji,token:data.token,email:data.email||''};
     localStorage.setItem('cw_session',JSON.stringify(curUser));_otpPending=null;clearInterval(_resendTimer);
-    await loadMe();closeOv('authOv');updateHdr();renderSup();document.querySelectorAll('.auth-tab').forEach(t=>t.style.display='');toast(`✓ Bienvenue, ${curUser.username} !`);
+    await loadMe();closeOv('authOv');updateHdr();renderSup();if(isStaff(curUser.role))loadAllTickets();document.querySelectorAll('.auth-tab').forEach(t=>t.style.display='');toast(`✓ Bienvenue, ${curUser.username} !`);
   }else if(mode==='email'){
     const data=await apiPost('/api/auth/otp/verify-email',{newEmail:_emailChangePending.newEmail,code});
     if(data.error){if(errEl)errEl.textContent='✕ '+data.error;if(btn){btn.disabled=false;btn.textContent='✓ Valider →';}return;}
@@ -509,7 +503,6 @@ async function verifyOtp(mode){
   }
   if(btn){btn.disabled=false;btn.textContent='✓ Valider →';}
 }
-
 async function resendOtp(mode){
   const email=mode==='register'?_otpPending?.email:_emailChangePending?.newEmail;
   const username=mode==='register'?_otpPending?.username:curUser?.username;
@@ -518,18 +511,15 @@ async function resendOtp(mode){
   if(data.error){if(errEl)errEl.textContent='✕ '+data.error;return;}
   if(errEl)errEl.textContent='';toast('Code renvoyé !');startResendCooldown();
 }
-
 function startEmailChange(){
   $('emailCurrent').value=curUser.email||'—';$('emailNew').value='';$('emailOvErr').textContent='';
   $('emailOtpZone').innerHTML='';$('emailOvBtns').style.display='flex';$('emailOvBtn').disabled=false;$('emailOvBtn').textContent='📨 Envoyer le code';
   closeOv('settOv'); // ferme settings, ouvre email
   $('emailOv').classList.add('open');setTimeout(()=>{$('emailNew').focus();},120);
 }
-
 function cancelEmailChange(){
   _emailChangePending=null;clearInterval(_resendTimer);closeOv('emailOv');openSettings();
 }
-
 async function submitEmailChange(){
   const newEmail=$('emailNew').value.trim();const errEl=$('emailOvErr'),btn=$('emailOvBtn');
   errEl.textContent='';
@@ -540,9 +530,7 @@ async function submitEmailChange(){
   if(checkRes.error){errEl.textContent='✕ '+checkRes.error;btn.disabled=false;btn.textContent='📨 Envoyer le code';return;}
   _emailChangePending={newEmail};$('emailOvBtns').style.display='none';showOtpForm('email');
 }
-
 async function logout(){await setOnline(false);curUser=null;localStorage.removeItem('cw_session');updateHdr();renderSup();toast('Déconnecté.');}
-
 async function openSettings(){
   if(!curUser)return;
   const me=await apiGet('/api/user/me');
@@ -574,20 +562,17 @@ async function openSettings(){
     }`;
   $('settOv').classList.add('open');
 }
-
 async function requestDeleteAccount(){
   if(!confirm('Êtes-vous sûr de vouloir demander la suppression de votre compte ?\nUn administrateur devra valider cette demande.'))return;
   const res=await apiPost('/api/user/delete-request',{action:'request'});
   if(res.error){toast('✕ '+res.error,'error');return;}
   toast('Demande de suppression envoyée.');openSettings();
 }
-
 async function cancelDeleteRequest(){
   const res=await apiPost('/api/user/delete-request',{action:'cancel'});
   if(res.error){toast('✕ '+res.error,'error');return;}
   toast('Demande annulée.');openSettings();
 }
-
 async function saveSettings(){
   const emoji=$('setEmoji').value.trim()||'👤';const c=$('setPwC').value,n=$('setPwN').value,cf=$('setPwCf').value;
   const msgEl=$('setMsg');msgEl.className='err-msg';
@@ -598,7 +583,6 @@ async function saveSettings(){
   curUser.emoji=emoji;localStorage.setItem('cw_session',JSON.stringify(curUser));
   msgEl.className='ok-msg';msgEl.textContent='✓ Sauvegardé !';updateHdr();toast('Profil mis à jour !');
 }
-
 initApp();
 (function(){
   const scrollHint=document.querySelector('.hero-scroll');
