@@ -590,7 +590,7 @@ async function doRegister(){
   const u=$('rUser').value.trim(),email=$('rEmail').value.trim(),phone=$('rPhone').value.trim(),p=$('rPass').value,e=($('rEmoji').value.trim()||'👤');
   const errEl=$('rErr'),btn=$('rBtn');
   if(!u||!email||!phone||!p){errEl.textContent='✕ Remplissez tous les champs';return;}
-  if(!/^\+?[0-9\s.-]{6,20}$/.test(phone)){errEl.textContent='✕ Numéro de téléphone invalide';return;}
+  if(phone && !/^\+?[0-9\s.-]{6,20}$/.test(phone)){errEl.textContent='✕ Numéro de téléphone invalide';return;}
   if(p.length<8){errEl.textContent='✕ Mot de passe : min. 8 caractères';return;}
   btn.disabled=true;btn.textContent='⟳ Envoi du code...';
   const data=await apiPost('/api/auth/otp/request',{username:u,email,phone,password:p,emoji:e});
