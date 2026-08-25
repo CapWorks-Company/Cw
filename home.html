@@ -130,8 +130,30 @@ textarea.inp{resize:vertical;min-height:80px}select.inp{cursor:pointer}select.in
 .chat-input-bar{padding:12px 20px;border-top:1px solid var(--bdr);display:flex;gap:7px;align-items:center;background:var(--surf2)}
 .chat-inp{flex:1;background:var(--surf3);border:1.5px solid var(--bdr2);color:var(--txt);padding:7px 12px;border-radius:8px;font-family:var(--font);font-size:.82rem;outline:none;transition:border-color .2s}
 .chat-inp:focus{border-color:var(--accent)}.chat-inp::placeholder{color:var(--txt3)}
-.chat-send{background:var(--accent);border:none;color:#fff;width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:all .2s}
+textarea.chat-inp{resize:none;overflow-y:auto;max-height:130px;min-height:34px;line-height:1.45;padding-top:8px;padding-bottom:8px}
+.chat-send{background:var(--accent);border:none;color:#fff;width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
 .chat-send:hover{background:var(--accentd);transform:scale(1.05)}
+.chat-composer{display:flex;flex-direction:column;border-top:1px solid var(--bdr);background:var(--surf2)}
+.chat-input-bar{padding:12px 20px;border-top:none;display:flex;gap:7px;align-items:flex-end}
+.chat-fmt-hint{padding:0 20px 10px;font-size:.62rem;color:var(--txt3);line-height:1.7;user-select:none}
+.chat-fmt-hint code{background:var(--surf3);border:1px solid var(--bdr2);padding:0 4px;border-radius:3px;font-family:var(--mono,monospace)}
+.msg-bubble{padding:8px 12px;border-radius:10px;font-size:.82rem;line-height:1.6;background:var(--surf3);border:1px solid var(--bdr2);word-break:break-word}
+.msg-bubble a{color:var(--accent);text-decoration:underline;word-break:break-all}
+.msg-bubble strong{font-weight:800}
+.msg-code{background:var(--surf);border:1px solid var(--bdr2);padding:1px 6px;border-radius:4px;font-family:var(--mono,monospace);font-size:.85em;cursor:pointer;transition:all .15s}
+.msg-code:hover{border-color:var(--accent);color:var(--accent)}
+.msg-code.copied{border-color:var(--grn);color:var(--grn)}
+.msg-bg{padding:1px 5px;border-radius:4px}
+.msg-edited{color:var(--txt3);font-size:.62rem;font-style:italic}
+.msg-actions{display:flex;gap:5px;margin-top:4px}
+.chat-msg.own .msg-actions{justify-content:flex-end}
+.msg-act{background:transparent;border:1px solid var(--bdr2);color:var(--txt3);width:20px;height:20px;border-radius:5px;cursor:pointer;font-size:.62rem;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0}
+.msg-act:hover{border-color:var(--accent);color:var(--accent)}
+.msg-edit-box{display:flex;flex-direction:column;gap:6px}
+.msg-edit-actions{display:flex;gap:6px}
+.support-badge{display:none;margin-left:4px;background:var(--red);color:#fff;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:99px;vertical-align:2px;line-height:1.3}
+.ticket-item{position:relative}
+.t-unread-dot{position:absolute;top:9px;right:9px;width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 5px var(--red)}
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
 .c-links{display:flex;flex-direction:column;gap:12px}
 .c-link{display:flex;align-items:center;gap:13px;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r2);padding:16px 18px;text-decoration:none;color:var(--txt);transition:all .25s}
@@ -186,7 +208,7 @@ footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(
   </a>
   <nav style="position:absolute;left:50%;transform:translateX(-50%)">
     <a href="home.html" class="active">Accueil</a><a href="projects.html">Projets</a><a href="campagnes.html">Campagnes</a><a href="helfos.html">Helfos</a>
-    <a href="capworks-studio.html">CapWorks Studio</a><a href="societes.html">Sous-sociétés</a><a href="clugins.html">Clugins</a><a href="#team">Équipe</a><a href="#support">Support</a><a href="#about">À propos</a><a href="#contact">Contact</a>
+    <a href="capworks-studio.html">CapWorks Studio</a><a href="societes.html">Sous-sociétés</a><a href="clugins.html">Clugins</a><a href="#team">Équipe</a><a href="#support">Support<span class="support-badge" id="navSupBadge">0</span></a><a href="#about">À propos</a><a href="#contact">Contact</a>
   </nav>
   <div id="hdrR" style="display:flex;align-items:center;gap:8px">
     <button class="btn btn-primary btn-sm" onclick="openAuth('login')">Connexion</button>
@@ -355,6 +377,43 @@ Mais nous ferons tout notre possible pour vous plaire !</p>
 const API='https://capworks-worker.capkychannel.workers.dev';
 const $=id=>document.getElementById(id);
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+/* ── Mise en forme des messages de support ──────────────────────────────
+   **gras**  *italique*  ***gras+italique***  _souligné_  ''code''
+   [texte](lien)  [_texte_](couleur)  {_texte_}(couleur-fond)
+   Saut de ligne : Maj+Entrée. Tout est échappé avant d'être interprété. */
+const MSG_COLORS=['red','blue','orange','green','yellow','purple','pink','cyan','gray','grey','black','white','gold','indigo','teal','brown','lime','magenta','navy','maroon','turquoise','silver'];
+function sanitizeUrl(u){
+  const s=String(u||'').trim();
+  if(/^(https?:|mailto:)/i.test(s))return s;
+  if(/^[\w.+-]+@[\w.-]+\.\w+$/.test(s))return 'mailto:'+s;
+  if(/^www\./i.test(s))return 'https://'+s;
+  return '#';
+}
+function formatMsgText(raw){
+  let s=esc(raw);
+  const P=[];
+  const protect=html=>{P.push(html);return ""+(P.length-1)+"";};
+  s=s.replace(/''([\s\S]+?)''/g,(_,t)=>protect(`<code class="msg-code" title="Cliquer pour copier" onclick="copyCode(this)">${t}</code>`));
+  s=s.replace(/\{_([\s\S]+?)_\}\((\w+)\)/g,(m,t,c)=>{c=c.toLowerCase();if(!MSG_COLORS.includes(c))return protect(m);return protect(`<span class="msg-bg" style="background-color:${c}">${t}</span>`);});
+  s=s.replace(/\[_([\s\S]+?)_\]\((\w+)\)/g,(m,t,c)=>{c=c.toLowerCase();if(!MSG_COLORS.includes(c))return protect(m);return protect(`<span style="color:${c}">${t}</span>`);});
+  s=s.replace(/\[([^\[\]]+?)\]\(([^()\s]+)\)/g,(_,t,u)=>protect(`<a href="${sanitizeUrl(u)}" target="_blank" rel="noopener noreferrer nofollow">${t}</a>`));
+  s=s.replace(/\*\*\*([\s\S]+?)\*\*\*/g,'<strong><em>$1</em></strong>');
+  s=s.replace(/\*\*([\s\S]+?)\*\*/g,'<strong>$1</strong>');
+  s=s.replace(/\*([\s\S]+?)\*/g,'<em>$1</em>');
+  s=s.replace(/_([\s\S]+?)_/g,'<u>$1</u>');
+  s=s.replace(/(\d+)/g,(_,i)=>P[+i]);
+  s=s.replace(/\n/g,'<br>');
+  return s;
+}
+function copyCode(el){
+  const text=el.textContent;
+  const done=()=>{el.classList.add('copied');toast('Code copié !');setTimeout(()=>el.classList.remove('copied'),900);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done));}
+  else fallbackCopy(text,done);
+}
+function fallbackCopy(text,done){
+  try{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}catch(e){toast('Impossible de copier','error');}
+}
 function closeOv(id){$(id).classList.remove('open');}
 function ovClick(e,id){if(e.target===$(id))closeOv(id);}
 function toast(msg,type='success'){const t=document.createElement('div');t.className='toast '+type;t.textContent=(type==='success'?'✓ ':'✕ ')+msg;document.body.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='all .3s';setTimeout(()=>t.remove(),300);},3500);}
@@ -363,6 +422,7 @@ const ROLE_LBL={owner:'Fondateur',dev:'Développeur',mod:'Modérateur',support:'
 const ROLE_CSS={owner:'ro',dev:'rd',mod:'rm',support:'rs'};
 let curUser=JSON.parse(localStorage.getItem('cw_session')||'null');
 let team=[],tickets={},activeTicket=null;
+let editingMsgId=null,ticketUnread={},supportUnread=0,_supportSeenInit=false,_supportPollTimer=null,_titleFlashTO=null;
 async function apiGet(path){try{const r=await fetch(API+path,{headers:curUser?.token?{Authorization:`Bearer ${curUser.token}`}:{}});if(!r.ok)return{error:`HTTP ${r.status}`};return r.json();}catch(e){return{error:'Réseau'};}}
 async function apiPost(path,body){try{const r=await fetch(API+path,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',...(curUser?.token&&{Authorization:`Bearer ${curUser.token}`})},body:JSON.stringify(body)});if(!r.ok){try{return await r.json();}catch{return{error:`HTTP ${r.status}`};}}return r.json();}catch(e){return{error:'Réseau'};}}
 async function initApp(){
@@ -370,9 +430,47 @@ async function initApp(){
   if(curUser){
     setOnline(true);await loadMe();updateHdr();
     if(isStaff(curUser.role))loadAllTickets(); // chargement initial unique des salons (staff)
+    startSupportPolling();
   }
   await loadTeam();updateAboutStats();
 }
+/* ── Notifications support (remplace l'email de notif) ──────────────────
+   Le staff ne reçoit plus de mail quand quelqu'un répond, et l'utilisateur
+   ne reçoit plus de mail quand le staff répond. À la place : un badge
+   « non lu » (nav + salons), un toast, et — si autorisée — une notification
+   navigateur, mis à jour par un léger polling pendant que l'onglet est ouvert. */
+function updateSupportBadge(n){
+  supportUnread=n;
+  document.querySelectorAll('.support-badge').forEach(b=>{b.style.display=n>0?'inline-flex':'none';b.textContent=n>9?'9+':String(n);});
+}
+function notifySupportReply(m){
+  if(!m)return;
+  toast(`💬 Nouveau message de ${m.user} dans le support`);
+  if('Notification' in window&&Notification.permission==='granted'){
+    try{new Notification('CapWorks — Support',{body:`${m.user} : ${(m.text||'').replace(/[*_'\[\]{}]/g,'').slice(0,120)}`,icon:'CW_Logo.png'});}catch(e){}
+  }
+  if(!document.title.startsWith('💬 ')){
+    const base=document.title;
+    document.title='💬 '+base;
+    clearTimeout(_titleFlashTO);
+    _titleFlashTO=setTimeout(()=>{document.title=base;},5000);
+  }
+}
+function enableBrowserNotifs(){
+  if(!('Notification' in window)){toast('Notifications non supportées par ce navigateur','error');return;}
+  Notification.requestPermission().then(p=>{
+    if(p==='granted')toast('Alertes navigateur activées !');else toast('Alertes refusées','error');
+    renderSup();
+  });
+}
+function startSupportPolling(){
+  if(_supportPollTimer)return;
+  _supportPollTimer=setInterval(()=>{
+    if(document.hidden||!curUser)return;
+    isStaff(curUser.role)?loadAllTickets(true):loadMyTicket();
+  },25000);
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&curUser){isStaff(curUser.role)?loadAllTickets(true):loadMyTicket();}});
 async function loadMe(){if(!curUser)return;const me=await apiGet('/api/user/me');if(!me||me.error)return;curUser={...curUser,...me};localStorage.setItem('cw_session',JSON.stringify(curUser));}
 async function loadTeam(){const d=await apiGet('/api/team');if(d?.error||!Array.isArray(d))return;team=d;renderTeam();const el=$('statTeam');if(el)el.textContent=team.length;}
 function renderTeam(){const g=$('teamGrid');g.innerHTML='';team.forEach((m,i)=>{const div=document.createElement('div');div.className='team-card';div.style.animationDelay=`${i*.08}s`;div.innerHTML=`<div class="t-ava${m.online?' online':''}">${m.avatar}</div><div class="t-name">${esc(m.name)}</div><div class="t-role ${ROLE_CSS[m.role]||''}">${ROLE_LBL[m.role]||m.role}</div><div class="t-tags">${(m.tags||[]).map(t=>`<span class="t-tag">${esc(t)}</span>`).join('')}</div>`;g.appendChild(div);});}
@@ -387,36 +485,133 @@ function renderSup(){
   isStaff(curUser.role)?renderStaffSup(root):renderUserSup(root);
 }
 function isStaff(r){return r==='mod'||r==='owner';}
+const CHAT_FMT_HINT=`<div class="chat-fmt-hint"><code>**gras**</code> <code>*italique*</code> <code>***gras+italique***</code> <code>_souligné_</code> <code>''code''</code> <code>[texte](lien)</code> <code>[_texte_](couleur)</code> <code>{_texte_}(couleur)</code> · Maj+Entrée = nouvelle ligne</div>`;
+function chatAreaHtml(msgs){return msgs&&msgs.length?msgs.map(m=>msgHtml(m)).join(''):'<div style="color:var(--txt3);font-size:.75rem;text-align:center;padding:28px">— Commencez votre demande ci-dessous —</div>';}
+function currentTicketTarget(){return curUser&&isStaff(curUser.role)?activeTicket:(curUser&&curUser.username);}
 function renderUserSup(root){
   const msgs=(tickets[curUser.username]||[]);
-  root.innerHTML=`<div style="background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r2);overflow:hidden;min-height:400px;display:flex;flex-direction:column"><div class="sup-hdr"><div><div style="font-size:.9rem;font-weight:700">💬 Votre salon</div><div style="font-size:.7rem;color:var(--txt2);margin-top:2px">Un modérateur vous répondra dès que possible</div></div><div class="sup-status"><div style="width:6px;height:6px;border-radius:50%;background:var(--grn);animation:blink 1.5s infinite"></div>En ligne</div></div><div class="chat-area" id="chatArea">${msgs.length?msgs.map(m=>msgHtml(m)).join(''):'<div style="color:var(--txt3);font-size:.75rem;text-align:center;padding:28px">— Commencez votre demande ci-dessous —</div>'}</div><div class="chat-input-bar"><input type="text" class="chat-inp" id="chatInp" placeholder="Écrivez votre message..." onkeypress="if(event.key==='Enter')sendMsg()"><button class="chat-send" onclick="sendMsg()">➤</button></div></div>`;
+  const notifBtn=('Notification' in window&&Notification.permission==='default')?'<button class="btn btn-ghost btn-sm" onclick="enableBrowserNotifs()" title="Recevoir une alerte navigateur en cas de réponse">🔔 Alertes</button>':'';
+  root.innerHTML=`<div style="background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r2);overflow:hidden;min-height:400px;display:flex;flex-direction:column"><div class="sup-hdr"><div><div style="font-size:.9rem;font-weight:700">💬 Votre salon</div><div style="font-size:.7rem;color:var(--txt2);margin-top:2px">Un modérateur vous répondra dès que possible</div></div><div style="display:flex;align-items:center;gap:10px">${notifBtn}<div class="sup-status"><div style="width:6px;height:6px;border-radius:50%;background:var(--grn);animation:blink 1.5s infinite"></div>En ligne</div></div></div><div class="chat-area" id="chatArea">${chatAreaHtml(msgs)}</div><div class="chat-composer"><div class="chat-input-bar"><textarea class="chat-inp" id="chatInp" rows="1" placeholder="Écrivez votre message... (Maj+Entrée pour un saut de ligne)" onkeydown="chatKeyHandler(event)" oninput="autoGrow(this)"></textarea><button class="chat-send" onclick="sendMsg()">➤</button></div>${CHAT_FMT_HINT}</div></div>`;
   scrollChat();loadMyTicket();
 }
-async function loadMyTicket(){const d=await apiGet('/api/support/me');if(d&&Array.isArray(d.messages)){tickets[curUser.username]=d.messages;renderUserSupInline();}}
-function renderUserSupInline(){const a=$('chatArea');if(!a)return;const msgs=(tickets[curUser.username]||[]);a.innerHTML=msgs.length?msgs.map(m=>msgHtml(m)).join(''):'<div style="color:var(--txt3);font-size:.75rem;text-align:center;padding:28px">— Commencez votre demande ci-dessous —</div>';scrollChat();}
+async function loadMyTicket(){
+  const d=await apiGet('/api/support/me');
+  if(d&&Array.isArray(d.messages)){
+    const prevLen=(tickets[curUser.username]||[]).length;
+    const wasInit=_supportSeenInit;
+    tickets[curUser.username]=d.messages;
+    if(editingMsgId&&!d.messages.some(m=>m.id===editingMsgId))editingMsgId=null;
+    renderUserSupInline();
+    updateSupportBadge(d.unread||0);
+    if(wasInit){
+      const fromOther=d.messages.slice(prevLen).find(m=>m.user!==curUser.username);
+      if(fromOther)notifySupportReply(fromOther);
+    }
+    if(d.unread>0)apiPost('/api/support/read',{}).catch(()=>{});
+    _supportSeenInit=true;
+  }
+}
+function renderUserSupInline(){const a=$('chatArea');if(!a)return;const msgs=(tickets[curUser.username]||[]);a.innerHTML=chatAreaHtml(msgs);scrollChat();}
 function renderStaffSup(root){
   const uns=Object.keys(tickets);
-  const sb=uns.map(u=>{const msgs=tickets[u]||[];const last=msgs[msgs.length-1];return `<div class="ticket-item${activeTicket===u?' active':''}" onclick="openTkt('${esc(u)}')"><div class="t-user">👤 ${esc(u)}</div><div class="t-prev">${last?esc(last.text):'Pas de messages'}</div><div class="t-meta"><span>${last?last.time:'—'}</span><span>${msgs.length} msg</span></div></div>`;}).join('')||'<div style="color:var(--txt3);font-size:.73rem;padding:14px;text-align:center">Aucun salon</div>';
-  let main=activeTicket&&tickets[activeTicket]?`<div class="sup-main"><div class="sup-hdr"><div style="font-size:.9rem;font-weight:700">💬 ${esc(activeTicket)}</div></div><div class="chat-area" id="chatArea">${tickets[activeTicket].map(m=>msgHtml(m)).join('')||'<div style="color:var(--txt3);font-size:.75rem;text-align:center;padding:20px">Aucun message</div>'}</div><div class="chat-input-bar"><input type="text" class="chat-inp" id="chatInp" placeholder="Répondre..." onkeypress="if(event.key==='Enter')sendMsg()"><button class="chat-send" onclick="sendMsg()">➤</button></div></div>`:`<div class="sup-main" style="display:flex;align-items:center;justify-content:center"><div style="text-align:center;color:var(--txt3);font-size:.75rem"><div style="font-size:2rem;margin-bottom:8px">💬</div>Sélectionnez un salon</div></div>`;
+  const sb=uns.map(u=>{const msgs=tickets[u]||[];const last=msgs[msgs.length-1];const dot=(ticketUnread[u]||0)>0?'<div class="t-unread-dot"></div>':'';return `<div class="ticket-item${activeTicket===u?' active':''}" onclick="openTkt('${esc(u)}')">${dot}<div class="t-user">👤 ${esc(u)}</div><div class="t-prev">${last?esc(last.text.replace(/[*_'\[\]{}]/g,'')):'Pas de messages'}</div><div class="t-meta"><span>${last?last.time:'—'}</span><span>${msgs.length} msg</span></div></div>`;}).join('')||'<div style="color:var(--txt3);font-size:.73rem;padding:14px;text-align:center">Aucun salon</div>';
+  let main=activeTicket&&tickets[activeTicket]?`<div class="sup-main"><div class="sup-hdr"><div style="font-size:.9rem;font-weight:700">💬 ${esc(activeTicket)}</div></div><div class="chat-area" id="chatArea">${chatAreaHtml(tickets[activeTicket])}</div><div class="chat-composer"><div class="chat-input-bar"><textarea class="chat-inp" id="chatInp" rows="1" placeholder="Répondre... (Maj+Entrée pour un saut de ligne)" onkeydown="chatKeyHandler(event)" oninput="autoGrow(this)"></textarea><button class="chat-send" onclick="sendMsg()">➤</button></div>${CHAT_FMT_HINT}</div></div>`:`<div class="sup-main" style="display:flex;align-items:center;justify-content:center"><div style="text-align:center;color:var(--txt3);font-size:.75rem"><div style="font-size:2rem;margin-bottom:8px">💬</div>Sélectionnez un salon</div></div>`;
   root.innerHTML=`<div class="sup-layout"><div class="sup-sidebar"><div class="sup-sb-head" style="display:flex;align-items:center;justify-content:space-between"><h4>🎟 Salons (${uns.length})</h4><button class="btn btn-ghost btn-sm" id="supRefreshBtn" onclick="loadAllTickets()" title="Rafraîchir les salons">↻</button></div><div class="ticket-list">${sb}</div></div>${main}</div>`;
   scrollChat();
 }
-async function loadAllTickets(){
+async function loadAllTickets(silent){
   const btn=$('supRefreshBtn');
-  if(btn){btn.disabled=true;btn.classList.add('spinning');}
+  if(!silent&&btn){btn.disabled=true;btn.classList.add('spinning');}
   const d=await apiGet('/api/admin/tickets');
   if(Array.isArray(d)){
-    tickets={};d.forEach(t=>{tickets[t.username]=t.messages||[];});
+    const prevCounts={};Object.keys(tickets).forEach(u=>{prevCounts[u]=(tickets[u]||[]).length;});
+    const wasInit=_supportSeenInit;
+    tickets={};ticketUnread={};let totalUnread=0;let firstNew=null;
+    d.forEach(t=>{
+      tickets[t.username]=t.messages||[];
+      ticketUnread[t.username]=t.unread||0;
+      totalUnread+=t.unread||0;
+      if(wasInit&&!firstNew){
+        const msgs=t.messages||[];
+        if(msgs.length>(prevCounts[t.username]||0)){
+          const last=msgs[msgs.length-1];
+          if(last&&last.user!==curUser.username)firstNew=last;
+        }
+      }
+    });
+    if(editingMsgId&&activeTicket&&!(tickets[activeTicket]||[]).some(m=>m.id===editingMsgId))editingMsgId=null;
+    updateSupportBadge(totalUnread);
+    if(firstNew)notifySupportReply(firstNew);
+    _supportSeenInit=true;
     renderSup(); // ré-affiche avec les nouvelles données ; ne redéclenche PAS de fetch
   }else{
     const btn2=$('supRefreshBtn');
     if(btn2){btn2.disabled=false;btn2.classList.remove('spinning');}
-    toast('Impossible de rafraîchir les salons','error');
+    if(!silent)toast('Impossible de rafraîchir les salons','error');
   }
 }
-function msgHtml(m){const isOwn=curUser&&m.user===curUser.username;const nc=m.role==='owner'?'is-owner':m.role==='mod'?'is-mod':'';const badge=m.role==='owner'?'<span class="mbadge owner">Owner</span>':m.role==='mod'?'<span class="mbadge mod">Mod</span>':'';return `<div class="chat-msg${isOwn?' own':''}"><div class="msg-ava">${m.emoji||'👤'}</div><div class="msg-body"><div class="msg-meta"><span class="msg-name ${nc}">${esc(m.user)}</span>${badge}<span class="msg-time">${m.time}</span></div><div class="msg-bubble">${esc(m.text)}</div></div></div>`;}
-function openTkt(u){activeTicket=u;renderSup();}
-async function sendMsg(){if(!curUser)return;const inp=$('chatInp');if(!inp)return;const text=inp.value.trim();if(!text)return;const t=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});let target=curUser.username;if(isStaff(curUser.role)&&activeTicket)target=activeTicket;if(!tickets[target])tickets[target]=[];const msg={user:curUser.username,emoji:curUser.emoji||'👤',role:curUser.role,text,time:t};tickets[target].push(msg);await apiPost('/api/support/send',{target,text});inp.value='';renderSup();}
+function msgHtml(m){
+  const isOwn=curUser&&m.user===curUser.username;
+  const nc=m.role==='owner'?'is-owner':m.role==='mod'?'is-mod':'';
+  const badge=m.role==='owner'?'<span class="mbadge owner">Owner</span>':m.role==='mod'?'<span class="mbadge mod">Mod</span>':'';
+  if(m.id&&editingMsgId===m.id){
+    return `<div class="chat-msg${isOwn?' own':''} editing"><div class="msg-ava">${m.emoji||'👤'}</div><div class="msg-body"><div class="msg-meta"><span class="msg-name ${nc}">${esc(m.user)}</span>${badge}</div><div class="msg-edit-box"><textarea class="chat-inp msg-edit-ta" id="editTa_${m.id}" rows="2" oninput="autoGrow(this)">${esc(m.text)}</textarea><div class="msg-edit-actions"><button class="btn btn-primary btn-sm" onclick="saveEditMsg('${m.id}')">✓ Enregistrer</button><button class="btn btn-ghost btn-sm" onclick="cancelEditMsg()">✕ Annuler</button></div></div></div></div>`;
+  }
+  const actions=(isOwn&&m.id)?`<div class="msg-actions"><button class="msg-act" title="Modifier" onclick="startEditMsg('${m.id}')">✎</button><button class="msg-act" title="Supprimer" onclick="deleteMsg('${m.id}')">🗑</button></div>`:'';
+  const edited=m.edited?'<span class="msg-edited">(modifié)</span>':'';
+  return `<div class="chat-msg${isOwn?' own':''}"><div class="msg-ava">${m.emoji||'👤'}</div><div class="msg-body"><div class="msg-meta"><span class="msg-name ${nc}">${esc(m.user)}</span>${badge}<span class="msg-time">${m.time}</span>${edited}</div><div class="msg-bubble">${formatMsgText(m.text)}</div>${actions}</div></div>`;
+}
+function openTkt(u){
+  activeTicket=u;editingMsgId=null;renderSup();
+  ticketUnread[u]=0;
+  apiPost('/api/support/read',{target:u}).then(()=>{updateSupportBadge(Object.values(ticketUnread).reduce((a,b)=>a+b,0));}).catch(()=>{});
+}
+function autoGrow(el){if(!el)return;el.style.height='auto';el.style.height=Math.min(el.scrollHeight,130)+'px';}
+function chatKeyHandler(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+function startEditMsg(id){editingMsgId=id;renderSup();const ta=$('editTa_'+id);if(ta){ta.focus();autoGrow(ta);const l=ta.value.length;ta.setSelectionRange(l,l);}}
+function cancelEditMsg(){editingMsgId=null;renderSup();}
+async function saveEditMsg(id){
+  const ta=$('editTa_'+id);if(!ta)return;
+  const text=ta.value.trim();
+  if(!text){toast('Le message ne peut pas être vide','error');return;}
+  const target=currentTicketTarget();
+  const res=await apiPost('/api/support/edit',{target,id,text});
+  if(res?.error){toast('Erreur : '+res.error,'error');return;}
+  const arr=tickets[target]||[];const m=arr.find(x=>x.id===id);
+  if(m){m.text=text;m.edited=true;}
+  editingMsgId=null;renderSup();
+}
+async function deleteMsg(id){
+  if(!confirm('Supprimer ce message ?'))return;
+  const target=currentTicketTarget();
+  const res=await apiPost('/api/support/delete',{target,id});
+  if(res?.error){toast('Erreur : '+res.error,'error');return;}
+  if(tickets[target])tickets[target]=tickets[target].filter(x=>x.id!==id);
+  renderSup();
+  toast('Message supprimé');
+}
+async function sendMsg(){
+  if(!curUser)return;
+  const inp=$('chatInp');if(!inp)return;
+  const text=inp.value.replace(/\s+$/,'');
+  if(!text.trim())return;
+  const target=currentTicketTarget();if(!target)return;
+  const localTime=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  if(!tickets[target])tickets[target]=[];
+  const msg={id:null,user:curUser.username,emoji:curUser.emoji||'👤',role:curUser.role,text,time:localTime};
+  tickets[target].push(msg);
+  inp.value='';
+  renderSup();
+  const res=await apiPost('/api/support/send',{target,text});
+  if(res?.error){
+    toast("Erreur d'envoi : "+res.error,'error');
+    tickets[target]=tickets[target].filter(x=>x!==msg);
+    renderSup();
+    return;
+  }
+  msg.id=res.id;if(res.time)msg.time=res.time;
+  renderSup();
+}
 function scrollChat(){setTimeout(()=>{const a=$('chatArea');if(a)a.scrollTop=a.scrollHeight;},50);}
 async function submitContact(){
   const name=$('cfName').value.trim(),email=$('cfEmail').value.trim(),subj=$('cfSubj').value,msg=$('cfMsg2').value.trim();
