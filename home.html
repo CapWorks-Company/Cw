@@ -712,7 +712,12 @@ async function saveSettings(){
   const phone=$('setPhone').value.trim();const emailAlerts=$('setEmailAlerts').checked;
   const msgEl=$('setMsg');msgEl.className='err-msg';
   if(phone && !/^\+?[0-9\s.-]{6,20}$/.test(phone)){msgEl.textContent='✕ Numéro de téléphone invalide';return;}
-  console.log('PHONE =', JSON.stringify(phone), 'TYPE =', typeof phone);
+  console.log(
+    'phone =', JSON.stringify(phone),
+    '| vide ?', phone === "",
+    '| valide ?', !phone || /^\+?[0-9\s.-]{6,20}$/.test(phone),
+    '| type =', typeof phone
+  );
   if(n&&n!==cf){msgEl.textContent='✕ Les mots de passe ne correspondent pas';return;}
   if(n&&n.length<8){msgEl.textContent='✕ Min. 8 caractères';return;}
   const data=await apiPost('/api/user/update',{emoji,phone,emailAlerts,currentPassword:c||undefined,newPassword:n||undefined});
