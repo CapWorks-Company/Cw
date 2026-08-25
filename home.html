@@ -711,7 +711,7 @@ async function saveSettings(){
   const emoji=$('setEmoji').value.trim()||'👤';const c=$('setPwC').value,n=$('setPwN').value,cf=$('setPwCf').value;
   const phone=$('setPhone').value.trim();const emailAlerts=$('setEmailAlerts').checked;
   const msgEl=$('setMsg');msgEl.className='err-msg';
-  if(!/^\+?[0-9\s.-]{6,20}$/.test(phone)){msgEl.textContent='✕ Numéro de téléphone invalide';return;}
+  if(phone && !/^\+?[0-9\s.-]{6,20}$/.test(phone)){msgEl.textContent='✕ Numéro de téléphone invalide';return;}
   if(n&&n!==cf){msgEl.textContent='✕ Les mots de passe ne correspondent pas';return;}
   if(n&&n.length<8){msgEl.textContent='✕ Min. 8 caractères';return;}
   const data=await apiPost('/api/user/update',{emoji,phone,emailAlerts,currentPassword:c||undefined,newPassword:n||undefined});
