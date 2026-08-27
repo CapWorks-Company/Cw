@@ -47,7 +47,7 @@
     .cw-sb-toggle svg{transition:transform .3s ease;display:block}
     #cwSidebar.collapsed .cw-sb-toggle svg{transform:rotate(180deg)}
     .cw-sb-list{flex:1;overflow-y:auto;overflow-x:hidden;padding:10px 8px;
-      display:flex;flex-direction:column;gap:2px}
+      display:flex;flex-direction:column;align-items:stretch;gap:2px}
     .cw-sb-list::-webkit-scrollbar{width:3px}
     .cw-sb-list::-webkit-scrollbar-thumb{background:var(--bdr2,#2a2a4a)}
     .cw-sb-item{display:flex;align-items:center;gap:13px;padding:10px 11px;
