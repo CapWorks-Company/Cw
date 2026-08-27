@@ -23,6 +23,7 @@
   --r:8px; --r2:14px; --r3:20px;
   --cat-sites:#00cec9; --cat-games:#6c5ce7; --cat-software:#00b894; --cat-animations:#ff6ab0;
   --cat-music:#f97316; --cat-bots:#fdcb6e; --cat-ai:#a78bfa; --cat-assets:#fb923c; --cat-other:#8888aa;
+  --cat-clugins:#5ec26a; --cat-capmods:#e0a94c;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -199,6 +200,8 @@ nav a.active{color:var(--accent);background:rgba(108,92,231,.1)}
 .proj-card[data-cat="bots"]:hover{border-color:var(--cat-bots)}
 .proj-card[data-cat="ai"]:hover{border-color:var(--cat-ai)}
 .proj-card[data-cat="assets"]:hover{border-color:var(--cat-assets)}
+.proj-card[data-cat="clugins"]:hover{border-color:var(--cat-clugins)}
+.proj-card[data-cat="capmods"]:hover{border-color:var(--cat-capmods)}
 .cat-section-head[data-cat="sites"] .cat-section-label{color:var(--cat-sites)}
 .cat-section-head[data-cat="games"] .cat-section-label{color:var(--cat-games)}
 .cat-section-head[data-cat="software"] .cat-section-label{color:var(--cat-software)}
@@ -208,6 +211,8 @@ nav a.active{color:var(--accent);background:rgba(108,92,231,.1)}
 .cat-section-head[data-cat="ai"] .cat-section-label{color:var(--cat-ai)}
 .cat-section-head[data-cat="assets"] .cat-section-label{color:var(--cat-assets)}
 .cat-section-head[data-cat="other"] .cat-section-label{color:var(--cat-other)}
+.cat-section-head[data-cat="clugins"] .cat-section-label{color:var(--cat-clugins)}
+.cat-section-head[data-cat="capmods"] .cat-section-label{color:var(--cat-capmods)}
 
 /* Bot avatar */
 .bot-meta{display:flex;align-items:center;gap:10px;margin-bottom:11px}
@@ -336,6 +341,8 @@ footer a:hover{text-decoration:underline}
     <button class="cat-btn" data-cat="ai" onclick="filterCat('ai')">🧠 IA <span class="cat-count" id="cnt-ai">0</span></button>
     <button class="cat-btn" data-cat="assets" onclick="filterCat('assets')">📦 Assets <span class="cat-count" id="cnt-assets">0</span></button>
     <button class="cat-btn" data-cat="other" onclick="filterCat('other')">◈ Autres <span class="cat-count" id="cnt-other">0</span></button>
+    <button class="cat-btn" data-cat="clugins" onclick="filterCat('clugins')">⛏️ Clugins <span class="cat-count" id="cnt-clugins">0</span></button>
+    <button class="cat-btn" data-cat="capmods" onclick="filterCat('capmods')">🧩 CapMods <span class="cat-count" id="cnt-capmods">0</span></button>
   </div>
   <div id="projectsContainer">
     <div class="projects-grid">
@@ -359,7 +366,7 @@ footer a:hover{text-decoration:underline}
     <img src="https://raw.githubusercontent.com/Capky/CapWorks-Company/main/CW_Logo.png" alt="CW" style="width:28px;height:28px;border-radius:7px" onerror="this.style.display='none'">
     <div class="footer-logo">CapWorks</div>
   </div>
-  <p>Développement sur mesure &nbsp;·&nbsp; Tous droits réservés<br><a href="https://discord.gg/RSnKYzXsgm" target="_blank">Discord CapWorks</a> &nbsp;·&nbsp; <a href="home.html">Accueil</a></p>
+  <p>Développement sur mesure &nbsp;·&nbsp; Tous droits réservés<br><a href="https://discord.gg/Hee7ZA5BPC" target="_blank">Discord CapWorks</a> &nbsp;·&nbsp; <a href="home.html">Accueil</a></p>
 </footer>
 
 <script>
@@ -371,13 +378,14 @@ function closeOv(id){ $(id).classList.remove('open'); }
 function ovClick(e,id){ if(e.target===$(id)) closeOv(id); }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.overlay.open').forEach(el=>el.classList.remove('open')); });
 
-const CATS=['sites','games','software','animations','music','bots','ai','assets','other'];
+const CATS=['sites','games','software','animations','music','bots','ai','assets','other','clugins','capmods'];
 const CAT_META={
   sites:{label:'Sites Web',icon:'🌐'}, games:{label:'Jeux Vidéos',icon:'🎮'},
   software:{label:'Logiciels',icon:'⚙️'}, animations:{label:'Animations',icon:'🎬'},
   music:{label:'Musique',icon:'🎵'},
   bots:{label:'Bots Discord',icon:'🤖'}, ai:{label:'IA',icon:'🧠'},
-  assets:{label:'Assets',icon:'📦'}, other:{label:'Autres',icon:'◈'}
+  assets:{label:'Assets',icon:'📦'}, other:{label:'Autres',icon:'◈'},
+  clugins:{label:'Clugins',icon:'⛏️'}, capmods:{label:'CapMods',icon:'🧩'}
 };
 
 const LS_LIKES='cw_likes';
@@ -592,6 +600,9 @@ function buildCard(cat,proj,idx){
   if(cat==='animations' && proj.duration){
     extra=`<div style="font-family:var(--mono);font-size:.65rem;color:var(--txt3);margin-bottom:9px">⏱ ${esc(proj.duration)}${proj.software?' · '+esc(proj.software):''}</div>`;
   }
+  if((cat==='clugins'||cat==='capmods') && (proj.mcVersion||proj.loader)){
+    extra=`<div style="font-family:var(--mono);font-size:.65rem;color:var(--txt3);margin-bottom:9px">${proj.mcVersion?'⛏️ MC '+esc(proj.mcVersion):''}${proj.loader?' · '+esc(proj.loader):''}</div>`;
+  }
   if(cat==='music'){
     const pid='mp_'+proj.id.replace(/[^a-z0-9]/gi,'_');
     const art=proj.imageUrl?`<img src="${esc(proj.imageUrl)}" alt="">`:'🎵';
@@ -669,6 +680,7 @@ function openProjectModal(cat,proj){
   else if(cat==='assets'){ meta+=mi('💾 Taille ZIP',proj.size||'—')+mi('↓ Téléchargements',fmt(proj.downloads||0)); }
   else if(cat==='ai'){ meta+=mi('🧠 Modèle',proj.model||'Custom')+mi('🔧 Tech',proj.tech||'—'); }
   else if(cat==='animations'){ meta+=mi('⏱ Durée',proj.duration||'—')+mi('🎨 Logiciel',proj.software||'—'); }
+  else if(cat==='clugins'||cat==='capmods'){ meta+=mi('⛏️ Version MC',proj.mcVersion||'—')+mi('🧩 Loader',proj.loader||'—')+mi('↓ Téléchargements',fmt(proj.downloads||0)); }
   meta+=mi('❤ Likes',fmt(proj.likes||0))+mi('👁 Vues',fmt(proj.views||0));
   const tree=(cat==='assets'&&(proj.files?.length||proj.folders?.length))?`<div style="font-family:var(--mono);font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--txt3);margin-bottom:10px">📁 Contenu de l'archive</div><div class="folder-tree" style="max-height:220px">${buildMiniTree(proj.folders||[],proj.files||[])}</div>`:'';
   let actions='';

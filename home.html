@@ -165,7 +165,22 @@ textarea.chat-inp{resize:none;overflow-y:auto;max-height:130px;min-height:34px;l
 .msg-code{background:var(--surf);border:1px solid var(--bdr2);padding:1px 6px;border-radius:4px;font-family:var(--mono,monospace);font-size:.85em;cursor:pointer;transition:all .15s}
 .msg-code:hover{border-color:var(--accent);color:var(--accent)}
 .msg-code.copied{border-color:var(--grn);color:var(--grn)}
+.msg-code-static{cursor:default}
+.msg-code-static:hover{border-color:var(--bdr2);color:inherit}
 .msg-bg{padding:1px 5px;border-radius:4px}
+.msg-spoiler{background:var(--surf3);color:transparent;border-radius:4px;padding:1px 4px;cursor:pointer;user-select:none;transition:background .15s}
+.msg-spoiler::selection{background:transparent}
+.msg-spoiler.revealed{color:inherit;background:transparent;cursor:text;user-select:text}
+.msg-img{max-width:260px;max-height:220px;border-radius:8px;display:block;margin-top:5px;border:1px solid var(--bdr2);cursor:zoom-in}
+.msg-attachment{display:inline-flex;align-items:center;gap:7px;margin-top:6px;padding:7px 12px;background:var(--surf2);border:1px solid var(--bdr2);border-radius:8px;font-size:.76rem;font-weight:600;color:var(--txt);cursor:pointer;transition:all .15s;text-decoration:none;font-family:var(--font)}
+.msg-attachment:hover{border-color:var(--accent);color:var(--accent)}
+.msg-attachment.pending{color:var(--txt3);cursor:default}
+.msg-attachment.expired{display:inline-flex;color:var(--txt3);font-style:italic;background:transparent;border-style:dashed;cursor:default}
+.msg-attachment-size{color:var(--txt3);font-weight:500;font-size:.7rem}
+.msg-attachment-img{margin-top:6px;display:inline-block;font-size:.72rem;color:var(--txt3);padding:6px 10px;background:var(--surf2);border-radius:8px}
+.msg-attachment-img img{max-width:260px;max-height:220px;border-radius:8px;display:block;border:1px solid var(--bdr2);cursor:zoom-in}
+.chat-attach-btn{background:var(--surf2);border:1px solid var(--bdr2);color:var(--txt2);width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:1rem;transition:all .15s}
+.chat-attach-btn:hover{border-color:var(--accent);color:var(--accent)}
 .msg-edited{color:var(--txt3);font-size:.62rem;font-style:italic}
 .msg-actions{display:flex;gap:5px;margin-top:4px}
 .chat-msg.own .msg-actions{justify-content:flex-end}
@@ -241,7 +256,7 @@ footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(
   <div class="hero-btns">
     <a href="projects.html" class="btn btn-primary">Voir les projets →</a>
     <a href="campagnes.html" class="btn btn-gold">💛 Soutenir un projet</a>
-    <a href="https://discord.gg/RSnKYzXsgm" target="_blank" class="btn btn-ghost">💬 Discord</a>
+    <a href="https://discord.gg/Hee7ZA5BPC" target="_blank" class="btn btn-ghost">💬 Discord</a>
   </div>
   <div class="hero-scroll"><span>Scroll</span><div class="hero-scroll-arrow"></div></div>
 </section>
@@ -276,7 +291,7 @@ footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(
   <div class="qlinks">
     <a href="projects.html" class="qlink" style="animation-delay:.05s"><div class="qicon">🗂</div><div class="qtitle">Nos projets</div><div class="qdesc">Sites, jeux, logiciels, bots, animations, assets et plus encore.</div><div class="qarrow">Découvrir →</div></a>
     <a href="campagnes.html" class="qlink" style="animation-delay:.1s"><div class="qicon">💛</div><div class="qtitle">Campagnes de don</div><div class="qdesc">Soutenez nos projets en cours et aidez-nous à les concrétiser.</div><div class="qarrow">Soutenir →</div></a>
-    <a href="https://discord.gg/RSnKYzXsgm" target="_blank" class="qlink" style="animation-delay:.15s"><div class="qicon">💬</div><div class="qtitle">Notre Discord</div><div class="qdesc">Rejoignez la communauté, discutez avec l'équipe et suivez les nouveautés.</div><div class="qarrow">Rejoindre →</div></a>
+    <a href="https://discord.gg/Hee7ZA5BPC" target="_blank" class="qlink" style="animation-delay:.15s"><div class="qicon">💬</div><div class="qtitle">Notre Discord</div><div class="qdesc">Rejoignez la communauté, discutez avec l'équipe et suivez les nouveautés.</div><div class="qarrow">Rejoindre →</div></a>
   </div>
 </section>
 <div class="sec-div"></div>
@@ -328,7 +343,7 @@ Mais nous ferons tout notre possible pour vous plaire !</p>
   <div class="sec-head"><span class="sec-tag">// contact</span><h2>Nous contacter</h2></div>
   <div class="contact-grid">
     <div class="c-links">
-      <a href="https://discord.gg/RSnKYzXsgm" target="_blank" class="c-link cl-disc"><div class="c-ico">💬</div><div><div class="c-lbl">Discord</div><div class="c-val">discord.gg/RSnKYzXsgm</div></div><span style="margin-left:auto;color:var(--txt3)">→</span></a>
+      <a href="https://discord.gg/Hee7ZA5BPC" target="_blank" class="c-link cl-disc"><div class="c-ico">💬</div><div><div class="c-lbl">Discord</div><div class="c-val">discord.gg/Hee7ZA5BPC</div></div><span style="margin-left:auto;color:var(--txt3)">→</span></a>
       <a href="mailto:contact@capworks.fr" class="c-link cl-mail"><div class="c-ico">📧</div><div><div class="c-lbl">Email</div><div class="c-val">capkychannel@gmail.com</div></div><span style="margin-left:auto;color:var(--txt3)">→</span></a>
       <div style="background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r2);padding:16px 18px">
         <div style="font-size:.67rem;color:var(--txt3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:7px">Disponibilité</div>
@@ -344,7 +359,7 @@ Mais nous ferons tout notre possible pour vous plaire !</p>
       <h3>✉️ Envoyer un message</h3>
       <div class="fg"><label>Nom</label><input type="text" class="inp" id="cfName" placeholder="Jean Dupont"></div>
       <div class="fg"><label>Email</label><input type="email" class="inp" id="cfEmail" placeholder="jean@exemple.com"></div>
-      <div class="fg"><label>Sujet</label><select class="inp" id="cfSubj"><option value="">Choisir...</option><option value="devis">Demande de devis</option><option value="question">Question générale</option><option value="bug">Signaler un problème</option><option value="partenariat">Partenariat</option><option value="autre">Autre</option></select></div>
+      <div class="fg"><label>Sujet</label><select class="inp" id="cfSubj"><option value="">Choisir...</option><option value="devis">Demande de devis</option><option value="question">Question générale</option><option value="bug">Signaler un problème</option><option value="partenariat">Partenariat</option><option value="animation">Animation 2D/3D</option><option value="film">Court-métrage / Film</option><option value="musique">Composition musicale</option><option value="motion">Motion Design / VFX</option><option value="illustration">Illustration</option><option value="collab">Collaboration</option><option value="autre">Autre</option></select></div>
       <div class="fg"><label>Message</label><textarea class="inp" id="cfMsg2" placeholder="Décrivez votre projet..."></textarea></div>
       <button class="btn btn-primary btn-full" id="cfBtn" onclick="submitContact()">📤 Envoyer le message</button>
       <div class="cf-msg" id="cfMsg"></div>
@@ -356,7 +371,7 @@ Mais nous ferons tout notre possible pour vous plaire !</p>
     <img src="https://raw.githubusercontent.com/Capky/CapWorks-Company/main/CW_Logo.png" alt="CW" style="width:28px;height:28px;border-radius:7px" onerror="this.style.display='none'">
     <div class="footer-logo">CapWorks</div>
   </div>
-  <p>Développement sur mesure &nbsp;·&nbsp; Tous droits réservés<br><a href="https://discord.gg/RSnKYzXsgm" target="_blank">Discord CapWorks</a> &nbsp;·&nbsp; <a href="admin.html">Admin</a></p>
+  <p>Développement sur mesure &nbsp;·&nbsp; Tous droits réservés<br><a href="https://discord.gg/Hee7ZA5BPC" target="_blank">Discord CapWorks</a> &nbsp;·&nbsp; <a href="admin.html">Admin</a></p>
 </footer>
 <!-- AUTH MODAL -->
 <div class="overlay" id="authOv" onclick="ovClick(event,'authOv')">
@@ -397,10 +412,18 @@ const API='https://capworks-worker.capkychannel.workers.dev';
 const $=id=>document.getElementById(id);
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 /* ── Mise en forme des messages de support ──────────────────────────────
-   **gras**  *italique*  ***gras+italique***  _souligné_  ''code''
+   **gras**  *italique*  ***gras+italique***  _souligné_  ''code (copiable)''
+   ||code (apparence seule)||  |||spoiler (cliquer pour révéler)|||
    [texte](lien)  [_texte_](couleur)  {_texte_}(couleur-fond)
-   Saut de ligne : Maj+Entrée. Tout est échappé avant d'être interprété. */
+   Un lien d'image (se terminant par .png/.jpg/.gif/...) est affiché directement.
+   Saut de ligne : Maj+Entrée. Tout est échappé avant d'être interprété.
+   Les blocs protégés (code, spoiler, couleurs, liens, images) sont mis de
+   côté sous forme de jetons opaques le temps que les autres syntaxes soient
+   appliquées, puis restaurés en boucle à la fin — ça permet d'imbriquer du
+   gras/code à l'intérieur d'un texte coloré, et ça évite qu'un chiffre tapé
+   dans un message soit confondu avec un jeton interne. */
 const MSG_COLORS=['red','blue','orange','green','yellow','purple','pink','cyan','gray','grey','black','white','gold','indigo','teal','brown','lime','magenta','navy','maroon','turquoise','silver'];
+const IMG_EXT=/\.(?:png|jpe?g|gif|webp|avif|svg)(?:\?\S*)?$/i;
 function sanitizeUrl(u){
   const s=String(u||'').trim();
   if(/^(https?:|mailto:)/i.test(s))return s;
@@ -411,17 +434,22 @@ function sanitizeUrl(u){
 function formatMsgText(raw){
   let s=esc(raw);
   const P=[];
-  const protect=html=>{P.push(html);return ""+(P.length-1)+"";};
+  const protect=html=>{P.push(html);return ''+(P.length-1)+'';};
   s=s.replace(/''([\s\S]+?)''/g,(_,t)=>protect(`<code class="msg-code" title="Cliquer pour copier" onclick="copyCode(this)">${t}</code>`));
-  s=s.replace(/\{_([\s\S]+?)_\}\((\w+)\)/g,(m,t,c)=>{c=c.toLowerCase();if(!MSG_COLORS.includes(c))return protect(m);return protect(`<span class="msg-bg" style="background-color:${c}">${t}</span>`);});
-  s=s.replace(/\[_([\s\S]+?)_\]\((\w+)\)/g,(m,t,c)=>{c=c.toLowerCase();if(!MSG_COLORS.includes(c))return protect(m);return protect(`<span style="color:${c}">${t}</span>`);});
-  s=s.replace(/\[([^\[\]]+?)\]\(([^()\s]+)\)/g,(_,t,u)=>protect(`<a href="${sanitizeUrl(u)}" target="_blank" rel="noopener noreferrer nofollow">${t}</a>`));
+  s=s.replace(/\|\|\|([\s\S]+?)\|\|\|/g,(_,t)=>protect(`<span class="msg-spoiler" onclick="this.classList.toggle('revealed')" title="Cliquer pour révéler">${t}</span>`));
+  s=s.replace(/\|\|([\s\S]+?)\|\|/g,(_,t)=>protect(`<code class="msg-code msg-code-static">${t}</code>`));
   s=s.replace(/\*\*\*([\s\S]+?)\*\*\*/g,'<strong><em>$1</em></strong>');
   s=s.replace(/\*\*([\s\S]+?)\*\*/g,'<strong>$1</strong>');
   s=s.replace(/\*([\s\S]+?)\*/g,'<em>$1</em>');
+  s=s.replace(/\{_([\s\S]+?)_\}\((\w+)\)/g,(m,t,c)=>{c=c.toLowerCase();if(!MSG_COLORS.includes(c))return protect(m);return protect(`<span class="msg-bg" style="background-color:${c}">${t}</span>`);});
+  s=s.replace(/\[_([\s\S]+?)_\]\((\w+)\)/g,(m,t,c)=>{c=c.toLowerCase();if(!MSG_COLORS.includes(c))return protect(m);return protect(`<span style="color:${c}">${t}</span>`);});
+  s=s.replace(/\[([^\[\]]+?)\]\(([^()\s]+)\)/g,(_,t,u)=>protect(`<a href="${sanitizeUrl(u)}" target="_blank" rel="noopener noreferrer nofollow">${t}</a>`));
+  s=s.replace(/(^|\s)(https?:\/\/\S+)(?=\s|$)/gi,(m,pre,u)=>IMG_EXT.test(u)?pre+protect(`<img class="msg-img" src="${u}" alt="" loading="lazy" onclick="window.open(this.src,'_blank')">`):m);
   s=s.replace(/_([\s\S]+?)_/g,'<u>$1</u>');
-  s=s.replace(/(\d+)/g,(_,i)=>P[+i]);
   s=s.replace(/\n/g,'<br>');
+  for(let i=0;i<P.length+2 && /\d/.test(s);i++){
+    s=s.replace(/(\d+)/g,(_,idx)=>(idx in P)?P[+idx]:idx);
+  }
   return s;
 }
 function copyCode(el){
@@ -466,11 +494,11 @@ function renderSup(){
   isStaff(curUser.role)?renderStaffSup(root):renderUserSup(root);
 }
 function isStaff(r){return r==='mod'||r==='owner';}
-function chatAreaHtml(msgs){return msgs&&msgs.length?msgs.map(m=>msgHtml(m)).join(''):'<div style="color:var(--txt3);font-size:.75rem;text-align:center;padding:28px">— Commencez votre demande ci-dessous —</div>';}
+function chatAreaHtml(msgs,ticketOwner){return msgs&&msgs.length?msgs.map(m=>msgHtml(m,ticketOwner)).join(''):'<div style="color:var(--txt3);font-size:.75rem;text-align:center;padding:28px">— Commencez votre demande ci-dessous —</div>';}
 function currentTicketTarget(){return curUser&&isStaff(curUser.role)?activeTicket:(curUser&&curUser.username);}
 function renderUserSup(root){
   const msgs=(tickets[curUser.username]||[]);
-  root.innerHTML=`<div class="sup-solo"><div class="sup-hdr"><div><div style="font-size:.9rem;font-weight:700">💬 Votre salon</div><div style="font-size:.7rem;color:var(--txt2);margin-top:2px">Un modérateur vous répondra dès que possible</div></div><div style="display:flex;align-items:center;gap:10px"><button class="btn btn-ghost btn-sm" id="supRefreshBtnUser" onclick="loadMyTicket(true)" title="Rafraîchir le salon">↻</button><div class="sup-status"><div style="width:6px;height:6px;border-radius:50%;background:var(--grn);animation:blink 1.5s infinite"></div>En ligne</div></div></div><div class="chat-area" id="chatArea">${chatAreaHtml(msgs)}</div><div class="chat-composer"><div class="chat-input-bar"><textarea class="chat-inp" id="chatInp" rows="1" placeholder="Écrivez votre message... (Maj+Entrée pour un saut de ligne)" onkeydown="chatKeyHandler(event)" oninput="autoGrow(this)"></textarea><button class="chat-send" onclick="sendMsg()">➤</button></div></div></div>`;
+  root.innerHTML=`<div class="sup-solo"><div class="sup-hdr"><div><div style="font-size:.9rem;font-weight:700">💬 Votre salon</div><div style="font-size:.7rem;color:var(--txt2);margin-top:2px">Un modérateur vous répondra dès que possible</div></div><div style="display:flex;align-items:center;gap:10px"><button class="btn btn-ghost btn-sm" id="supRefreshBtnUser" onclick="loadMyTicket(true)" title="Rafraîchir le salon">↻</button><div class="sup-status"><div style="width:6px;height:6px;border-radius:50%;background:var(--grn);animation:blink 1.5s infinite"></div>En ligne</div></div></div><div class="chat-area" id="chatArea">${chatAreaHtml(msgs,curUser.username)}</div><div class="chat-composer"><div class="chat-input-bar"><input type="file" id="chatFile" style="display:none" onchange="sendAttachment(this.files[0])"><button class="chat-attach-btn" onclick="$('chatFile').click()" title="Joindre un fichier">📎</button><textarea class="chat-inp" id="chatInp" rows="1" placeholder="Écrivez votre message... (Maj+Entrée pour un saut de ligne)" onkeydown="chatKeyHandler(event)" oninput="autoGrow(this)"></textarea><button class="chat-send" onclick="sendMsg()">➤</button></div></div></div>`;
   scrollChat();loadMyTicket();
 }
 async function loadMyTicket(manual){
@@ -487,11 +515,11 @@ async function loadMyTicket(manual){
   const btn2=$('supRefreshBtnUser');
   if(btn2){btn2.disabled=false;btn2.classList.remove('spinning');}
 }
-function renderUserSupInline(){const a=$('chatArea');if(!a)return;const msgs=(tickets[curUser.username]||[]);a.innerHTML=chatAreaHtml(msgs);scrollChat();}
+function renderUserSupInline(){const a=$('chatArea');if(!a)return;const msgs=(tickets[curUser.username]||[]);a.innerHTML=chatAreaHtml(msgs,curUser.username);scrollChat();}
 function renderStaffSup(root){
   const uns=Object.keys(tickets);
-  const sb=uns.map(u=>{const msgs=tickets[u]||[];const last=msgs[msgs.length-1];return `<div class="ticket-item${activeTicket===u?' active':''}" onclick="openTkt('${esc(u)}')"><div class="t-user">👤 ${esc(u)}</div><div class="t-prev">${last?esc(last.text.replace(/[*_'\[\]{}]/g,'')):'Pas de messages'}</div><div class="t-meta"><span>${last?last.time:'—'}</span><span>${msgs.length} msg</span></div></div>`;}).join('')||'<div style="color:var(--txt3);font-size:.73rem;padding:14px;text-align:center">Aucun salon</div>';
-  let main=activeTicket&&tickets[activeTicket]?`<div class="sup-main"><div class="sup-hdr"><div style="font-size:.9rem;font-weight:700">💬 ${esc(activeTicket)}</div></div><div class="chat-area" id="chatArea">${chatAreaHtml(tickets[activeTicket])}</div><div class="chat-composer"><div class="chat-input-bar"><textarea class="chat-inp" id="chatInp" rows="1" placeholder="Répondre... (Maj+Entrée pour un saut de ligne)" onkeydown="chatKeyHandler(event)" oninput="autoGrow(this)"></textarea><button class="chat-send" onclick="sendMsg()">➤</button></div></div></div>`:`<div class="sup-main" style="display:flex;align-items:center;justify-content:center"><div style="text-align:center;color:var(--txt3);font-size:.75rem"><div style="font-size:2rem;margin-bottom:8px">💬</div>Sélectionnez un salon</div></div>`;
+  const sb=uns.map(u=>{const msgs=tickets[u]||[];const last=msgs[msgs.length-1];return `<div class="ticket-item${activeTicket===u?' active':''}" onclick="openTkt('${esc(u)}')"><div class="t-user">👤 ${esc(u)}</div><div class="t-prev">${last?esc((last.text||(last.attachment?'📎 '+last.attachment.filename:'')).replace(/[*_'\[\]{}]/g,'')):'Pas de messages'}</div><div class="t-meta"><span>${last?last.time:'—'}</span><span>${msgs.length} msg</span></div></div>`;}).join('')||'<div style="color:var(--txt3);font-size:.73rem;padding:14px;text-align:center">Aucun salon</div>';
+  let main=activeTicket&&tickets[activeTicket]?`<div class="sup-main"><div class="sup-hdr"><div style="font-size:.9rem;font-weight:700">💬 ${esc(activeTicket)}</div></div><div class="chat-area" id="chatArea">${chatAreaHtml(tickets[activeTicket],activeTicket)}</div><div class="chat-composer"><div class="chat-input-bar"><input type="file" id="chatFile" style="display:none" onchange="sendAttachment(this.files[0])"><button class="chat-attach-btn" onclick="$('chatFile').click()" title="Joindre un fichier">📎</button><textarea class="chat-inp" id="chatInp" rows="1" placeholder="Répondre... (Maj+Entrée pour un saut de ligne)" onkeydown="chatKeyHandler(event)" oninput="autoGrow(this)"></textarea><button class="chat-send" onclick="sendMsg()">➤</button></div></div></div>`:`<div class="sup-main" style="display:flex;align-items:center;justify-content:center"><div style="text-align:center;color:var(--txt3);font-size:.75rem"><div style="font-size:2rem;margin-bottom:8px">💬</div>Sélectionnez un salon</div></div>`;
   root.innerHTML=`<div class="sup-layout"><div class="sup-sidebar"><div class="sup-sb-head" style="display:flex;align-items:center;justify-content:space-between"><h4>🎟 Salons (${uns.length})</h4><button class="btn btn-ghost btn-sm" id="supRefreshBtn" onclick="loadAllTickets()" title="Rafraîchir les salons">↻</button></div><div class="ticket-list">${sb}</div></div>${main}</div>`;
   scrollChat();
 }
@@ -510,7 +538,16 @@ async function loadAllTickets(){
     toast('Impossible de rafraîchir les salons','error');
   }
 }
-function msgHtml(m){
+function fmtSize(b){if(b===undefined||b===null)return'';if(b<1024)return b+' o';if(b<1024*1024)return(b/1024).toFixed(1)+' Ko';return(b/1024/1024).toFixed(1)+' Mo';}
+function attachmentHtml(m,ticketOwner){
+  if(m.attachmentExpired)return `<div class="msg-attachment expired">📎 Pièce jointe expirée (supprimée après 3 jours)</div>`;
+  const a=m.attachment;if(!a)return'';
+  if(a._pending)return `<div class="msg-attachment pending">⟳ Envoi de ${esc(a.filename)}...</div>`;
+  const isImg=/^image\//.test(a.contentType||'');
+  if(isImg)return `<div class="msg-attachment-img" data-key="${esc(a.key)}" data-ticket="${esc(ticketOwner||'')}" data-name="${esc(a.filename)}">⟳ Chargement de l'image...</div>`;
+  return `<button class="msg-attachment" data-key="${esc(a.key)}" data-ticket="${esc(ticketOwner||'')}" data-name="${esc(a.filename)}" onclick="downloadAttachment(this)">📎 ${esc(a.filename)} <span class="msg-attachment-size">${fmtSize(a.size)}</span></button>`;
+}
+function msgHtml(m,ticketOwner){
   const isOwn=curUser&&m.user===curUser.username;
   const nc=m.role==='owner'?'is-owner':m.role==='mod'?'is-mod':'';
   const badge=m.role==='owner'?'<span class="mbadge owner">Owner</span>':m.role==='mod'?'<span class="mbadge mod">Mod</span>':'';
@@ -519,7 +556,8 @@ function msgHtml(m){
   }
   const actions=(isOwn&&m.id)?`<div class="msg-actions"><button class="msg-act" title="Modifier" onclick="startEditMsg('${m.id}')">✎</button><button class="msg-act" title="Supprimer" onclick="deleteMsg('${m.id}')">🗑</button></div>`:'';
   const edited=m.edited?'<span class="msg-edited">(modifié)</span>':'';
-  return `<div class="chat-msg${isOwn?' own':''}"><div class="msg-ava">${m.emoji||'👤'}</div><div class="msg-body"><div class="msg-meta"><span class="msg-name ${nc}">${esc(m.user)}</span>${badge}<span class="msg-time">${m.time}</span>${edited}</div><div class="msg-bubble">${formatMsgText(m.text)}</div>${actions}</div></div>`;
+  const bubble=m.text?`<div class="msg-bubble">${formatMsgText(m.text)}</div>`:'';
+  return `<div class="chat-msg${isOwn?' own':''}"><div class="msg-ava">${m.emoji||'👤'}</div><div class="msg-body"><div class="msg-meta"><span class="msg-name ${nc}">${esc(m.user)}</span>${badge}<span class="msg-time">${m.time}</span>${edited}</div>${bubble}${attachmentHtml(m,ticketOwner)}${actions}</div></div>`;
 }
 function openTkt(u){activeTicket=u;editingMsgId=null;renderSup();}
 function autoGrow(el){if(!el)return;el.style.height='auto';el.style.height=Math.min(el.scrollHeight,130)+'px';}
@@ -568,7 +606,53 @@ async function sendMsg(){
   msg.id=res.id;if(res.time)msg.time=res.time;
   renderSup();
 }
-function scrollChat(){setTimeout(()=>{const a=$('chatArea');if(a)a.scrollTop=a.scrollHeight;},50);}
+function scrollChat(){setTimeout(()=>{const a=$('chatArea');if(a)a.scrollTop=a.scrollHeight;loadPendingImages();},50);}
+async function apiUpload(path,formData){try{const r=await fetch(API+path,{method:'POST',headers:{...(curUser?.token&&{Authorization:`Bearer ${curUser.token}`})},body:formData});if(!r.ok){try{return await r.json();}catch{return{error:`HTTP ${r.status}`};}}return r.json();}catch(e){return{error:'Réseau'};}}
+async function sendAttachment(file){
+  if(!file||!curUser)return;
+  const target=currentTicketTarget();if(!target)return;
+  if(file.size>15*1024*1024){toast('Fichier trop volumineux (15 Mo max)','error');const fi=$('chatFile');if(fi)fi.value='';return;}
+  const localTime=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  if(!tickets[target])tickets[target]=[];
+  const msg={id:null,user:curUser.username,emoji:curUser.emoji||'👤',role:curUser.role,text:'',time:localTime,attachment:{filename:file.name,size:file.size,contentType:file.type,_pending:true}};
+  tickets[target].push(msg);
+  renderSup();
+  const fd=new FormData();fd.append('file',file);if(target!==curUser.username)fd.append('target',target);
+  const res=await apiUpload('/api/support/upload',fd);
+  const fi=$('chatFile');if(fi)fi.value='';
+  if(res?.error){
+    toast("Erreur d'envoi : "+res.error,'error');
+    tickets[target]=tickets[target].filter(x=>x!==msg);
+    renderSup();
+    return;
+  }
+  msg.id=res.id;if(res.time)msg.time=res.time;msg.attachment=res.attachment;
+  renderSup();
+}
+function loadPendingImages(){
+  document.querySelectorAll('.msg-attachment-img[data-key]').forEach(async el=>{
+    const key=el.dataset.key,ticket=el.dataset.ticket,name=el.dataset.name;
+    el.removeAttribute('data-key');
+    try{
+      const r=await fetch(`${API}/api/support/attachment?ticket=${encodeURIComponent(ticket)}&key=${encodeURIComponent(key)}`,{headers:curUser?.token?{Authorization:`Bearer ${curUser.token}`}:{}});
+      if(!r.ok){el.textContent='📎 Image introuvable ou expirée';return;}
+      const blob=await r.blob();const url=URL.createObjectURL(blob);
+      el.innerHTML=`<a href="${url}" target="_blank" title="${esc(name)}"><img src="${url}" alt="${esc(name)}" loading="lazy"></a>`;
+    }catch(e){el.textContent='📎 Erreur de chargement';}
+  });
+}
+async function downloadAttachment(btn){
+  const key=btn.dataset.key,ticket=btn.dataset.ticket,name=btn.dataset.name;
+  const orig=btn.innerHTML;btn.disabled=true;btn.innerHTML='⟳ Chargement...';
+  try{
+    const r=await fetch(`${API}/api/support/attachment?ticket=${encodeURIComponent(ticket)}&key=${encodeURIComponent(key)}`,{headers:curUser?.token?{Authorization:`Bearer ${curUser.token}`}:{}});
+    if(!r.ok){toast('Fichier introuvable ou expiré','error');btn.innerHTML=orig;btn.disabled=false;return;}
+    const blob=await r.blob();const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');a.href=url;a.download=name;a.target='_blank';document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),30000);
+  }catch(e){toast('Erreur de téléchargement','error');}
+  btn.innerHTML=orig;btn.disabled=false;
+}
 async function submitContact(){
   const name=$('cfName').value.trim(),email=$('cfEmail').value.trim(),subj=$('cfSubj').value,msg=$('cfMsg2').value.trim();
   const msgEl=$('cfMsg'),btn=$('cfBtn');
@@ -586,7 +670,7 @@ function updateHdr(){
     const rb=curUser.role!=='user'?`<span style="font-size:.6rem;background:rgba(108,92,231,.2);color:var(--accent);padding:1px 6px;border-radius:5px;font-weight:700;text-transform:uppercase">${curUser.role==='mod'?'Mod':'Owner'}</span>`:'';
     const adminBtn=(curUser.role==='owner')?`<a href="admin.html" class="btn btn-ghost btn-sm">⚙ Admin</a>`:'';
     const dcDot=curUser.discordUsername?`<span title="Compte Discord lié" style="font-size:.75rem">🎮</span>`:'';
-    hr.innerHTML=`${adminBtn}<button class="btn btn-ghost btn-sm" onclick="openSettings()">⚙ Compte</button><div class="user-chip" onclick="openSettings()"><div class="udot"></div>${curUser.emoji||'👤'} ${esc(curUser.username)} ${dcDot}${rb}</div>`;
+    hr.innerHTML=`${adminBtn}<div class="user-chip" onclick="openSettings()" title="Paramètres du compte"><div class="udot"></div>${curUser.emoji||'👤'} ${esc(curUser.username)} ${dcDot}${rb}</div>`;
   }else{hr.innerHTML=`<button class="btn btn-primary btn-sm" onclick="openAuth('login')">Connexion</button>`;}
 }
 async function setOnline(v){if(!curUser)return;await apiPost('/api/user/online',{online:v}).catch(()=>{});}
@@ -712,6 +796,14 @@ async function openSettings(){
         <div class="fg"><label>Avatar (emoji)</label><input type="text" class="inp" id="setEmoji" value="${esc(curUser.emoji||'👤')}" maxlength="2"></div>
         <div class="fg"><label>Téléphone</label><input type="tel" class="inp" id="setPhone" value="${esc(curUser.phone||'')}" placeholder="+33 6 12 34 56 78"></div>
       </div>
+      <div class="fg">
+        <label>Pseudo</label>
+        <div id="usernameRow" style="display:flex;gap:8px;align-items:center">
+          <input type="text" class="inp" value="${esc(curUser.username)}" readonly style="color:var(--txt3);cursor:default;flex:1">
+          ${(curUser.usernameChanges||0)<2?`<button class="btn btn-ghost btn-sm" onclick="startUsernameChange()" style="flex-shrink:0;white-space:nowrap">✏️ Changer</button>`:''}
+        </div>
+        <div class="set-hint">${(curUser.usernameChanges||0)<2?`${2-(curUser.usernameChanges||0)} changement${2-(curUser.usernameChanges||0)>1?'s':''} restant${2-(curUser.usernameChanges||0)>1?'s':''}. Ça met à jour vos tickets et messages support.`:'Vous avez utilisé vos 2 changements de pseudo disponibles.'}</div>
+      </div>
       <div class="fg" style="margin-bottom:0"><label>Email actuel</label><div style="display:flex;gap:8px;align-items:center"><input type="text" class="inp" value="${esc(curUser.email||'—')}" readonly style="color:var(--txt3);cursor:default;flex:1"><button class="btn btn-ghost btn-sm" onclick="startEmailChange()" style="flex-shrink:0;white-space:nowrap">✏️ Changer</button></div></div>
     </div>
 
@@ -723,8 +815,7 @@ async function openSettings(){
         <div class="fg"><label>Confirmer</label><input type="password" class="inp" id="setPwCf"></div>
       </div>
       <div id="setMsg" class="err-msg" style="margin-bottom:10px"></div>
-      <button class="btn btn-primary btn-full" onclick="saveSettings()" style="margin-bottom:9px">💾 Sauvegarder les modifications</button>
-      <button class="btn btn-ghost btn-full" onclick="logout();closeOv('settOv')">🚪 Se déconnecter</button>
+      <button class="btn btn-primary btn-full" onclick="saveSettings()">💾 Sauvegarder les modifications</button>
     </div>
 
     <div class="set-section">
@@ -737,9 +828,10 @@ async function openSettings(){
       </div>
       <div class="fg" style="margin-bottom:0">
         <label>Notifications de réponse support</label>
-        <select class="inp" id="setNotifyChannel" ${curUser.discordUsername?'':'disabled'}>
-          <option value="email" ${curUser.notifyChannel!=='discord'?'selected':''}>📧 Email</option>
-          <option value="discord" ${curUser.notifyChannel==='discord'?'selected':''}>🎮 Discord (message privé)</option>
+        <select class="inp" id="setNotifyChannel">
+          <option value="none" ${(!curUser.notifyChannel||curUser.notifyChannel==='none')?'selected':''}>🔕 Désactivé</option>
+          <option value="email" ${curUser.notifyChannel==='email'?'selected':''}>📧 Email</option>
+          <option value="discord" ${curUser.notifyChannel==='discord'?'selected':''} ${curUser.discordUsername?'':'disabled'}>🎮 Discord (message privé)</option>
         </select>
         ${curUser.discordUsername?'':'<div class="set-hint">Liez votre compte Discord pour activer cette option.</div>'}
       </div>
@@ -748,6 +840,7 @@ async function openSettings(){
     <div class="set-section">
       <div class="set-section-hd">⚠️ Zone de danger</div>
       <div class="set-danger">
+        <button class="btn btn-ghost btn-full" onclick="logout();closeOv('settOv')" style="margin-bottom:12px">🚪 Se déconnecter</button>
         ${hasPending
           ?`<div style="font-size:.75rem;color:var(--red);line-height:1.6;margin-bottom:10px">⏳ Demande de suppression en cours — un administrateur traitera votre demande sous peu.</div><button class="btn btn-ghost btn-full" onclick="cancelDeleteRequest()" style="font-size:.75rem;color:var(--txt3)">↩ Annuler la demande</button>`
           :cooldownMsg
@@ -757,6 +850,23 @@ async function openSettings(){
       </div>
     </div>`;
   $('settOv').classList.add('open');
+}
+function startUsernameChange(){
+  const row=$('usernameRow');if(!row)return;
+  row.innerHTML=`<input type="text" class="inp" id="setUsername" value="${esc(curUser.username)}" maxlength="20" style="flex:1"><button class="btn btn-primary btn-sm" onclick="submitUsernameChange()" style="flex-shrink:0">✓</button><button class="btn btn-ghost btn-sm" onclick="openSettings()" style="flex-shrink:0">✕</button>`;
+  $('setUsername').focus();$('setUsername').select();
+}
+async function submitUsernameChange(){
+  const val=$('setUsername').value.trim();
+  if(!val||val.length<2||val.length>20){toast('✕ 2 à 20 caractères','error');return;}
+  if(val===curUser.username){openSettings();return;}
+  const remaining=2-(curUser.usernameChanges||0);
+  if(!confirm(`Changer votre pseudo en "${val}" ?\nIl vous restera ${remaining-1} changement${remaining-1===1?'':'s'} après celui-ci. Votre historique de tickets et messages support sera mis à jour.`))return;
+  const data=await apiPost('/api/user/change-username',{newUsername:val});
+  if(data.error){toast('✕ '+data.error,'error');return;}
+  curUser.username=data.username;curUser.handle=data.handle;curUser.token=data.token;curUser.usernameChanges=data.usernameChanges;
+  localStorage.setItem('cw_session',JSON.stringify(curUser));
+  toast('Pseudo modifié !');updateHdr();renderSup();openSettings();
 }
 async function requestDeleteAccount(){
   if(!confirm('Êtes-vous sûr de vouloir demander la suppression de votre compte ?\nUn administrateur devra valider cette demande.'))return;
@@ -771,7 +881,7 @@ async function cancelDeleteRequest(){
 }
 async function saveSettings(){
   const emoji=$('setEmoji').value.trim()||'👤';const c=$('setPwC').value,n=$('setPwN').value,cf=$('setPwCf').value;
-  const phone=$('setPhone').value.trim();const notifyChannel=$('setNotifyChannel')?.value||'email';
+  const phone=$('setPhone').value.trim();const notifyChannel=$('setNotifyChannel')?.value||'none';
   const msgEl=$('setMsg');msgEl.className='err-msg';
   if(phone && !/^\+?[0-9\s.-]{6,20}$/.test(phone)){msgEl.textContent='✕ Numéro de téléphone invalide';return;}
   if(n&&n!==cf){msgEl.textContent='✕ Les mots de passe ne correspondent pas';return;}

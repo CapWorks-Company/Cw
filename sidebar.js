@@ -11,12 +11,11 @@
 
   const ITEMS = [
     {href:'home.html',              icon:'🏠', label:'Accueil'},
+    {href:'capworks-studio.html',   icon:'🎬', label:'CapWorks Studio'},
+    {sep:true},
     {href:'projects.html',          icon:'🗂',  label:'Projets'},
     {href:'campagnes.html',         icon:'💛', label:'Campagnes'},
-    {href:'societes.html',          icon:'🏢', label:'Sous-sociétés'},
-    {href:'capworks-studio.html',   icon:'🎬', label:'CapWorks Studio'},
-    {href:'clugins.html',          icon:'⛏️', label:'Clugins'},
-    {href:'helfos.html',            icon:'🧠', label:'Helfos'},
+    {sep:true},
     {href:'home.html#team',         icon:'👥', label:'Équipe'},
     {href:'home.html#support',      icon:'💬', label:'Support'},
     {href:'home.html#contact',      icon:'📧', label:'Contact'},
@@ -59,6 +58,8 @@
     .cw-sb-ico{font-size:1.05rem;width:20px;text-align:center;flex-shrink:0}
     #cwSidebar.collapsed .cw-sb-label{display:none}
     #cwSidebar.collapsed .cw-sb-item{justify-content:center}
+    .cw-sb-sep{height:1px;background:var(--bdr,#1e1e38);margin:8px 10px;flex-shrink:0}
+    #cwSidebar.collapsed .cw-sb-sep{margin:8px 14px}
     .cw-sb-foot{padding:10px 8px;border-top:1px solid var(--bdr,#1e1e38);flex-shrink:0}
     .cw-sb-mobile-btn{position:fixed;bottom:18px;left:18px;z-index:301;
       width:48px;height:48px;border-radius:50%;background:var(--accent,#6c5ce7);
@@ -81,6 +82,7 @@
   if(collapsed) aside.classList.add('collapsed');
 
   const itemsHtml = ITEMS.map(it=>{
+    if(it.sep) return `<div class="cw-sb-sep"></div>`;
     const file = it.href.split('#')[0];
     const isActive = file === CURRENT;
     return `<a href="${it.href}" class="cw-sb-item${isActive?' active':''}"><span class="cw-sb-ico">${it.icon}</span><span class="cw-sb-label">${it.label}</span></a>`;
@@ -98,7 +100,7 @@
     </div>
     <nav class="cw-sb-list">${itemsHtml}</nav>
     <div class="cw-sb-foot">
-      <a href="https://discord.gg/RSnKYzXsgm" target="_blank" class="cw-sb-item"><span class="cw-sb-ico">💬</span><span class="cw-sb-label">Discord</span></a>
+      <a href="https://discord.gg/Hee7ZA5BPC" target="_blank" class="cw-sb-item"><span class="cw-sb-ico">💬</span><span class="cw-sb-label">Discord</span></a>
     </div>
   `;
   document.body.prepend(aside);

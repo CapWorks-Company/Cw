@@ -196,7 +196,6 @@ select.inp{cursor:pointer}
       <div class="side-link" data-view="helfos" onclick="switchView('helfos')">🧠 Helfos <span class="cnt" id="helfosCnt">0</span></div>
       <div class="side-link" data-view="campaigns" onclick="switchView('campaigns')">💛 Campagnes</div>
       <div class="side-link" data-view="team" onclick="switchView('team')">👥 Équipe</div>
-      <div class="side-link" data-view="plugins" onclick="switchView('plugins')">⛏️ Clugins <span class="cnt" id="pluginsCnt">0</span></div>
     </div>
     <div class="side-section">
       <div class="side-title">Communauté</div>
@@ -259,13 +258,14 @@ function ovClick(e,id){if(e.target===$(id))closeOv(id);}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(el=>el.classList.remove('open'));});
 function toast(msg,type='success'){const t=document.createElement('div');t.className='toast '+type;t.textContent=(type==='success'?'✓ ':'✕ ')+msg;document.body.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='all .3s';setTimeout(()=>t.remove(),300);},3200);}
 
-const CATS=['sites','games','software','animations','music','bots','ai','assets','other'];
+const CATS=['sites','games','software','animations','music','bots','ai','assets','other','clugins','capmods'];
 const CAT_META={
   sites:{label:'Sites Web',icon:'🌐'}, games:{label:'Jeux Vidéos',icon:'🎮'},
   software:{label:'Logiciels',icon:'⚙️'}, animations:{label:'Animations',icon:'🎬'},
   music:{label:'Musique',icon:'🎵'},
   bots:{label:'Bots Discord',icon:'🤖'}, ai:{label:'IA',icon:'🧠'},
-  assets:{label:'Assets',icon:'📦'}, other:{label:'Autres',icon:'◈'}
+  assets:{label:'Assets',icon:'📦'}, other:{label:'Autres',icon:'◈'},
+  clugins:{label:'Clugins',icon:'⛏️'}, capmods:{label:'CapMods',icon:'🧩'}
 };
 
 let curUser=JSON.parse(localStorage.getItem('cw_session')||'null');
@@ -404,7 +404,9 @@ const CAT_FIELDS={
   bots:[ ['inviteUrl',"Lien d'invitation Discord",'text'], ['url','Site / dashboard','text'], ['prefix','Préfixe des commandes','text'], ['servers','Nombre de serveurs','text'] ],
   ai:[ ['model','Modèle utilisé','text'], ['demoUrl','Lien de démo','text'], ['downloadUrl','Lien de téléchargement','text'], ['features','Fonctionnalités (résumé)','textarea'] ],
   assets:[ ['downloadUrl','Lien de téléchargement (ZIP)','text'], ['size',"Taille de l'archive (ex: 24 Mo)",'text'], ['license','Licence','text'], ['folderTree','Arborescence des fichiers','tree'] ],
-  other:[ ['url','Lien principal','text'], ['downloadUrl','Lien de téléchargement','text'] ]
+  other:[ ['url','Lien principal','text'], ['downloadUrl','Lien de téléchargement','text'] ],
+  clugins:[ ['downloadUrl','Lien de téléchargement','text'], ['mcVersion','Versions Minecraft compatibles','text'], ['loader','Loader (Spigot, Paper, Bukkit...)','text'], ['repoUrl','Lien du code (repo)','text'] ],
+  capmods:[ ['downloadUrl','Lien de téléchargement','text'], ['mcVersion','Versions Minecraft compatibles','text'], ['loader','Loader (Forge, Fabric, Quilt...)','text'], ['repoUrl','Lien du code (repo)','text'] ]
 };
 const COMMON_FIELDS=[
   ['title','Titre','text'], ['desc','Description courte','textarea'], ['longDesc','Description complète','textarea'],
@@ -1093,16 +1095,16 @@ async function renderTicketsView(c){
       </div>
       <div class="item-actions">
         <a href="home.html#support" class="btn btn-ghost btn-sm">💬 Répondre</a>
-        <button class="btn btn-danger btn-sm" onclick="deleteTicket('${esc(t.username||t.id)}')">🗑</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteTicket('${esc(t.username||t.id)}')" title="Ferme le salon : supprime le ticket et retire le rôle Discord « Salon en cours »">🔒 Fermer</button>
       </div>
     </div>`;
   }).join('');
 }
 async function deleteTicket(username){
-  if(!confirm('Supprimer ce ticket ?'))return;
+  if(!confirm('Fermer ce salon de support ?\nLe ticket sera supprimé et le rôle Discord « Salon en cours » (si applicable) sera retiré.'))return;
   const res=await apiPost('/api/admin/tickets',{username},'DELETE');
   if(res.error){ toast('Erreur : '+res.error,'error'); return; }
-  toast('Ticket supprimé'); renderTicketsView($('content'));
+  toast('Salon fermé'); renderTicketsView($('content'));
 }
 
 /* ══════════════ MESSAGES DE CONTACT ══════════════ */
@@ -1157,7 +1159,49 @@ function renderSettingsView(c){
     <h3>🔔 Webhook Discord</h3>
     <p style="font-size:.78rem;color:var(--txt2);margin-bottom:12px">Envoie un message de test sur le webhook Discord configuré côté serveur.</p>
     <button class="btn btn-ghost" onclick="testWebhook()">🧪 Envoyer un test</button>
+  </div>
+  <div class="card">
+    <h3>🎮 Rôles Discord</h3>
+    <p style="font-size:.78rem;color:var(--txt2);margin-bottom:12px">Relit tous les comptes liés à Discord et complète les rôles manquants (Membre / Modérateur / Admins, Compte lié) pour ceux désormais présents sur le serveur. Se relance automatiquement chaque heure (Cron Trigger) — ce bouton sert juste à tester la config sans attendre.</p>
+    <button class="btn btn-ghost" onclick="reconcileDiscordRoles()">↺ Lancer la réconciliation</button>
+    <div id="st_discMsg" style="font-size:.74rem;margin-top:8px"></div>
+  </div>
+  <div class="card">
+    <h3>📎 Pièces jointes support</h3>
+    <p style="font-size:.78rem;color:var(--txt2);margin-bottom:12px">Supprime du stockage R2 les fichiers envoyés dans le support depuis plus de 3 jours. Se relance automatiquement chaque heure — ce bouton sert juste à tester la config sans attendre.</p>
+    <button class="btn btn-ghost" onclick="cleanupAttachments()">↺ Nettoyer maintenant</button>
+    <div id="st_attMsg" style="font-size:.74rem;margin-top:8px"></div>
+  </div>
+  <div class="card">
+    <h3>⛏️ Migration Clugins → Projets</h3>
+    <p style="font-size:.78rem;color:var(--txt2);margin-bottom:12px">Copie les anciens plugins Minecraft (ancienne page Clugins) dans la nouvelle catégorie <strong>Clugins</strong> de l'onglet Projets. Sans danger : n'efface rien, peut être relancé plusieurs fois (les entrées déjà copiées sont ignorées).</p>
+    <button class="btn btn-ghost" onclick="migrateClugins()">↺ Lancer la migration</button>
+    <div id="st_migMsg" style="font-size:.74rem;margin-top:8px"></div>
   </div>`;
+}
+async function reconcileDiscordRoles(){
+  const msgEl=$('st_discMsg');msgEl.textContent='⟳ Réconciliation en cours...';
+  const res=await apiPost('/api/admin/discord/reconcile',{});
+  if(res.error){msgEl.style.color='var(--red)';msgEl.textContent='✕ '+res.error;return;}
+  if(res.skipped){msgEl.style.color='var(--gold)';msgEl.textContent='⚠ Non configuré (DISCORD_GUILD_ID / DISCORD_BOT_TOKEN manquants).';return;}
+  msgEl.style.color='var(--grn)';msgEl.textContent=`✓ ${res.checked} compte(s) lié(s) vérifié(s), ${res.updated} mis à jour.`;
+  toast('Réconciliation terminée !');
+}
+async function cleanupAttachments(){
+  const msgEl=$('st_attMsg');msgEl.textContent='⟳ Nettoyage en cours...';
+  const res=await apiPost('/api/admin/attachments/cleanup',{});
+  if(res.error){msgEl.style.color='var(--red)';msgEl.textContent='✕ '+res.error;return;}
+  if(res.skipped){msgEl.style.color='var(--gold)';msgEl.textContent='⚠ Non configuré (bucket R2 CW_ATTACHMENTS manquant).';return;}
+  msgEl.style.color='var(--grn)';msgEl.textContent=`✓ ${res.checked} pièce(s) jointe(s) vérifiée(s), ${res.removed} supprimée(s) (>3 jours).`;
+  toast('Nettoyage terminé !');
+}
+async function migrateClugins(){
+  const msgEl=$('st_migMsg');msgEl.textContent='⟳ Migration en cours...';
+  const res=await apiPost('/api/admin/projects/migrate-clugins',{});
+  if(res.error){msgEl.textContent='✕ '+res.error;msgEl.style.color='var(--red)';return;}
+  msgEl.style.color='var(--grn)';msgEl.textContent=`✓ ${res.migrated} plugin(s) copié(s) vers Projets → Clugins (sur ${res.total} au total).`;
+  await loadAllProjects();
+  toast('Migration terminée !');
 }
 async function saveProjectSettings(){
   settings={
