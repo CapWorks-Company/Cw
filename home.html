@@ -232,7 +232,7 @@ footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(
   if(req.status===200){var text=req.responseText;var m=text.match(/IS_MAINTENANCE\s*=\s*(true|false)/);if(m&&m[1]==='true'){window.location.replace('index.html');}}
 })();
 </script>
-<script src="sidebar.js" defer></script>
+<script src="sidebar.js?v=2" defer></script>
 </head>
 <body>
 <header>
@@ -470,6 +470,13 @@ const ROLE_CSS={owner:'ro',dev:'rd',mod:'rm',support:'rs'};
 let curUser=JSON.parse(localStorage.getItem('cw_session')||'null');
 let team=[],tickets={},activeTicket=null;
 let editingMsgId=null;
+let myTicketMeta=null,ticketMeta={};
+function attachQuotaInfo(meta){
+  const lim=meta?.attachmentLimits||{file:1,image:1};
+  const used=meta?.attachmentUsed||{file:0,image:0};
+  const rf=Math.max(0,lim.file-used.file),ri=Math.max(0,lim.image-used.image);
+  return {rf,ri,lim,text:`📎 ${rf}/${lim.file} fichier${lim.file>1?'s':''} · 🖼 ${ri}/${lim.image} image${lim.image>1?'s':''} restant(s)`,exhausted:rf<=0&&ri<=0};
+}
 async function apiGet(path){try{const r=await fetch(API+path,{headers:curUser?.token?{Authorization:`Bearer ${curUser.token}`}:{}});if(!r.ok)return{error:`HTTP ${r.status}`};return r.json();}catch(e){return{error:'Réseau'};}}
 async function apiPost(path,body){try{const r=await fetch(API+path,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',...(curUser?.token&&{Authorization:`Bearer ${curUser.token}`})},body:JSON.stringify(body)});if(!r.ok){try{return await r.json();}catch{return{error:`HTTP ${r.status}`};}}return r.json();}catch(e){return{error:'Réseau'};}}
 async function initApp(){
@@ -498,7 +505,8 @@ function chatAreaHtml(msgs,ticketOwner){return msgs&&msgs.length?msgs.map(m=>msg
 function currentTicketTarget(){return curUser&&isStaff(curUser.role)?activeTicket:(curUser&&curUser.username);}
 function renderUserSup(root){
   const msgs=(tickets[curUser.username]||[]);
-  root.innerHTML=`<div class="sup-solo"><div class="sup-hdr"><div><div style="font-size:.9rem;font-weight:700">💬 Votre salon</div><div style="font-size:.7rem;color:var(--txt2);margin-top:2px">Un modérateur vous répondra dès que possible</div></div><div style="display:flex;align-items:center;gap:10px"><button class="btn btn-ghost btn-sm" id="supRefreshBtnUser" onclick="loadMyTicket(true)" title="Rafraîchir le salon">↻</button><div class="sup-status"><div style="width:6px;height:6px;border-radius:50%;background:var(--grn);animation:blink 1.5s infinite"></div>En ligne</div></div></div><div class="chat-area" id="chatArea">${chatAreaHtml(msgs,curUser.username)}</div><div class="chat-composer"><div class="chat-input-bar"><input type="file" id="chatFile" style="display:none" onchange="sendAttachment(this.files[0])"><button class="chat-attach-btn" onclick="$('chatFile').click()" title="Joindre un fichier">📎</button><textarea class="chat-inp" id="chatInp" rows="1" placeholder="Écrivez votre message... (Maj+Entrée pour un saut de ligne)" onkeydown="chatKeyHandler(event)" oninput="autoGrow(this)"></textarea><button class="chat-send" onclick="sendMsg()">➤</button></div></div></div>`;
+  const q=attachQuotaInfo(myTicketMeta);
+  root.innerHTML=`<div class="sup-solo"><div class="sup-hdr"><div><div style="font-size:.9rem;font-weight:700">💬 Votre salon</div><div style="font-size:.7rem;color:var(--txt2);margin-top:2px">Un modérateur vous répondra dès que possible</div></div><div style="display:flex;align-items:center;gap:10px"><button class="btn btn-ghost btn-sm" id="supRefreshBtnUser" onclick="loadMyTicket(true)" title="Rafraîchir le salon">↻</button><div class="sup-status"><div style="width:6px;height:6px;border-radius:50%;background:var(--grn);animation:blink 1.5s infinite"></div>En ligne</div></div></div><div class="chat-area" id="chatArea">${chatAreaHtml(msgs,curUser.username)}</div><div class="chat-composer"><div id="attachQuotaLine" style="font-size:.65rem;color:var(--txt3);padding:0 2px 6px">${esc(q.text)}</div><div class="chat-input-bar"><input type="file" id="chatFile" style="display:none" onchange="sendAttachment(this.files[0])"><button class="chat-attach-btn" id="chatAttachBtn" onclick="$('chatFile').click()" title="Joindre un fichier"${q.exhausted?' disabled':''}>📎</button><textarea class="chat-inp" id="chatInp" rows="1" placeholder="Écrivez votre message... (Maj+Entrée pour un saut de ligne)" onkeydown="chatKeyHandler(event)" oninput="autoGrow(this)"></textarea><button class="chat-send" onclick="sendMsg()">➤</button></div></div></div>`;
   scrollChat();loadMyTicket();
 }
 async function loadMyTicket(manual){
@@ -507,6 +515,7 @@ async function loadMyTicket(manual){
   const d=await apiGet('/api/support/me');
   if(d&&Array.isArray(d.messages)){
     tickets[curUser.username]=d.messages;
+    myTicketMeta={attachmentLimits:d.attachmentLimits,attachmentUsed:d.attachmentUsed};
     if(editingMsgId&&!d.messages.some(m=>m.id===editingMsgId))editingMsgId=null;
     renderUserSupInline();
   }else if(manual){
@@ -515,11 +524,21 @@ async function loadMyTicket(manual){
   const btn2=$('supRefreshBtnUser');
   if(btn2){btn2.disabled=false;btn2.classList.remove('spinning');}
 }
-function renderUserSupInline(){const a=$('chatArea');if(!a)return;const msgs=(tickets[curUser.username]||[]);a.innerHTML=chatAreaHtml(msgs,curUser.username);scrollChat();}
+function renderUserSupInline(){
+  const a=$('chatArea');if(!a)return;
+  const msgs=(tickets[curUser.username]||[]);
+  a.innerHTML=chatAreaHtml(msgs,curUser.username);
+  const q=attachQuotaInfo(myTicketMeta);
+  const ql=$('attachQuotaLine');if(ql)ql.textContent=q.text;
+  const ab=$('chatAttachBtn');if(ab)ab.disabled=q.exhausted;
+  scrollChat();
+}
 function renderStaffSup(root){
   const uns=Object.keys(tickets);
   const sb=uns.map(u=>{const msgs=tickets[u]||[];const last=msgs[msgs.length-1];return `<div class="ticket-item${activeTicket===u?' active':''}" onclick="openTkt('${esc(u)}')"><div class="t-user">👤 ${esc(u)}</div><div class="t-prev">${last?esc((last.text||(last.attachment?'📎 '+last.attachment.filename:'')).replace(/[*_'\[\]{}]/g,'')):'Pas de messages'}</div><div class="t-meta"><span>${last?last.time:'—'}</span><span>${msgs.length} msg</span></div></div>`;}).join('')||'<div style="color:var(--txt3);font-size:.73rem;padding:14px;text-align:center">Aucun salon</div>';
-  let main=activeTicket&&tickets[activeTicket]?`<div class="sup-main"><div class="sup-hdr"><div style="font-size:.9rem;font-weight:700">💬 ${esc(activeTicket)}</div></div><div class="chat-area" id="chatArea">${chatAreaHtml(tickets[activeTicket],activeTicket)}</div><div class="chat-composer"><div class="chat-input-bar"><input type="file" id="chatFile" style="display:none" onchange="sendAttachment(this.files[0])"><button class="chat-attach-btn" onclick="$('chatFile').click()" title="Joindre un fichier">📎</button><textarea class="chat-inp" id="chatInp" rows="1" placeholder="Répondre... (Maj+Entrée pour un saut de ligne)" onkeydown="chatKeyHandler(event)" oninput="autoGrow(this)"></textarea><button class="chat-send" onclick="sendMsg()">➤</button></div></div></div>`:`<div class="sup-main" style="display:flex;align-items:center;justify-content:center"><div style="text-align:center;color:var(--txt3);font-size:.75rem"><div style="font-size:2rem;margin-bottom:8px">💬</div>Sélectionnez un salon</div></div>`;
+  const lim=ticketMeta[activeTicket]||{file:1,image:1};
+  const limBar=`<div style="display:flex;align-items:center;gap:6px;font-size:.68rem;color:var(--txt2)"><span title="Limite par salon">Limites :</span>📎<input type="number" min="0" max="50" id="limFile" value="${lim.file}" style="width:42px;background:var(--surf2);border:1px solid var(--bdr2);border-radius:6px;color:var(--txt);padding:3px 4px;font-size:.7rem">🖼<input type="number" min="0" max="50" id="limImage" value="${lim.image}" style="width:42px;background:var(--surf2);border:1px solid var(--bdr2);border-radius:6px;color:var(--txt);padding:3px 4px;font-size:.7rem"><button class="btn btn-ghost btn-sm" onclick="saveAttachLimit()">Enregistrer</button></div>`;
+  let main=activeTicket&&tickets[activeTicket]?`<div class="sup-main"><div class="sup-hdr"><div style="font-size:.9rem;font-weight:700">💬 ${esc(activeTicket)}</div>${limBar}</div><div class="chat-area" id="chatArea">${chatAreaHtml(tickets[activeTicket],activeTicket)}</div><div class="chat-composer"><div class="chat-input-bar"><input type="file" id="chatFile" style="display:none" onchange="sendAttachment(this.files[0])"><button class="chat-attach-btn" onclick="$('chatFile').click()" title="Joindre un fichier">📎</button><textarea class="chat-inp" id="chatInp" rows="1" placeholder="Répondre... (Maj+Entrée pour un saut de ligne)" onkeydown="chatKeyHandler(event)" oninput="autoGrow(this)"></textarea><button class="chat-send" onclick="sendMsg()">➤</button></div></div></div>`:`<div class="sup-main" style="display:flex;align-items:center;justify-content:center"><div style="text-align:center;color:var(--txt3);font-size:.75rem"><div style="font-size:2rem;margin-bottom:8px">💬</div>Sélectionnez un salon</div></div>`;
   root.innerHTML=`<div class="sup-layout"><div class="sup-sidebar"><div class="sup-sb-head" style="display:flex;align-items:center;justify-content:space-between"><h4>🎟 Salons (${uns.length})</h4><button class="btn btn-ghost btn-sm" id="supRefreshBtn" onclick="loadAllTickets()" title="Rafraîchir les salons">↻</button></div><div class="ticket-list">${sb}</div></div>${main}</div>`;
   scrollChat();
 }
@@ -528,8 +547,8 @@ async function loadAllTickets(){
   if(btn){btn.disabled=true;btn.classList.add('spinning');}
   const d=await apiGet('/api/admin/tickets');
   if(Array.isArray(d)){
-    tickets={};
-    d.forEach(t=>{tickets[t.username]=t.messages||[];});
+    tickets={};ticketMeta={};
+    d.forEach(t=>{tickets[t.username]=t.messages||[];ticketMeta[t.username]={file:1,image:1,...(t.attachmentLimits||{})};});
     if(editingMsgId&&activeTicket&&!(tickets[activeTicket]||[]).some(m=>m.id===editingMsgId))editingMsgId=null;
     renderSup(); // ré-affiche avec les nouvelles données ; ne redéclenche PAS de fetch
   }else{
@@ -560,6 +579,14 @@ function msgHtml(m,ticketOwner){
   return `<div class="chat-msg${isOwn?' own':''}"><div class="msg-ava">${m.emoji||'👤'}</div><div class="msg-body"><div class="msg-meta"><span class="msg-name ${nc}">${esc(m.user)}</span>${badge}<span class="msg-time">${m.time}</span>${edited}</div>${bubble}${attachmentHtml(m,ticketOwner)}${actions}</div></div>`;
 }
 function openTkt(u){activeTicket=u;editingMsgId=null;renderSup();}
+async function saveAttachLimit(){
+  if(!activeTicket)return;
+  const fEl=$('limFile'),iEl=$('limImage');if(!fEl||!iEl)return;
+  const res=await apiPost('/api/support/attachment-limit',{target:activeTicket,file:fEl.value,image:iEl.value});
+  if(res?.error){toast('Erreur : '+res.error,'error');return;}
+  ticketMeta[activeTicket]=res.attachmentLimits;
+  toast('Limite du salon mise à jour');
+}
 function autoGrow(el){if(!el)return;el.style.height='auto';el.style.height=Math.min(el.scrollHeight,130)+'px';}
 function chatKeyHandler(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
 function startEditMsg(id){editingMsgId=id;renderSup();const ta=$('editTa_'+id);if(ta){ta.focus();autoGrow(ta);const l=ta.value.length;ta.setSelectionRange(l,l);}}
@@ -628,6 +655,7 @@ async function sendAttachment(file){
   }
   msg.id=res.id;if(res.time)msg.time=res.time;msg.attachment=res.attachment;
   renderSup();
+  if(!isStaff(curUser.role))loadMyTicket();
 }
 function loadPendingImages(){
   document.querySelectorAll('.msg-attachment-img[data-key]').forEach(async el=>{
