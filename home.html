@@ -61,6 +61,25 @@ nav a.active{color:var(--accent);background:rgba(108,92,231,.1)}
 .discord-chip{display:flex;align-items:center;gap:10px;background:var(--surf2);border:1px solid var(--bdr2);border-radius:var(--r);padding:10px 12px}
 .discord-ava{width:32px;height:32px;border-radius:50%;overflow:hidden;background:var(--surf3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem}
 .discord-ava img{width:100%;height:100%;object-fit:cover}
+.set-profile{display:flex;align-items:center;gap:15px;padding:18px 20px;background:linear-gradient(135deg,var(--surf2),var(--surf));border:1px solid var(--bdr);border-radius:var(--r2);margin-bottom:22px;position:relative;overflow:hidden}
+.set-profile::before{content:'';position:absolute;top:-60%;right:-15%;width:180px;height:180px;background:radial-gradient(circle,var(--accentg),transparent 70%);pointer-events:none}
+.set-ava{width:54px;height:54px;border-radius:50%;background:var(--surf3);border:2px solid var(--bdr2);display:flex;align-items:center;justify-content:center;font-size:1.55rem;flex-shrink:0;position:relative;z-index:1}
+.set-ava.role-mod{border-color:var(--cyan);box-shadow:0 0 0 3px var(--cyang)}
+.set-ava.role-owner{border-color:var(--gold);box-shadow:0 0 0 3px var(--goldg)}
+.set-profile-info{position:relative;z-index:1;min-width:0}
+.set-profile-name{font-family:var(--display);font-weight:800;font-size:1.05rem;letter-spacing:-.3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.set-profile-role{display:inline-block;font-size:.6rem;font-weight:700;letter-spacing:.7px;text-transform:uppercase;padding:2px 9px;border-radius:99px;margin-top:5px;background:var(--accentg);color:var(--accent)}
+.set-profile-role.role-mod{background:var(--cyang);color:var(--cyan)}
+.set-profile-role.role-owner{background:var(--goldg);color:var(--gold)}
+.set-profile-since{font-size:.66rem;color:var(--txt3);margin-top:5px}
+.set-section{margin-bottom:22px}
+.set-section:last-child{margin-bottom:0}
+.set-section-hd{display:flex;align-items:center;gap:7px;font-size:.66rem;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--txt3);margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--bdr)}
+.set-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.set-card{background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--r);padding:14px 16px}
+.set-danger{background:var(--redg);border:1px solid rgba(232,67,147,.25);border-radius:var(--r);padding:14px 16px}
+.set-hint{font-size:.68rem;color:var(--txt3);margin-top:7px;line-height:1.5}
+@media(max-width:480px){.set-grid2{grid-template-columns:1fr}}
 .btn-sm{padding:5px 13px;font-size:.75rem;border-radius:7px}.btn-full{width:100%}
 .inp{width:100%;background:var(--surf2);border:1.5px solid var(--bdr2);color:var(--txt);padding:9px 13px;border-radius:var(--r);font-family:var(--font);font-size:.83rem;outline:none;transition:border-color .2s}
 .inp:focus{border-color:var(--accent)}.inp::placeholder{color:var(--txt3)}
@@ -674,43 +693,69 @@ async function openSettings(){
     const last=new Date(dr.lastCancelledAt).getTime();const unlockAt=last+3*24*60*60*1000;
     if(Date.now()<unlockAt){const d=new Date(unlockAt);cooldownMsg=`Nouvelle demande possible le ${d.toLocaleDateString('fr-FR')} à ${d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}`;}
   }
+  const roleCss=curUser.role==='owner'?'role-owner':curUser.role==='mod'?'role-mod':'';
+  const roleLbl=curUser.role==='owner'?'Fondateur':curUser.role==='mod'?'Modérateur':'Membre';
+  const since=curUser.createdAt?new Date(curUser.createdAt).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}):'';
   $('settBody').innerHTML=`
-    <div style="margin-bottom:14px;padding:12px 14px;background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--r);display:flex;align-items:center;gap:12px">
-      <div style="width:44px;height:44px;border-radius:50%;background:var(--surf3);border:2px solid var(--bdr2);display:flex;align-items:center;justify-content:center;font-size:1.4rem">${curUser.emoji||'👤'}</div>
-      <div><div style="font-weight:700;font-size:.92rem">${esc(curUser.username)}</div><div style="font-size:.68rem;color:var(--accent)">${curUser.role}</div></div>
+    <div class="set-profile">
+      <div class="set-ava ${roleCss}">${curUser.emoji||'👤'}</div>
+      <div class="set-profile-info">
+        <div class="set-profile-name">${esc(curUser.username)}</div>
+        <span class="set-profile-role ${roleCss}">${roleLbl}</span>
+        ${since?`<div class="set-profile-since">Membre depuis le ${since}</div>`:''}
+      </div>
     </div>
-    <div class="fg"><label>Avatar (emoji)</label><input type="text" class="inp" id="setEmoji" value="${esc(curUser.emoji||'👤')}" maxlength="2"></div>
-    <div class="fg"><label>Email actuel</label><div style="display:flex;gap:8px;align-items:center"><input type="text" class="inp" value="${esc(curUser.email||'—')}" readonly style="color:var(--txt3);cursor:default;flex:1"><button class="btn btn-ghost btn-sm" onclick="startEmailChange()" style="flex-shrink:0;white-space:nowrap">✏️ Changer</button></div></div>
-    <div class="fg"><label>Téléphone (En cas où la CapWorks doit vous contactez)</label><input type="tel" class="inp" id="setPhone" value="${esc(curUser.phone||'')}" placeholder="+33 6 12 34 56 78"></div>
-    <div class="fg"><label>Mot de passe actuel</label><input type="password" class="inp" id="setPwC"></div>
-    <div class="fg"><label>Nouveau mot de passe</label><input type="password" class="inp" id="setPwN"></div>
-    <div class="fg"><label>Confirmer</label><input type="password" class="inp" id="setPwCf"></div>
-    <div id="setMsg" class="err-msg" style="margin-bottom:10px"></div>
-    <button class="btn btn-primary btn-full" onclick="saveSettings()" style="margin-bottom:10px">💾 Sauvegarder</button>
-    <button class="btn btn-danger btn-full" onclick="logout();closeOv('settOv')" style="margin-bottom:8px">🚪 Se déconnecter</button>
-    <div style="border-top:1px solid var(--bdr);margin:14px 0 12px"></div>
-    <div class="fg">
-      <label>Compte Discord</label>
-      ${curUser.discordUsername
-        ? `<div class="discord-chip"><div class="discord-ava">${curUser.discordAvatar?`<img src="${esc(curUser.discordAvatar)}" alt="">`:'🎮'}</div><div style="flex:1;min-width:0"><div style="font-size:.82rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(curUser.discordUsername)}</div><div style="font-size:.65rem;color:var(--grn)">✓ Compte lié</div></div><button class="btn btn-ghost btn-sm" onclick="unlinkDiscord()">Délier</button></div>`
-        : `<button class="btn btn-discord btn-full" onclick="linkDiscord()">🎮 Lier mon compte Discord</button>`
-      }
+
+    <div class="set-section">
+      <div class="set-section-hd">👤 Profil</div>
+      <div class="set-grid2">
+        <div class="fg"><label>Avatar (emoji)</label><input type="text" class="inp" id="setEmoji" value="${esc(curUser.emoji||'👤')}" maxlength="2"></div>
+        <div class="fg"><label>Téléphone</label><input type="tel" class="inp" id="setPhone" value="${esc(curUser.phone||'')}" placeholder="+33 6 12 34 56 78"></div>
+      </div>
+      <div class="fg" style="margin-bottom:0"><label>Email actuel</label><div style="display:flex;gap:8px;align-items:center"><input type="text" class="inp" value="${esc(curUser.email||'—')}" readonly style="color:var(--txt3);cursor:default;flex:1"><button class="btn btn-ghost btn-sm" onclick="startEmailChange()" style="flex-shrink:0;white-space:nowrap">✏️ Changer</button></div></div>
     </div>
-    <div class="fg">
-      <label>Notifications de réponse support</label>
-      <select class="inp" id="setNotifyChannel" ${curUser.discordUsername?'':'disabled'}>
-        <option value="email" ${curUser.notifyChannel!=='discord'?'selected':''}>📧 Email</option>
-        <option value="discord" ${curUser.notifyChannel==='discord'?'selected':''}>🎮 Discord (message privé)</option>
-      </select>
-      ${curUser.discordUsername?'':'<div style="font-size:.68rem;color:var(--txt3);margin-top:6px">Liez votre compte Discord pour activer cette option.</div>'}
+
+    <div class="set-section">
+      <div class="set-section-hd">🔒 Sécurité</div>
+      <div class="fg"><label>Mot de passe actuel</label><input type="password" class="inp" id="setPwC"></div>
+      <div class="set-grid2">
+        <div class="fg"><label>Nouveau mot de passe</label><input type="password" class="inp" id="setPwN"></div>
+        <div class="fg"><label>Confirmer</label><input type="password" class="inp" id="setPwCf"></div>
+      </div>
+      <div id="setMsg" class="err-msg" style="margin-bottom:10px"></div>
+      <button class="btn btn-primary btn-full" onclick="saveSettings()" style="margin-bottom:9px">💾 Sauvegarder les modifications</button>
+      <button class="btn btn-ghost btn-full" onclick="logout();closeOv('settOv')">🚪 Se déconnecter</button>
     </div>
-    <div style="border-top:1px solid var(--bdr);margin:14px 0 12px"></div>
-    ${hasPending
-      ?`<div style="background:var(--redg);border:1px solid rgba(232,67,147,.3);border-radius:var(--r);padding:12px 14px;margin-bottom:10px;font-size:.75rem;color:var(--red);line-height:1.6">⏳ Demande de suppression en cours — un administrateur traitera votre demande sous peu.</div><button class="btn btn-ghost btn-full" onclick="cancelDeleteRequest()" style="font-size:.75rem;color:var(--txt3)">↩ Annuler la demande</button>`
-      :cooldownMsg
-        ?`<div style="font-size:.72rem;color:var(--txt3);text-align:center;padding:6px 0">${cooldownMsg}</div>`
-        :`<button class="btn btn-ghost btn-full" onclick="requestDeleteAccount()" style="font-size:.75rem;color:var(--red);border-color:rgba(232,67,147,.25)">🗑 Demander la suppression du compte</button>`
-    }`;
+
+    <div class="set-section">
+      <div class="set-section-hd">🎮 Discord &amp; notifications</div>
+      <div class="set-card" style="margin-bottom:12px">
+        ${curUser.discordUsername
+          ? `<div class="discord-chip"><div class="discord-ava">${curUser.discordAvatar?`<img src="${esc(curUser.discordAvatar)}" alt="">`:'🎮'}</div><div style="flex:1;min-width:0"><div style="font-size:.82rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(curUser.discordUsername)}</div><div style="font-size:.65rem;color:var(--grn)">✓ Compte lié</div></div><button class="btn btn-ghost btn-sm" onclick="unlinkDiscord()">Délier</button></div>`
+          : `<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><div class="discord-ava" style="width:38px;height:38px;font-size:1.3rem">🎮</div><div style="flex:1;min-width:180px"><div style="font-size:.82rem;font-weight:700">Compte non lié</div><div style="font-size:.68rem;color:var(--txt3)">Liez-le pour recevoir vos notifs en message privé</div></div><button class="btn btn-discord btn-sm" onclick="linkDiscord()">Lier</button></div>`
+        }
+      </div>
+      <div class="fg" style="margin-bottom:0">
+        <label>Notifications de réponse support</label>
+        <select class="inp" id="setNotifyChannel" ${curUser.discordUsername?'':'disabled'}>
+          <option value="email" ${curUser.notifyChannel!=='discord'?'selected':''}>📧 Email</option>
+          <option value="discord" ${curUser.notifyChannel==='discord'?'selected':''}>🎮 Discord (message privé)</option>
+        </select>
+        ${curUser.discordUsername?'':'<div class="set-hint">Liez votre compte Discord pour activer cette option.</div>'}
+      </div>
+    </div>
+
+    <div class="set-section">
+      <div class="set-section-hd">⚠️ Zone de danger</div>
+      <div class="set-danger">
+        ${hasPending
+          ?`<div style="font-size:.75rem;color:var(--red);line-height:1.6;margin-bottom:10px">⏳ Demande de suppression en cours — un administrateur traitera votre demande sous peu.</div><button class="btn btn-ghost btn-full" onclick="cancelDeleteRequest()" style="font-size:.75rem;color:var(--txt3)">↩ Annuler la demande</button>`
+          :cooldownMsg
+            ?`<div style="font-size:.72rem;color:var(--txt3);text-align:center;padding:2px 0">${cooldownMsg}</div>`
+            :`<button class="btn btn-full" style="background:transparent;border:1px solid rgba(232,67,147,.4);color:var(--red)" onclick="requestDeleteAccount()">🗑 Demander la suppression du compte</button>`
+        }
+      </div>
+    </div>`;
   $('settOv').classList.add('open');
 }
 async function requestDeleteAccount(){
