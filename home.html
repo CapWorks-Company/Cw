@@ -623,7 +623,7 @@ function msgHtml(m,ticketOwner){
   if(m.id&&editingMsgId===m.id){
     return `<div class="chat-msg${isOwn?' own':''} editing"><div class="msg-ava">${m.emoji||'👤'}</div><div class="msg-body"><div class="msg-meta"><span class="msg-name ${nc}">${esc(m.user)}</span>${badge}</div><div class="msg-edit-box"><textarea class="chat-inp msg-edit-ta" id="editTa_${m.id}" rows="2" oninput="autoGrow(this,320)">${esc(m.text)}</textarea><div class="msg-edit-actions"><button class="btn btn-primary btn-sm" onclick="saveEditMsg('${m.id}')">✓ Enregistrer</button><button class="btn btn-ghost btn-sm" onclick="cancelEditMsg()">✕ Annuler</button></div></div></div></div>`;
   }
-  const actions=(isOwn&&m.id)?`<div class="msg-actions"><button class="msg-act" title="Modifier" onclick="startEditMsg('${m.id}')">✎</button><button class="msg-act" title="Supprimer" onclick="deleteMsg('${m.id}')">🗑</button></div>`:'';
+  const actions=(isOwn&&m.id)?`<div class="msg-actions"><button class="msg-act" title="Modifier" onclick="startEditMsg('${m.id}')">✏️</button><button class="msg-act" title="Supprimer" onclick="deleteMsg('${m.id}')">🗑️</button></div>`:'';
   const edited=m.edited?'<span class="msg-edited">(modifié)</span>':'';
   const bubble=m.text?`<div class="msg-bubble">${formatMsgText(m.text)}</div>`:'';
   return `<div class="chat-msg${isOwn?' own':''}"><div class="msg-ava">${m.emoji||'👤'}</div><div class="msg-body"><div class="msg-meta"><span class="msg-name ${nc}">${esc(m.user)}</span>${badge}<span class="msg-time">${m.time}</span>${edited}</div>${bubble}${attachmentHtml(m,ticketOwner)}${actions}</div></div>`;
@@ -922,12 +922,12 @@ async function openSettings(){
     <div class="set-section">
       <div class="set-section-hd">⚠️ Zone de danger</div>
       <div class="set-danger">
-        <button class="btn btn-ghost btn-full" onclick="logout();closeOv('settOv')" style="margin-bottom:12px">🚪 Se déconnecter</button>
+        <button class="btn btn-ghost btn-full" onclick="logout();closeOv('settOv')" style="margin-bottom:12px">🚀 Se déconnecter</button>
         ${hasPending
           ?`<div style="font-size:.75rem;color:var(--red);line-height:1.6;margin-bottom:10px">⏳ Demande de suppression en cours — un administrateur traitera votre demande sous peu.</div><button class="btn btn-ghost btn-full" onclick="cancelDeleteRequest()" style="font-size:.75rem;color:var(--txt3)">↩ Annuler la demande</button>`
           :cooldownMsg
             ?`<div style="font-size:.72rem;color:var(--txt3);text-align:center;padding:2px 0">${cooldownMsg}</div>`
-            :`<button class="btn btn-full" style="background:transparent;border:1px solid rgba(232,67,147,.4);color:var(--red)" onclick="requestDeleteAccount()">🗑 Demander la suppression du compte</button>`
+            :`<button class="btn btn-full" style="background:transparent;border:1px solid rgba(232,67,147,.4);color:var(--red)" onclick="requestDeleteAccount()">🗑️ Demander la suppression du compte</button>`
         }
       </div>
     </div>`;
