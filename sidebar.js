@@ -58,8 +58,8 @@
     .cw-sb-ico{font-size:1.05rem;width:20px;text-align:center;flex-shrink:0}
     #cwSidebar.collapsed .cw-sb-label{display:none}
     #cwSidebar.collapsed .cw-sb-item{justify-content:center}
-    .cw-sb-sep{height:1px;background:var(--bdr,#1e1e38);margin:8px 10px;flex-shrink:0}
-    #cwSidebar.collapsed .cw-sb-sep{margin:8px 14px}
+    .cw-sb-sep{height:1px;background:linear-gradient(90deg,transparent,var(--bdr2,#2a2a4a),transparent);margin:10px 14px;flex-shrink:0}
+    #cwSidebar.collapsed .cw-sb-sep{margin:10px 18px}
     .cw-sb-foot{padding:10px 8px;border-top:1px solid var(--bdr,#1e1e38);flex-shrink:0}
     .cw-sb-mobile-btn{position:fixed;bottom:18px;left:18px;z-index:301;
       width:48px;height:48px;border-radius:50%;background:var(--accent,#6c5ce7);
