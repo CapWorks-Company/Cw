@@ -621,7 +621,7 @@ function msgHtml(m,ticketOwner){
   const nc=m.role==='owner'?'is-owner':m.role==='mod'?'is-mod':'';
   const badge=m.role==='owner'?'<span class="mbadge owner">Owner</span>':m.role==='mod'?'<span class="mbadge mod">Mod</span>':'';
   if(m.id&&editingMsgId===m.id){
-    return `<div class="chat-msg${isOwn?' own':''} editing"><div class="msg-ava">${m.emoji||'👤'}</div><div class="msg-body"><div class="msg-meta"><span class="msg-name ${nc}">${esc(m.user)}</span>${badge}</div><div class="msg-edit-box"><textarea class="chat-inp msg-edit-ta" id="editTa_${m.id}" rows="2" oninput="autoGrow(this,320)">${esc(m.text)}</textarea><div class="msg-edit-actions"><button class="btn btn-primary btn-sm" onclick="saveEditMsg('${m.id}')">✓ Enregistrer</button><button class="btn btn-ghost btn-sm" onclick="cancelEditMsg()">✕ Annuler</button></div></div></div></div>`;
+    return `<div class="chat-msg${isOwn?' own':''} editing"><div class="msg-ava">${m.emoji||'👤'}</div><div class="msg-body"><div class="msg-meta"><span class="msg-name ${nc}">${esc(m.user)}</span>${badge}</div><div class="msg-edit-box"><textarea class="chat-inp msg-edit-ta" id="editTa_${m.id}" rows="2" oninput="autoGrow(this,500)">${esc(m.text)}</textarea><div class="msg-edit-actions"><button class="btn btn-primary btn-sm" onclick="saveEditMsg('${m.id}')">✓ Enregistrer</button><button class="btn btn-ghost btn-sm" onclick="cancelEditMsg()">✕ Annuler</button></div></div></div></div>`;
   }
   const actions=(isOwn&&m.id)?`<div class="msg-actions"><button class="msg-act" title="Modifier" onclick="startEditMsg('${m.id}')">✏️</button><button class="msg-act" title="Supprimer" onclick="deleteMsg('${m.id}')">🗑️</button></div>`:'';
   const edited=m.edited?'<span class="msg-edited">(modifié)</span>':'';
@@ -643,7 +643,7 @@ async function saveAttachLimit(){
 }
 function autoGrow(el,max){if(!el)return;max=max||130;el.style.height='auto';el.style.height=Math.min(el.scrollHeight,max)+'px';}
 function chatKeyHandler(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
-function startEditMsg(id){editingMsgId=id;renderSup();const ta=$('editTa_'+id);if(ta){ta.focus();autoGrow(ta,320);const l=ta.value.length;ta.setSelectionRange(l,l);}}
+function startEditMsg(id){editingMsgId=id;renderSup();const ta=$('editTa_'+id);if(ta){ta.focus();autoGrow(ta,500);const l=ta.value.length;ta.setSelectionRange(l,l);}}
 function cancelEditMsg(){editingMsgId=null;renderSup();}
 async function saveEditMsg(id){
   const ta=$('editTa_'+id);if(!ta)return;
