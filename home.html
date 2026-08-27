@@ -181,6 +181,10 @@ textarea.chat-inp{resize:none;overflow-y:auto;max-height:130px;min-height:34px;l
 .msg-attachment-img img{max-width:260px;max-height:220px;border-radius:8px;display:block;border:1px solid var(--bdr2);cursor:zoom-in}
 .chat-attach-btn{background:var(--surf2);border:1px solid var(--bdr2);color:var(--txt2);width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:1rem;transition:all .15s}
 .chat-attach-btn:hover{border-color:var(--accent);color:var(--accent)}
+.lim-stepper{display:flex;align-items:center;border:1px solid var(--bdr2);border-radius:7px;overflow:hidden}
+.lim-btn{background:var(--surf2);border:none;color:var(--txt2);width:20px;height:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.8rem;font-weight:700;line-height:1;transition:all .15s}
+.lim-btn:hover{background:var(--accentg,rgba(108,92,231,.15));color:var(--accent)}
+.lim-val{min-width:20px;text-align:center;font-size:.7rem;font-weight:700;color:var(--txt)}
 .msg-edited{color:var(--txt3);font-size:.62rem;font-style:italic}
 .msg-actions{display:flex;gap:5px;margin-top:4px}
 .chat-msg.own .msg-actions{justify-content:flex-end}
@@ -232,7 +236,7 @@ footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(
   if(req.status===200){var text=req.responseText;var m=text.match(/IS_MAINTENANCE\s*=\s*(true|false)/);if(m&&m[1]==='true'){window.location.replace('index.html');}}
 })();
 </script>
-<script src="sidebar.js?v=2" defer></script>
+<script src="sidebar.js?v=3" defer></script>
 </head>
 <body>
 <header>
@@ -537,7 +541,8 @@ function renderStaffSup(root){
   const uns=Object.keys(tickets);
   const sb=uns.map(u=>{const msgs=tickets[u]||[];const last=msgs[msgs.length-1];return `<div class="ticket-item${activeTicket===u?' active':''}" onclick="openTkt('${esc(u)}')"><div class="t-user">👤 ${esc(u)}</div><div class="t-prev">${last?esc((last.text||(last.attachment?'📎 '+last.attachment.filename:'')).replace(/[*_'\[\]{}]/g,'')):'Pas de messages'}</div><div class="t-meta"><span>${last?last.time:'—'}</span><span>${msgs.length} msg</span></div></div>`;}).join('')||'<div style="color:var(--txt3);font-size:.73rem;padding:14px;text-align:center">Aucun salon</div>';
   const lim=ticketMeta[activeTicket]||{file:1,image:1};
-  const limBar=`<div style="display:flex;align-items:center;gap:6px;font-size:.68rem;color:var(--txt2)"><span title="Limite par salon">Limites :</span>📎<input type="number" min="0" max="50" id="limFile" value="${lim.file}" style="width:42px;background:var(--surf2);border:1px solid var(--bdr2);border-radius:6px;color:var(--txt);padding:3px 4px;font-size:.7rem">🖼<input type="number" min="0" max="50" id="limImage" value="${lim.image}" style="width:42px;background:var(--surf2);border:1px solid var(--bdr2);border-radius:6px;color:var(--txt);padding:3px 4px;font-size:.7rem"><button class="btn btn-ghost btn-sm" onclick="saveAttachLimit()">Enregistrer</button></div>`;
+  pendingLimits={file:lim.file,image:lim.image};
+  const limBar=`<div style="display:flex;align-items:center;gap:12px;font-size:.68rem;color:var(--txt2)"><span title="Limite par salon">Limites :</span><span style="display:flex;align-items:center;gap:5px">📎<div class="lim-stepper"><button type="button" class="lim-btn" onclick="stepLimit('file',-1)">−</button><span class="lim-val" id="fileVal">${lim.file}</span><button type="button" class="lim-btn" onclick="stepLimit('file',1)">+</button></div></span><span style="display:flex;align-items:center;gap:5px">🖼<div class="lim-stepper"><button type="button" class="lim-btn" onclick="stepLimit('image',-1)">−</button><span class="lim-val" id="imageVal">${lim.image}</span><button type="button" class="lim-btn" onclick="stepLimit('image',1)">+</button></div></span><button class="btn btn-ghost btn-sm" onclick="saveAttachLimit()">Enregistrer</button></div>`;
   let main=activeTicket&&tickets[activeTicket]?`<div class="sup-main"><div class="sup-hdr"><div style="font-size:.9rem;font-weight:700">💬 ${esc(activeTicket)}</div>${limBar}</div><div class="chat-area" id="chatArea">${chatAreaHtml(tickets[activeTicket],activeTicket)}</div><div class="chat-composer"><div class="chat-input-bar"><input type="file" id="chatFile" style="display:none" onchange="sendAttachment(this.files[0])"><button class="chat-attach-btn" onclick="$('chatFile').click()" title="Joindre un fichier">📎</button><textarea class="chat-inp" id="chatInp" rows="1" placeholder="Répondre... (Maj+Entrée pour un saut de ligne)" onkeydown="chatKeyHandler(event)" oninput="autoGrow(this)"></textarea><button class="chat-send" onclick="sendMsg()">➤</button></div></div></div>`:`<div class="sup-main" style="display:flex;align-items:center;justify-content:center"><div style="text-align:center;color:var(--txt3);font-size:.75rem"><div style="font-size:2rem;margin-bottom:8px">💬</div>Sélectionnez un salon</div></div>`;
   root.innerHTML=`<div class="sup-layout"><div class="sup-sidebar"><div class="sup-sb-head" style="display:flex;align-items:center;justify-content:space-between"><h4>🎟 Salons (${uns.length})</h4><button class="btn btn-ghost btn-sm" id="supRefreshBtn" onclick="loadAllTickets()" title="Rafraîchir les salons">↻</button></div><div class="ticket-list">${sb}</div></div>${main}</div>`;
   scrollChat();
@@ -579,10 +584,14 @@ function msgHtml(m,ticketOwner){
   return `<div class="chat-msg${isOwn?' own':''}"><div class="msg-ava">${m.emoji||'👤'}</div><div class="msg-body"><div class="msg-meta"><span class="msg-name ${nc}">${esc(m.user)}</span>${badge}<span class="msg-time">${m.time}</span>${edited}</div>${bubble}${attachmentHtml(m,ticketOwner)}${actions}</div></div>`;
 }
 function openTkt(u){activeTicket=u;editingMsgId=null;renderSup();}
+let pendingLimits={file:1,image:1};
+function stepLimit(kind,delta){
+  pendingLimits[kind]=Math.max(0,Math.min(50,(pendingLimits[kind]||0)+delta));
+  const el=$(kind+'Val');if(el)el.textContent=pendingLimits[kind];
+}
 async function saveAttachLimit(){
   if(!activeTicket)return;
-  const fEl=$('limFile'),iEl=$('limImage');if(!fEl||!iEl)return;
-  const res=await apiPost('/api/support/attachment-limit',{target:activeTicket,file:fEl.value,image:iEl.value});
+  const res=await apiPost('/api/support/attachment-limit',{target:activeTicket,file:pendingLimits.file,image:pendingLimits.image});
   if(res?.error){toast('Erreur : '+res.error,'error');return;}
   ticketMeta[activeTicket]=res.attachmentLimits;
   toast('Limite du salon mise à jour');
