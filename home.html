@@ -476,7 +476,7 @@ let team=[],tickets={},activeTicket=null;
 let editingMsgId=null;
 let myTicketMeta=null,ticketMeta={};
 function attachQuotaInfo(meta){
-  const lim=meta?.attachmentLimits||{file:1,image:1};
+  const lim=meta?.attachmentLimits||{file:0,image:0};
   const used=meta?.attachmentUsed||{file:0,image:0};
   const rf=Math.max(0,lim.file-used.file),ri=Math.max(0,lim.image-used.image);
   return {rf,ri,lim,text:`📎 ${rf}/${lim.file} fichier${lim.file>1?'s':''} · 🖼 ${ri}/${lim.image} image${lim.image>1?'s':''} restant(s)`,exhausted:rf<=0&&ri<=0};
