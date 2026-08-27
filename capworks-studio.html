@@ -328,7 +328,7 @@ function updateHdr(){
   if(curUser){
     const rb=curUser.role!=='user'?`<span style="font-size:.6rem;background:rgba(200,75,122,.2);color:var(--accent);padding:1px 6px;border-radius:5px;font-weight:700;text-transform:uppercase">${curUser.role==='mod'?'Mod':'Owner'}</span>`:'';
     const adminBtn=(curUser.role==='owner')?`<a href="admin.html" class="btn btn-ghost btn-sm">⚙ Admin</a>`:'';
-    hr.innerHTML=`${adminBtn}<button class="btn btn-ghost btn-sm" onclick="openSettings()">⚙ Compte</button><div class="user-chip" onclick="openSettings()"><div class="udot"></div>${curUser.emoji||'👤'} ${esc(curUser.username)} ${rb}</div>`;
+    hr.innerHTML=`${adminBtn}<div class="user-chip" onclick="openSettings()" title="Paramètres du compte"><div class="udot"></div>${curUser.emoji||'👤'} ${esc(curUser.username)} ${rb}</div>`;
   }else{hr.innerHTML=`<button class="btn btn-primary btn-sm" onclick="openAuth('login')">Connexion</button>`;}
 }
 async function setOnline(v){if(!curUser)return;await apiPost('/api/user/online',{online:v}).catch(()=>{});}

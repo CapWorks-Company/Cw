@@ -1172,19 +1172,16 @@ function renderSettingsView(c){
     <button class="btn btn-ghost" onclick="cleanupAttachments()">↺ Nettoyer maintenant</button>
     <div id="st_attMsg" style="font-size:.74rem;margin-top:8px"></div>
   </div>
-  <div class="card">
-    <h3>⛏️ Migration Clugins → Projets</h3>
-    <p style="font-size:.78rem;color:var(--txt2);margin-bottom:12px">Copie les anciens plugins Minecraft (ancienne page Clugins) dans la nouvelle catégorie <strong>Clugins</strong> de l'onglet Projets. Sans danger : n'efface rien, peut être relancé plusieurs fois (les entrées déjà copiées sont ignorées).</p>
-    <button class="btn btn-ghost" onclick="migrateClugins()">↺ Lancer la migration</button>
-    <div id="st_migMsg" style="font-size:.74rem;margin-top:8px"></div>
   </div>`;
 }
 async function reconcileDiscordRoles(){
-  const msgEl=$('st_discMsg');msgEl.textContent='⟳ Réconciliation en cours...';
+  const msgEl=$('st_discMsg');msgEl.innerHTML='⟳ Réconciliation en cours...';
   const res=await apiPost('/api/admin/discord/reconcile',{});
   if(res.error){msgEl.style.color='var(--red)';msgEl.textContent='✕ '+res.error;return;}
-  if(res.skipped){msgEl.style.color='var(--gold)';msgEl.textContent='⚠ Non configuré (DISCORD_GUILD_ID / DISCORD_BOT_TOKEN manquants).';return;}
-  msgEl.style.color='var(--grn)';msgEl.textContent=`✓ ${res.checked} compte(s) lié(s) vérifié(s), ${res.updated} mis à jour.`;
+  if(res.skipped){msgEl.style.color='var(--gold)';msgEl.textContent='⚠ '+res.skipped;return;}
+  msgEl.style.color='var(--grn)';
+  const log=(res.details||[]).map(d=>`<div style="padding:4px 0;border-bottom:1px solid var(--bdr)">${esc(d)}</div>`).join('');
+  msgEl.innerHTML=`<div style="margin-bottom:6px">✓ ${res.checked} compte(s) lié(s) vérifié(s), ${res.updated} mis à jour.</div><div style="font-family:var(--mono);font-size:.68rem;color:var(--txt2);max-height:220px;overflow-y:auto;background:var(--surf2);border:1px solid var(--bdr2);border-radius:var(--r);padding:8px 10px">${log||'Aucun compte lié à Discord.'}</div>`;
   toast('Réconciliation terminée !');
 }
 async function cleanupAttachments(){
@@ -1194,14 +1191,6 @@ async function cleanupAttachments(){
   if(res.skipped){msgEl.style.color='var(--gold)';msgEl.textContent='⚠ Non configuré (bucket R2 CW_ATTACHMENTS manquant).';return;}
   msgEl.style.color='var(--grn)';msgEl.textContent=`✓ ${res.checked} pièce(s) jointe(s) vérifiée(s), ${res.removed} supprimée(s) (>3 jours).`;
   toast('Nettoyage terminé !');
-}
-async function migrateClugins(){
-  const msgEl=$('st_migMsg');msgEl.textContent='⟳ Migration en cours...';
-  const res=await apiPost('/api/admin/projects/migrate-clugins',{});
-  if(res.error){msgEl.textContent='✕ '+res.error;msgEl.style.color='var(--red)';return;}
-  msgEl.style.color='var(--grn)';msgEl.textContent=`✓ ${res.migrated} plugin(s) copié(s) vers Projets → Clugins (sur ${res.total} au total).`;
-  await loadAllProjects();
-  toast('Migration terminée !');
 }
 async function saveProjectSettings(){
   settings={
