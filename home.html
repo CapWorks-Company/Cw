@@ -641,10 +641,11 @@ function stepLimit(kind,delta){
 }
 async function saveAttachLimit(){
   if(!activeTicket)return;
-  const res=await apiPost('/api/support/attachment-limit',{target:activeTicket,file:pendingLimits.file,image:pendingLimits.image});
+  const target=activeTicket; // on fige la cible avant l'appel async
+  const res=await apiPost('/api/support/attachment-limit',{target,file:pendingLimits.file,image:pendingLimits.image});
   if(res?.error){toast('Erreur : '+res.error,'error');return;}
-  ticketMeta[activeTicket]=res.attachmentLimits;
-  toast(`Limite de ${activeTicket} mise à jour`);
+  ticketMeta[target]=res.attachmentLimits;
+  toast(`Limite de ${target} mise à jour`);
 }
 function autoGrow(el,max){if(!el)return;max=max||130;el.style.height='auto';el.style.height=Math.min(el.scrollHeight,max)+'px';}
 function chatKeyHandler(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
