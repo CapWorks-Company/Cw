@@ -489,7 +489,7 @@ function attachQuotaInfo(meta){
   const lim=meta?.attachmentLimits||{file:1,image:1};
   const used=meta?.attachmentUsed||{file:0,image:0};
   const rf=Math.max(0,lim.file-used.file),ri=Math.max(0,lim.image-used.image);
-  return {rf,ri,lim,text:` ${rf}/${lim.file} fichier${lim.file>1?'s':''} · 🖼️ ${ri}/${lim.image} image${lim.image>1?'s':''} restant(s)`,exhausted:rf<=0&&ri<=0};
+  return {rf,ri,lim,text:`Vous avez : ${rf}/${lim.file} fichier(s) disponible(s) 📁${lim.file>1?'s':''} <strong>·</strong> 🖼️ ${ri}/${lim.image} image(s) disponible(s) 🖼️${lim.image>1?'s':''} restant(s)`,exhausted:rf<=0&&ri<=0};
 }
 async function apiGet(path){try{const r=await fetch(API+path,{headers:curUser?.token?{Authorization:`Bearer ${curUser.token}`}:{}});if(!r.ok)return{error:`HTTP ${r.status}`};return r.json();}catch(e){return{error:'Réseau'};}}
 async function apiPost(path,body){try{const r=await fetch(API+path,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',...(curUser?.token&&{Authorization:`Bearer ${curUser.token}`})},body:JSON.stringify(body)});if(!r.ok){try{return await r.json();}catch{return{error:`HTTP ${r.status}`};}}return r.json();}catch(e){return{error:'Réseau'};}}
