@@ -13,6 +13,46 @@ box-sizing:border-box;
 font-family:'Segoe UI',sans-serif;
 }
 
+.skip-toggle{
+position:fixed;
+top:18px;
+right:18px;
+z-index:20;
+cursor:pointer;
+opacity:.35;
+transition:opacity .3s;
+}
+.skip-toggle:hover{opacity:.9}
+.skip-track{
+display:block;
+width:34px;
+height:16px;
+border-radius:999px;
+border:1px solid rgba(0,255,255,.3);
+background:rgba(255,255,255,.03);
+position:relative;
+transition:background .25s,border-color .25s;
+}
+.skip-thumb{
+position:absolute;
+top:1px;
+left:1px;
+width:12px;
+height:12px;
+border-radius:50%;
+background:#7a8bbf;
+transition:transform .25s,background .25s;
+}
+.skip-toggle.active .skip-track{
+border-color:#00ffff;
+background:rgba(0,255,255,.12);
+}
+.skip-toggle.active .skip-thumb{
+transform:translateX(18px);
+background:#00ffff;
+box-shadow:0 0 8px rgba(0,255,255,.8);
+}
+  
 html,body{
 width:100%;
 height:100%;
@@ -263,6 +303,10 @@ transform:none !important;
 
 <body>
 
+<div class="skip-toggle" id="skipToggle" title="Passer directement à l'accueil la prochaine fois">
+  <span class="skip-track"><span class="skip-thumb"></span></span>
+</div>
+  
 <div class="container" id="scene">
 
 <div class="logo">
@@ -286,6 +330,28 @@ Ce site est en cours de rénovation afin de vous offrir une meilleure expérienc
 
 </div>
 
+<script>
+(function(){
+  var req = new XMLHttpRequest();
+  req.open('GET', 'maintenance.js?t=' + Date.now(), false);
+  req.setRequestHeader('Cache-Control','no-cache, no-store, must-revalidate');
+  req.setRequestHeader('Pragma','no-cache');
+  req.setRequestHeader('Expires','0');
+  try { req.send(null); } catch(e){ return; }
+  if(req.status === 200){
+    var text = req.responseText;
+    var mFlag = text.match(/IS_MAINTENANCE\s*=\s*(true|false)/);
+    var mMsg  = text.match(/MAINTENANCE_MESSAGE\s*=\s*"([^"]*)"/);
+    window.__IS_MAINTENANCE = mFlag && mFlag[1] === 'true';
+    window.__MAINTENANCE_MESSAGE = mMsg ? mMsg[1] : '';
+  }
+  // Redirection auto si pas en maintenance ET si l'utilisateur a activé le skip
+  if(!window.__IS_MAINTENANCE && localStorage.getItem('cw_skip_intro') === '1'){
+    window.location.replace('https://capworks-company.github.io/Cw/home.html');
+  }
+})();
+</script>
+  
 <script>
 
 const btn = document.getElementById("btn");
