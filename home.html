@@ -770,7 +770,7 @@ function updateHdr(){
   if(curUser){
     const rb=curUser.role!=='user'?`<span style="font-size:.6rem;background:rgba(108,92,231,.2);color:var(--accent);padding:1px 6px;border-radius:5px;font-weight:700;text-transform:uppercase">${curUser.role==='mod'?'Mod':'Owner'}</span>`:'';
     const adminBtn=(curUser.role==='owner')?`<a href="admin.html" class="btn btn-ghost btn-sm">⚙ Admin</a>`:'';
-    const dcDot=curUser.discordUsername?`<span title="Compte Discord lié" style="font-size:.75rem">🎮</span>`:'';
+    const dcDot=curUser.discordUsername?`<span title="Compte Discord lié" style="font-size:.75rem"><img src="discord.png" alt="Discord" style="width:1.15em;height:1.15em;vertical-align:-.2em"></span>`:'';
     hr.innerHTML=`${adminBtn}<div class="user-chip" onclick="openSettings()" title="Paramètres du compte"><div class="udot"></div>${curUser.emoji||'👤'} ${esc(curUser.username)} ${dcDot}${rb}</div>`;
   }else{hr.innerHTML=`<button class="btn btn-primary btn-sm" onclick="openAuth('login')">Connexion</button>`;}
 }
@@ -920,7 +920,7 @@ async function openSettings(){
     </div>
 
     <div class="set-section">
-      <div class="set-section-hd">🎮 Discord &amp; notifications</div>
+      <div class="set-section-hd"><img src="discord.png" alt="Discord" style="width:1em;height:1em;vertical-align:-0.15em;"> Discord &amp; notifications</div>
       <div class="set-card" style="margin-bottom:12px">
         ${curUser.discordUsername
           ? `<div class="discord-chip"><div class="discord-ava">${curUser.discordAvatar?`<img src="${esc(curUser.discordAvatar)}" alt="">`:'🎮'}</div><div style="flex:1;min-width:0"><div style="font-size:.82rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(curUser.discordUsername)}</div><div style="font-size:.65rem;color:var(--grn)">✓ Compte lié</div></div><button class="btn btn-ghost btn-sm" onclick="unlinkDiscord()">Délier</button></div>`
