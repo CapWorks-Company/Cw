@@ -489,7 +489,12 @@ function attachQuotaInfo(meta){
   const lim=meta?.attachmentLimits||{file:0,image:0};
   const used=meta?.attachmentUsed||{file:0,image:0};
   const rf=Math.max(0,lim.file-used.file),ri=Math.max(0,lim.image-used.image);
-  return {rf,ri,lim,text:`<span style="display:block;text-align:center;color:#777;font-size:14px;">Vous avez : <strong>${rf}/${lim.file}</strong> fichier${lim.file>1?'s':''} disponible${lim.file>1?'s':''} 📁 — <strong>${ri}/${lim.image}</strong> image${lim.image>1?'s':''} disponible${lim.image>1?'s':''} 🖼️</span>`,exhausted:rf<=0&&ri<=0};
+  const chip=(icon,val,max,label)=>`<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;background:var(--surf2);border:1px solid ${val<=0?'var(--red)':'var(--bdr2)'};color:var(--txt2)">${icon} <strong style="color:${val<=0?'var(--red)':'var(--txt)'}">${val}/${max}</strong> ${label}${max>1?'s':''} disponible${max>1?'s':''}</span>`;
+  return {
+    rf,ri,lim,
+    text:`<div style="display:flex;justify-content:center;flex-wrap:wrap;gap:8px">${chip('📁',rf,lim.file,'fichier')}${chip('🖼️',ri,lim.image,'image')}</div>`,
+    exhausted:rf<=0&&ri<=0
+  };
 }
 async function apiGet(path){try{const r=await fetch(API+path,{headers:curUser?.token?{Authorization:`Bearer ${curUser.token}`}:{}});if(!r.ok)return{error:`HTTP ${r.status}`};return r.json();}catch(e){return{error:'Réseau'};}}
 async function apiPost(path,body){try{const r=await fetch(API+path,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',...(curUser?.token&&{Authorization:`Bearer ${curUser.token}`})},body:JSON.stringify(body)});if(!r.ok){try{return await r.json();}catch{return{error:`HTTP ${r.status}`};}}return r.json();}catch(e){return{error:'Réseau'};}}
@@ -555,7 +560,7 @@ function currentTicketTarget(){return curUser&&isStaff(curUser.role)?activeTicke
 function renderUserSup(root){
   const msgs=(tickets[curUser.username]||[]);
   const q=attachQuotaInfo(myTicketMeta);
-  root.innerHTML=`<div class="sup-solo"><div class="sup-hdr"><div><div style="font-size:.9rem;font-weight:700">💬 Votre salon</div><div style="font-size:.7rem;color:var(--txt2);margin-top:2px">Un modérateur vous répondra dès que possible</div></div><div style="display:flex;align-items:center;gap:10px"><button class="btn btn-ghost btn-sm" id="supRefreshBtnUser" onclick="loadMyTicket(true)" title="Rafraîchir le salon">↻</button><div class="sup-status"><div style="width:6px;height:6px;border-radius:50%;background:var(--grn);animation:blink 1.5s infinite"></div>En ligne</div></div></div><div class="chat-area" id="chatArea">${chatAreaHtml(msgs,curUser.username)}</div><div class="chat-composer"><div id="attachQuotaLine" style="font-size:.65rem;color:var(--txt3);padding:0 2px 6px">${esc(q.text)}</div><div class="chat-input-bar"><input type="file" id="chatFile" style="display:none" onchange="sendAttachment(this.files[0])"><button class="chat-attach-btn" id="chatAttachBtn" onclick="$('chatFile').click()" title="Joindre un fichier"${q.exhausted?' disabled':''}>📎</button><textarea class="chat-inp" id="chatInp" rows="1" placeholder="Écrivez votre message... (Maj+Entrée pour un saut de ligne)" onkeydown="chatKeyHandler(event)" oninput="autoGrow(this)"></textarea><button class="chat-send" onclick="sendMsg()">➤</button></div></div></div>`;
+  root.innerHTML=`<div class="sup-solo"><div class="sup-hdr"><div><div style="font-size:.9rem;font-weight:700">💬 Votre salon</div><div style="font-size:.7rem;color:var(--txt2);margin-top:2px">Un modérateur vous répondra dès que possible</div></div><div style="display:flex;align-items:center;gap:10px"><button class="btn btn-ghost btn-sm" id="supRefreshBtnUser" onclick="loadMyTicket(true)" title="Rafraîchir le salon">↻</button><div class="sup-status"><div style="width:6px;height:6px;border-radius:50%;background:var(--grn);animation:blink 1.5s infinite"></div>En ligne</div></div></div><div class="chat-area" id="chatArea">${chatAreaHtml(msgs,curUser.username)}</div><div class="chat-composer"><div id="attachQuotaLine" style="font-size:.68rem;padding:0 2px 8px">${q.text}</div><div class="chat-input-bar"><input type="file" id="chatFile" style="display:none" onchange="sendAttachment(this.files[0])"><button class="chat-attach-btn" id="chatAttachBtn" onclick="$('chatFile').click()" title="Joindre un fichier"${q.exhausted?' disabled':''}>📎</button><textarea class="chat-inp" id="chatInp" rows="1" placeholder="Écrivez votre message... (Maj+Entrée pour un saut de ligne)" onkeydown="chatKeyHandler(event)" oninput="autoGrow(this)"></textarea><button class="chat-send" onclick="sendMsg()">➤</button></div></div></div>`;
   scrollChat();loadMyTicket();
 }
 async function loadMyTicket(manual){
@@ -578,7 +583,7 @@ function renderUserSupInline(){
   const msgs=(tickets[curUser.username]||[]);
   a.innerHTML=chatAreaHtml(msgs,curUser.username);
   const q=attachQuotaInfo(myTicketMeta);
-  const ql=$('attachQuotaLine');if(ql)ql.textContent=q.text;
+  const ql=$('attachQuotaLine');if(ql)ql.innerHTML=q.text;
   const ab=$('chatAttachBtn');if(ab)ab.disabled=q.exhausted;
   scrollChat();
 }
@@ -884,7 +889,7 @@ async function openSettings(){
           <input type="text" class="inp" value="${esc(curUser.username)}" readonly style="color:var(--txt3);cursor:default;flex:1">
           ${(curUser.usernameChanges||0)<2?`<button class="btn btn-ghost btn-sm" onclick="startUsernameChange()" style="flex-shrink:0;white-space:nowrap">✏️ Changer</button>`:''}
         </div>
-        <div class="set-hint">${(curUser.usernameChanges||0)<2?`${2-(curUser.usernameChanges||0)} changement${2-(curUser.usernameChanges||0)>1?'s':''} restant${2-(curUser.usernameChanges||0)>1?'s':''}. Ça met à jour vos tickets et messages support.`:'Vous avez utilisé vos 2 changements de pseudo disponibles.'}</div>
+        <div class="set-hint">${(curUser.usernameChanges||0)<2?`${2-(curUser.usernameChanges||0)} changement${2-(curUser.usernameChanges||0)>1?'s':''} restant${2-(curUser.usernameChanges||0)>1?'s':''}.`:'Vous avez utilisé vos 2 changements de pseudo disponibles.'}</div>
       </div>
       <div class="fg" style="margin-bottom:0"><label>Email actuel</label><div style="display:flex;gap:8px;align-items:center"><input type="text" class="inp" value="${esc(curUser.email||'—')}" readonly style="color:var(--txt3);cursor:default;flex:1"><button class="btn btn-ghost btn-sm" onclick="startEmailChange()" style="flex-shrink:0;white-space:nowrap">✏️ Changer</button></div></div>
     </div>
