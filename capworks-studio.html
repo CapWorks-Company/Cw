@@ -171,9 +171,6 @@ footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(
     <a href="#disciplines">Disciplines</a>
     <a href="#about">À propos</a>
   </nav>
-  <div id="hdrR" style="display:flex;align-items:center;gap:8px">
-    <button class="btn btn-primary btn-sm" onclick="openAuth('login')">Connexion</button>
-  </div>
 </header>
 <section class="hero">
   <div class="hero-glow"></div>
@@ -288,6 +285,14 @@ function updateAboutStats(){
   apiGet('/api/users/count').then(d=>{const el=$('statMembers');if(el&&d&&typeof d.count==='number')el.textContent=d.count;});
   apiGet('/api/campaigns').then(d=>{if(Array.isArray(d)){const el=$('statCamp');if(el)el.textContent=d.filter(c=>c.active).length;}});
   apiGet('/api/projects').then(d=>{if(d&&!d.error){let n=0;Object.values(d).forEach(arr=>{if(Array.isArray(arr))n+=arr.filter(p=>!p.hidden).length;});const el=$('statProj');if(el&&n>0)el.textContent=n;else if(el)el.textContent='—';}}).catch(()=>{});
+}
+function updateHdr(){
+  const hr=$('hdrR');
+  if(curUser){
+    const rb=curUser.role!=='user'?`<span style="font-size:.6rem;background:rgba(200,75,122,.2);color:var(--accent);padding:1px 6px;border-radius:5px;font-weight:700;text-transform:uppercase">${curUser.role==='mod'?'Mod':'Owner'}</span>`:'';
+    const adminBtn=(curUser.role==='owner')?`<a href="admin.html" class="btn btn-ghost btn-sm">⚙ Admin</a>`:'';
+    hr.innerHTML=`${adminBtn}<div class="user-chip" onclick="openSettings()" title="Paramètres du compte"><div class="udot"></div>${curUser.emoji||'👤'} ${esc(curUser.username)} ${rb}</div>`;
+  }else{hr.innerHTML=`<button class="btn btn-primary btn-sm" onclick="openAuth('login')">Connexion</button>`;}
 }
 async function setOnline(v){if(!curUser)return;await apiPost('/api/user/online',{online:v}).catch(()=>{});}
 document.addEventListener('visibilitychange',()=>{if(curUser)setOnline(!document.hidden);});
