@@ -230,20 +230,19 @@ textarea.chat-inp{resize:none;overflow-y:auto;max-height:130px;min-height:34px;l
 footer{position:relative;z-index:1;border-top:1px solid var(--bdr);padding:36px;text-align:center}
 .footer-logo{font-family:var(--display);font-size:.95rem;font-weight:800;margin-bottom:6px;letter-spacing:-.3px}.footer-logo em{font-style:normal;color:var(--cyan)}
 footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(--accent);text-decoration:none}footer a:hover{text-decoration:underline}
+/* ===== Toggle intro (bas droite, discret) ===== */
+.intro-toggle{position:fixed;bottom:14px;right:14px;z-index:150;display:flex;align-items:center;gap:5px;cursor:pointer;opacity:.32;transition:opacity .25s}
+.intro-toggle:hover{opacity:.85}
+.intro-toggle-track{width:22px;height:11px;border-radius:999px;border:1px solid var(--bdr2);background:var(--surf2);position:relative;transition:border-color .2s,background .2s;flex-shrink:0}
+.intro-toggle-thumb{position:absolute;top:1px;left:1px;width:7px;height:7px;border-radius:50%;background:var(--txt3);transition:transform .2s,background .2s}
+.intro-toggle.active .intro-toggle-track{border-color:var(--cyan);background:rgba(0,206,201,.12)}
+.intro-toggle.active .intro-toggle-thumb{transform:translateX(11px);background:var(--cyan);box-shadow:0 0 5px var(--cyan)}
+.intro-toggle-lbl{font-size:.55rem;color:var(--txt3);letter-spacing:.3px;white-space:nowrap}
+@media(max-width:600px){.intro-toggle-lbl{display:none}.intro-toggle{bottom:10px;right:10px}}
 @media(max-width:900px){
   header{padding:0 16px}nav{display:none}.hero{padding:0 16px;min-height:calc(100svh - 62px)}.section{padding:56px 16px}
   .team-grid{grid-template-columns:1fr}.about-grid,.contact-grid{grid-template-columns:1fr}.sup-layout{grid-template-columns:1fr}.sup-sidebar{display:none}.sec-div{margin:0 16px}
 }
-
-.intro-toggle{display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 8px;border-radius:8px;transition:background .2s}
-.intro-toggle:hover{background:var(--surf2)}
-.intro-toggle-track{width:30px;height:15px;border-radius:999px;border:1px solid var(--bdr2);background:var(--surf2);position:relative;transition:border-color .2s,background .2s;flex-shrink:0}
-.intro-toggle-thumb{position:absolute;top:1px;left:1px;width:11px;height:11px;border-radius:50%;background:var(--txt3);transition:transform .2s,background .2s}
-.intro-toggle.active .intro-toggle-track{border-color:var(--cyan);background:rgba(0,206,201,.12)}
-.intro-toggle.active .intro-toggle-thumb{transform:translateX(15px);background:var(--cyan);box-shadow:0 0 6px var(--cyan)}
-.intro-toggle-lbl{font-size:.62rem;color:var(--txt3);letter-spacing:.3px;white-space:nowrap}
-@media(max-width:900px){.intro-toggle-lbl{display:none}}
-  
 </style>
 <script>
 (function(){
@@ -256,11 +255,11 @@ footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(
 <script src="sidebar.js?v=4" defer></script>
 </head>
 <body>
+<div class="intro-toggle" id="introToggle" title="Aller directement à l'accueil au prochain chargement">
+  <span class="intro-toggle-lbl">Intro</span>
+  <span class="intro-toggle-track"><span class="intro-toggle-thumb"></span></span>
+</div>
 <header>
-  <div class="intro-toggle" id="introToggle" title="Skip l'accueil du site">
-    <span class="intro-toggle-track"><span class="intro-toggle-thumb"></span></span>
-    <span class="intro-toggle-lbl">Intro</span>
-  </div>
   <a href="home.html" class="logo">
     <div class="logo-img"><img src="CW_Logo.png" alt="CW" onerror="this.parentElement.textContent='⚡'"></div>
     CapWorks
@@ -506,22 +505,12 @@ function attachQuotaInfo(meta){
   const chip=(icon,val,max,label)=>`<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;background:var(--surf2);border:1px solid ${val<=0?'var(--red)':'var(--bdr2)'};color:var(--txt2)">${icon} <strong style="color:${val<=0?'var(--red)':'var(--txt)'}">${val}</strong> ${label}${max>1?'s':''} disponible${max>1?'s':''}</span>`;
   return {
     rf,ri,lim,
-    text:`<div style="display:flex;justify-content:center;flex-wrap:wrap;gap:8px">${chip('📄',rf,lim.file,'fichier')}${chip('',ri,lim.image,'image')}</div>`,
+    text:`<div style="display:flex;justify-content:center;flex-wrap:wrap;gap:8px">${chip('📁',rf,lim.file,'fichier')}${chip('🖼️',ri,lim.image,'image')}</div>`,
     exhausted:rf<=0&&ri<=0
   };
 }
 async function apiGet(path){try{const r=await fetch(API+path,{headers:curUser?.token?{Authorization:`Bearer ${curUser.token}`}:{}});if(!r.ok)return{error:`HTTP ${r.status}`};return r.json();}catch(e){return{error:'Réseau'};}}
 async function apiPost(path,body){try{const r=await fetch(API+path,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',...(curUser?.token&&{Authorization:`Bearer ${curUser.token}`})},body:JSON.stringify(body)});if(!r.ok){try{return await r.json();}catch{return{error:`HTTP ${r.status}`};}}return r.json();}catch(e){return{error:'Réseau'};}}
-(function(){
-  const KEY='cw_skip_intro';
-  const t=$('introToggle');if(!t)return;
-  if(localStorage.getItem(KEY)==='1')t.classList.add('active');
-  t.addEventListener('click',()=>{
-    const enabled=t.classList.toggle('active');
-    localStorage.setItem(KEY,enabled?'1':'0');
-    toast(enabled?'Intro désactivée — accès direct au prochain chargement':'Intro réactivée');
-  });
-})();
 async function initApp(){
   updateHdr();renderSup();initSupResize();
   if(curUser){
@@ -613,7 +602,7 @@ function renderUserSupInline(){
 }
 function renderStaffSup(root){
   const uns=Object.keys(tickets);
-  const sb=uns.map(u=>{const msgs=tickets[u]||[];const last=msgs[msgs.length-1];return `<div class="ticket-item${activeTicket===u?' active':''}" onclick="openTkt('${esc(u)}')"><div class="t-user">👤 ${esc(u)}</div><div class="t-prev">${last?esc((last.text||(last.attachment?'📄 '+last.attachment.filename:'')).replace(/[*_'\[\]{}]/g,'')):'Pas de messages'}</div><div class="t-meta"><span>${last?last.time:'—'}</span><span>${msgs.length} msg</span></div></div>`;}).join('')||'<div style="color:var(--txt3);font-size:.73rem;padding:14px;text-align:center">Aucun salon</div>';
+  const sb=uns.map(u=>{const msgs=tickets[u]||[];const last=msgs[msgs.length-1];return `<div class="ticket-item${activeTicket===u?' active':''}" onclick="openTkt('${esc(u)}')"><div class="t-user">👤 ${esc(u)}</div><div class="t-prev">${last?esc((last.text||(last.attachment?'📁 '+last.attachment.filename:'')).replace(/[*_'\[\]{}]/g,'')):'Pas de messages'}</div><div class="t-meta"><span>${last?last.time:'—'}</span><span>${msgs.length} msg</span></div></div>`;}).join('')||'<div style="color:var(--txt3);font-size:.73rem;padding:14px;text-align:center">Aucun salon</div>';
   const lim=ticketMeta[activeTicket]||{file:1,image:1};
   pendingLimits={file:lim.file,image:lim.image};
   const limBar=`<div style="display:flex;align-items:center;gap:14px;font-size:.7rem;color:var(--txt2)"><span>Limite pour ${esc(activeTicket)} :</span><div class="lim-stepper" title="Fichiers"><button type="button" class="lim-btn" onclick="stepLimit('file',-1)">−</button><span class="lim-val" id="fileVal">${lim.file}</span><span style="padding:0 3px">📄</span><button type="button" class="lim-btn" onclick="stepLimit('file',1)">+</button></div><div class="lim-stepper" title="Images"><button type="button" class="lim-btn" onclick="stepLimit('image',-1)">−</button><span class="lim-val" id="imageVal">${lim.image}</span><span style="padding:0 3px">🖼️</span><button type="button" class="lim-btn" onclick="stepLimit('image',1)">+</button></div><button class="btn btn-ghost btn-sm" onclick="saveAttachLimit()">Enregistrer</button></div>`;
@@ -638,7 +627,7 @@ async function loadAllTickets(){
 }
 function fmtSize(b){if(b===undefined||b===null)return'';if(b<1024)return b+' o';if(b<1024*1024)return(b/1024).toFixed(1)+' Ko';return(b/1024/1024).toFixed(1)+' Mo';}
 function attachmentHtml(m,ticketOwner){
-  if(m.attachmentExpired)return `<div class="msg-attachment expired">📎 Pièce jointe expirée</div>`;
+  if(m.attachmentExpired)return `<div class="msg-attachment expired">📎 Pièce jointe expirée (supprimée après 3 jours)</div>`;
   const a=m.attachment;if(!a)return'';
   if(a._pending)return `<div class="msg-attachment pending">⟳ Envoi de ${esc(a.filename)}...</div>`;
   const isImg=/^image\//.test(a.contentType||'');
@@ -665,7 +654,7 @@ function stepLimit(kind,delta){
 }
 async function saveAttachLimit(){
   if(!activeTicket)return;
-  const target=activeTicket; // on fige la cible avant l'appel async
+  const target=activeTicket;
   const res=await apiPost('/api/support/attachment-limit',{target,file:pendingLimits.file,image:pendingLimits.image});
   if(res?.error){toast('Erreur : '+res.error,'error');return;}
   ticketMeta[target]=res.attachmentLimits;
@@ -1036,6 +1025,20 @@ function handleDiscordRedirect(){
   history.replaceState({},'',url.pathname+url.hash);
 }
 handleDiscordRedirect();
+/* ── Toggle "intro" (bas droite) ─────────────────────────────────────────
+   Activé : index.html redirige automatiquement vers cette page au prochain
+   chargement (voir la logique dans index.html), sans passer par l'écran
+   d'intro animé. Désactivé : l'intro s'affiche normalement. */
+(function(){
+  const KEY='cw_skip_intro';
+  const t=$('introToggle');if(!t)return;
+  if(localStorage.getItem(KEY)==='1')t.classList.add('active');
+  t.addEventListener('click',()=>{
+    const enabled=t.classList.toggle('active');
+    localStorage.setItem(KEY,enabled?'1':'0');
+    toast(enabled?'Intro désactivée — accès direct au prochain chargement':'Intro réactivée');
+  });
+})();
 initApp();
 (function(){
   const scrollHint=document.querySelector('.hero-scroll');
