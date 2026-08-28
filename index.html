@@ -367,6 +367,14 @@ maintenance.style.display = "block";
 if(window.__MAINTENANCE_MESSAGE){ var el=maintenance.querySelector("p"); if(el) el.textContent=window.__MAINTENANCE_MESSAGE; }
 }
 
+// Skip si activé
+const skipToggle = document.getElementById('skipToggle');
+if(localStorage.getItem('cw_skip_intro') === '1') skipToggle.classList.add('active');
+skipToggle.addEventListener('click', ()=>{
+  const enabled = skipToggle.classList.toggle('active');
+  localStorage.setItem('cw_skip_intro', enabled ? '1' : '0');
+});
+  
 /* ===== LIGNES (moins nombreuses sur petit écran pour la perf) ===== */
 const lineCount = window.innerWidth < 600 ? 14 : 25;
 for(let i=lineCount;i--;){
