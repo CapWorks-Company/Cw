@@ -1000,7 +1000,7 @@ function handleDiscordRedirect(){
   const p=new URLSearchParams(location.search);
   if(!p.has('dc_linked')&&!p.has('dc_error'))return;
   if(p.get('dc_error'))toast('Discord : '+decodeURIComponent(p.get('dc_error')),'error');
-  if(p.get('dc_linked')==='1')toast('✓ Compte Discord lié ! Notifications de support basculées sur Discord.');
+  if(p.get('dc_linked')==='1')toast('Compte Discord lié ! Notifications de support basculées sur Discord.');
   const url=new URL(location.href);
   ['dc_linked','dc_error'].forEach(k=>url.searchParams.delete(k));
   history.replaceState({},'',url.pathname+url.hash);
