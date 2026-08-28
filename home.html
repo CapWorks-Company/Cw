@@ -234,6 +234,16 @@ footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(
   header{padding:0 16px}nav{display:none}.hero{padding:0 16px;min-height:calc(100svh - 62px)}.section{padding:56px 16px}
   .team-grid{grid-template-columns:1fr}.about-grid,.contact-grid{grid-template-columns:1fr}.sup-layout{grid-template-columns:1fr}.sup-sidebar{display:none}.sec-div{margin:0 16px}
 }
+
+.intro-toggle{display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 8px;border-radius:8px;transition:background .2s}
+.intro-toggle:hover{background:var(--surf2)}
+.intro-toggle-track{width:30px;height:15px;border-radius:999px;border:1px solid var(--bdr2);background:var(--surf2);position:relative;transition:border-color .2s,background .2s;flex-shrink:0}
+.intro-toggle-thumb{position:absolute;top:1px;left:1px;width:11px;height:11px;border-radius:50%;background:var(--txt3);transition:transform .2s,background .2s}
+.intro-toggle.active .intro-toggle-track{border-color:var(--cyan);background:rgba(0,206,201,.12)}
+.intro-toggle.active .intro-toggle-thumb{transform:translateX(15px);background:var(--cyan);box-shadow:0 0 6px var(--cyan)}
+.intro-toggle-lbl{font-size:.62rem;color:var(--txt3);letter-spacing:.3px;white-space:nowrap}
+@media(max-width:900px){.intro-toggle-lbl{display:none}}
+  
 </style>
 <script>
 (function(){
@@ -247,6 +257,10 @@ footer p{font-size:.73rem;color:var(--txt3);line-height:1.85}footer a{color:var(
 </head>
 <body>
 <header>
+  <div class="intro-toggle" id="introToggle" title="Skip l'accueil du site">
+    <span class="intro-toggle-track"><span class="intro-toggle-thumb"></span></span>
+    <span class="intro-toggle-lbl">Intro</span>
+  </div>
   <a href="home.html" class="logo">
     <div class="logo-img"><img src="CW_Logo.png" alt="CW" onerror="this.parentElement.textContent='⚡'"></div>
     CapWorks
@@ -498,6 +512,16 @@ function attachQuotaInfo(meta){
 }
 async function apiGet(path){try{const r=await fetch(API+path,{headers:curUser?.token?{Authorization:`Bearer ${curUser.token}`}:{}});if(!r.ok)return{error:`HTTP ${r.status}`};return r.json();}catch(e){return{error:'Réseau'};}}
 async function apiPost(path,body){try{const r=await fetch(API+path,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',...(curUser?.token&&{Authorization:`Bearer ${curUser.token}`})},body:JSON.stringify(body)});if(!r.ok){try{return await r.json();}catch{return{error:`HTTP ${r.status}`};}}return r.json();}catch(e){return{error:'Réseau'};}}
+(function(){
+  const KEY='cw_skip_intro';
+  const t=$('introToggle');if(!t)return;
+  if(localStorage.getItem(KEY)==='1')t.classList.add('active');
+  t.addEventListener('click',()=>{
+    const enabled=t.classList.toggle('active');
+    localStorage.setItem(KEY,enabled?'1':'0');
+    toast(enabled?'Intro désactivée — accès direct au prochain chargement':'Intro réactivée');
+  });
+})();
 async function initApp(){
   updateHdr();renderSup();initSupResize();
   if(curUser){
