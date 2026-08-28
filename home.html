@@ -916,7 +916,7 @@ async function openSettings(){
       <div class="fg" style="margin-bottom:0">
         <label>Notifications de réponse support</label>
         <select class="inp" id="setNotifyChannel">
-          <option value="none" ${(!curUser.notifyChannel||curUser.notifyChannel==='none')?'selected':''}>🔕 Désactivé</option>
+          <option value="none" ${(!curUser.notifyChannel||curUser.notifyChannel==='none')?'selected':''}>🔕 Aucune</option>
           <option value="email" ${curUser.notifyChannel==='email'?'selected':''}>📧 Email</option>
           <option value="discord" ${curUser.notifyChannel==='discord'?'selected':''} ${curUser.discordUsername?'':'disabled'}>🎮 Discord (message privé)</option>
         </select>
