@@ -784,7 +784,7 @@ function switchAuth(tab){
   $('authTitle').textContent=tab==='login'?'Connexion':'Créer un compte';
   const f=$('authForm');
   if(tab==='login'){f.innerHTML=`<div class="fg"><label>Pseudo</label><input type="text" class="inp" id="lUser" placeholder="Votre pseudo..."></div><div class="fg"><label>Mot de passe</label><input type="password" class="inp" id="lPass" placeholder="••••••••" onkeypress="if(event.key==='Enter')doLogin()"></div><div class="err-msg" id="lErr"></div><div style="margin-top:14px"><button class="btn btn-primary btn-full" onclick="doLogin()">Se connecter →</button></div>`;}
-  else{f.innerHTML=`<div class="fg"><label>Pseudo</label><input type="text" class="inp" id="rUser" placeholder="Choisissez un pseudo..."></div><div class="fg"><label>Email <span style="color:var(--red)">*</span></label><input type="email" class="inp" id="rEmail" placeholder="exemple@gmail.com"></div><div class="fg"><label>Téléphone (En cas où la CapWorks doit vous contactez)<span style="color:var(--red)">*</span></label><input type="tel" class="inp" id="rPhone" placeholder="+33 6 12 34 56 78"></div><div class="fg"><label>Mot de passe</label><input type="password" class="inp" id="rPass" placeholder="Min. 8 caractères..."></div><div class="fg"><label>Avatar (emoji)</label><input type="text" class="inp" id="rEmoji" placeholder="👤" maxlength="2"></div><div class="err-msg" id="rErr"></div><div style="margin-top:14px"><button class="btn btn-primary btn-full" id="rBtn" onclick="doRegister()">Recevoir le code →</button></div>`;}
+  else{f.innerHTML=`<div class="fg"><label>Pseudo <span style="color:var(--red)">*</span></label><input type="text" class="inp" id="rUser" placeholder="Choisissez un pseudo..."></div><div class="fg"><label>Email <span style="color:var(--red)">*</span></label><input type="email" class="inp" id="rEmail" placeholder="exemple@gmail.com"></div><div class="fg"><label>Téléphone (En cas où la CapWorks doit vous contactez)</label><input type="tel" class="inp" id="rPhone" placeholder="+33 6 12 34 56 78"></div><div class="fg"><label>Mot de passe</label><input type="password" class="inp" id="rPass" placeholder="Min. 8 caractères..."></div><div class="fg"><label>Avatar (emoji)</label><input type="text" class="inp" id="rEmoji" placeholder="👤" maxlength="2"></div><div class="err-msg" id="rErr"></div><div style="margin-top:14px"><button class="btn btn-primary btn-full" id="rBtn" onclick="doRegister()">Recevoir le code →</button></div>`;}
 }
 async function doLogin(){
   const u=$('lUser').value.trim(),p=$('lPass').value;const errEl=$('lErr');
@@ -798,7 +798,7 @@ async function doLogin(){
 async function doRegister(){
   const u=$('rUser').value.trim(),email=$('rEmail').value.trim(),phone=$('rPhone').value.trim(),p=$('rPass').value,e=($('rEmoji').value.trim()||'👤');
   const errEl=$('rErr'),btn=$('rBtn');
-  if(!u||!email||!phone||!p){errEl.textContent='✕ Remplissez tous les champs';return;}
+  if(!u||!email||!p){errEl.textContent='✕ Remplissez tous les champs';return;}
   if(phone && !/^\+?[0-9\s.-]{6,20}$/.test(phone)){errEl.textContent='✕ Numéro de téléphone invalide';return;}
   if(p.length<8){errEl.textContent='✕ Mot de passe : min. 8 caractères';return;}
   btn.disabled=true;btn.textContent='⟳ Envoi du code...';
