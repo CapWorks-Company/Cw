@@ -407,7 +407,7 @@ Mais nous ferons tout notre possible pour vous plaire !</p>
     <div class="modal-bd">
       <div class="auth-tabs" id="authTabs"><button class="auth-tab active" onclick="switchAuth('login')">Se connecter</button><button class="auth-tab" onclick="switchAuth('register')">Créer un compte</button></div>
       <div id="authForm"></div>
-      <div id="authTrust" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--bdr);text-align:center;font-size:.76rem;color:var(--txt3)">✨ <strong id="authTrustCount" style="color:var(--accent);font-family:var(--mono)">0</strong> membres nous font confiance</div>
+      <div id="authTrust" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--bdr);text-align:center;font-size:.76rem;color:var(--txt3)"><strong id="authTrustCount" style="color:var(--accent);font-family:var(--mono)">0</strong> membres nous font confiance</div>
     </div>
   </div>
 </div>
@@ -800,7 +800,7 @@ async function loadAuthTrustStat(){
 }
 function playLottery(el,target){
   clearTimeout(el._lotteryTimer);
-  const maxSteps=22;let step=0;
+  const maxSteps=13;let step=0;
   const spinMax=Math.max(target*4,80);
   (function tick(){
     step++;
