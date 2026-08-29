@@ -807,7 +807,7 @@ function playLottery(el,target){
     if(step<maxSteps){
       el.textContent=Math.floor(Math.random()*spinMax);
       const progress=step/maxSteps;
-      const delay=35+Math.pow(progress,2)*160; // ralentit progressivement
+      const delay=15+Math.pow(progress,2)*70; // ralentit progressivement
       el._lotteryTimer=setTimeout(tick,delay);
     }else{
       el.textContent=target;
