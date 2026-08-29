@@ -1028,7 +1028,7 @@ async function renderUsersView(c){
       <div class="item-thumb" style="position:relative">${u.emoji||'👤'}<span class="online-dot" style="position:absolute;bottom:-2px;right:-2px;width:11px;height:11px;border-radius:50%;border:2px solid var(--surf);background:${u.online?'var(--grn)':'var(--txt3)'};box-shadow:${u.online?'0 0 6px var(--grn)':'none'}"></span></div>
       <div class="item-main">
         <div class="item-title">${esc(u.username)}${u.deleteRequest?.status==='pending'?'<span class="item-badge" style="background:rgba(232,67,147,.15);color:var(--red);border:1px solid rgba(232,67,147,.4);font-size:.55rem">🗑 SUPPRESSION</span>':''}<span class="online-label" style="font-size:.66rem;font-weight:600;color:${u.online?'var(--grn)':'var(--txt3)'}">${u.online?'● En ligne':'○ Hors ligne'}</span>${USER_ROLE_BADGE[u.role]||''}</div>
-        <div class="item-meta">${esc(u.email||'—')} · ${USER_ROLE_LBL[u.role]||u.role||'Utilisateur'} · 📱 ${esc(u.phone||'—')}</div>
+        <div class="item-meta">${esc(u.email||'—')} · ${USER_ROLE_LBL[u.role]||u.role||'Utilisateur'} · 📱 ${esc(u.phone||'Aucun numéro de téléphone')}</div>
       </div>
       <div class="item-actions">
         <select class="inp" style="width:auto;padding:5px 8px;font-size:.72rem" onchange="changeUserRole('${esc(u.username)}',this.value)">
