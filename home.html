@@ -407,6 +407,7 @@ Mais nous ferons tout notre possible pour vous plaire !</p>
     <div class="modal-bd">
       <div class="auth-tabs" id="authTabs"><button class="auth-tab active" onclick="switchAuth('login')">Se connecter</button><button class="auth-tab" onclick="switchAuth('register')">Créer un compte</button></div>
       <div id="authForm"></div>
+      <div id="authTrust" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--bdr);text-align:center;font-size:.76rem;color:var(--txt3)">✨ <strong id="authTrustCount" style="color:var(--accent);font-family:var(--mono)">0</strong> membres nous font confiance</div>
     </div>
   </div>
 </div>
@@ -564,7 +565,19 @@ function updateAboutStats(){
 }
 function renderSup(){
   const root=$('supRoot');if(!root)return;
-  if(!curUser){root.innerHTML=`<div style="min-height:200px;display:flex;align-items:center;justify-content:center"><div style="text-align:center;padding:36px"><div style="font-size:2rem;margin-bottom:10px">🔐</div><h4 style="font-size:.97rem;font-weight:700;margin-bottom:5px">Connexion requise</h4><p style="color:var(--txt2);font-size:.8rem;margin-bottom:18px">Connectez-vous pour accéder au support.</p><button class="btn btn-primary" onclick="openAuth('login')">Se connecter</button></div></div>`;return;}
+  const handle=$('supResizeHandle');
+  if(!curUser){
+    if(handle)handle.style.display='none';
+    root.style.height='';
+    root.innerHTML=`<div style="min-height:200px;display:flex;align-items:center;justify-content:center"><div style="text-align:center;padding:36px"><div style="font-size:2rem;margin-bottom:10px">🔐</div><h4 style="font-size:.97rem;font-weight:700;margin-bottom:5px">Connexion requise</h4><p style="color:var(--txt2);font-size:.8rem;margin-bottom:18px">Connectez-vous pour accéder au support.</p><button class="btn btn-primary" onclick="openAuth('login')">Se connecter</button></div></div>`;
+    return;
+  }
+  if(handle){
+    handle.style.display='';
+    const KEY='cw_sup_height',MIN=340,MAX=900;
+    const saved=parseInt(localStorage.getItem(KEY)||'560',10);
+    root.style.height=Math.min(MAX,Math.max(MIN,isNaN(saved)?560:saved))+'px';
+  }
   isStaff(curUser.role)?renderStaffSup(root):renderUserSup(root);
 }
 function isStaff(r){return r==='mod'||r==='owner';}
@@ -778,9 +791,31 @@ async function setOnline(v){if(!curUser)return;await apiPost('/api/user/online',
 document.addEventListener('visibilitychange',()=>{if(curUser)setOnline(!document.hidden);});
 window.addEventListener('beforeunload',()=>{if(curUser)setOnline(false);});
 let _otpPending=null,_emailChangePending=null,_resendTimer=null;
-function openAuth(tab='login'){$('authOv').classList.add('open');switchAuth(tab);}
+function openAuth(tab='login'){$('authOv').classList.add('open');switchAuth(tab);loadAuthTrustStat();}
+async function loadAuthTrustStat(){
+  const el=$('authTrustCount');if(!el)return;
+  const d=await apiGet('/api/users/count');
+  const target=(d&&typeof d.count==='number')?d.count:0;
+  playLottery(el,target);
+}
+function playLottery(el,target){
+  clearTimeout(el._lotteryTimer);
+  const maxSteps=22;let step=0;
+  const spinMax=Math.max(target*4,80);
+  (function tick(){
+    step++;
+    if(step<maxSteps){
+      el.textContent=Math.floor(Math.random()*spinMax);
+      const progress=step/maxSteps;
+      const delay=35+Math.pow(progress,2)*160; // ralentit progressivement
+      el._lotteryTimer=setTimeout(tick,delay);
+    }else{
+      el.textContent=target;
+    }
+  })();
+}
 function switchAuth(tab){
-  document.querySelectorAll('.auth-tab').forEach((t,i)=>t.classList.toggle('active',['login','register'][i]===tab));
+  document.querySelectorAll('.auth-tab').forEach((t,i)=>{t.style.display='';t.classList.toggle('active',['login','register'][i]===tab);});
   $('authTitle').textContent=tab==='login'?'Connexion':'Créer un compte';
   const f=$('authForm');
   if(tab==='login'){f.innerHTML=`<div class="fg"><label>Pseudo</label><input type="text" class="inp" id="lUser" placeholder="Votre pseudo..."></div><div class="fg"><label>Mot de passe</label><input type="password" class="inp" id="lPass" placeholder="••••••••" onkeypress="if(event.key==='Enter')doLogin()"></div><div class="err-msg" id="lErr"></div><div style="margin-top:14px"><button class="btn btn-primary btn-full" onclick="doLogin()">Se connecter →</button></div>`;}
