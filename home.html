@@ -1071,7 +1071,7 @@ handleDiscordRedirect();
   t.addEventListener('click',()=>{
     const enabled=t.classList.toggle('active');
     localStorage.setItem(KEY,enabled?'1':'0');
-    toast(enabled?'Intro désactivée — accès direct au prochain chargement':'Intro réactivée');
+    toast(enabled?'Vous accéderez directement à l'acceuil':'Vous devrez cliqué sur "Entrer dans l'univers"');
   });
 })();
 initApp();
